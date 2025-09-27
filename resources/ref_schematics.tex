@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{circuitikz}
+
+%
+% NOTE: schematics generated using the online tool: 'https://www.circuit2tikz.tf.fau.de/designer'
+%
+
+\begin{document}
+
+\section*{Example 1: diode and resistor I}
+\begin{circuitikz}
+	%
+	% NOTE: schematic generated using the online tool: 'https://www.circuit2tikz.tf.fau.de/designer'
+	%
+
+	\node[eground2] at (9, 7.25){};
+	\draw (9, 11.25) to[american resistor, l={$R$}] (9, 9);
+	\draw (9, 9) to[empty diode, l={$D$}] (9, 7.5);
+	\node[ocirc](N1) at (7, 11.5){} node[anchor=east] at ([xshift=-0.08cm]N1.text){$V_I$};
+	\draw (7, 11.5) -- (9, 11.5) -- (9, 11.25);
+	\node[ocirc](N2) at (11, 9){} node[anchor=west] at ([xshift=0.08cm]N2.text){$V_O$};
+	\draw (11, 9) -- (9, 9);
+	\node[circ] at (9, 9){};
+	\draw (9, 7.25) -| (9, 7.5);
+\end{circuitikz}
+
+
+\section*{Example 2: diode and resistor II}
+\begin{circuitikz}
+	\node[eground2] at (9, 6.5){};
+	\draw (9, 8.75) to[american resistor, l={$R$}] (9, 6.5);
+	\draw (9, 11.25) to[empty diode, l={$D$}] (9, 9.75);
+	\node[ocirc](N1) at (7, 11.5){} node[anchor=east] at ([xshift=-0.08cm]N1.text){$V_I$};
+	\draw (7, 11.5) -- (9, 11.5) -- (9, 11.25);
+	\node[ocirc](N2) at (11, 9.25){} node[anchor=west] at ([xshift=0.08cm]N2.text){$V_O$};
+	\draw (11, 9.25) -- (9, 9.25);
+	\node[circ] at (9, 9.25){};
+	\draw (9, 9.25) -| (9, 9.75);
+	\draw (9, 8.75) -| (9, 9.25);
+\end{circuitikz}
+
+
+
+\section*{Example 3: 1 diode and 2 resistors}
+\begin{circuitikz}
+	\node[eground2] at (7, 6.75){};
+	\draw (9, 11.25) to[american resistor, l={$R_1$}] (9, 9);
+	\draw (9, 8.5) to[empty diode, l={$D$}] (9, 7);
+	\node[ocirc](N1) at (7, 11.5){} node[anchor=east] at ([xshift=-0.08cm]N1.text){$V_I$};
+	\draw (7, 11.5) -- (9, 11.5) -- (9, 11.25);
+	\node[ocirc](N2) at (11, 9){} node[anchor=west] at ([xshift=0.08cm]N2.text){$V_O$};
+	\draw (11, 9) -- (9, 9);
+	\node[circ] at (9, 9){};
+	\draw (7, 9) to[american resistor, l={$R_2$}] (7, 6.75);
+	\node[eground2] at (9, 6.75){};
+	\draw (9, 6.75) -| (9, 7);
+	\draw (9, 8.5) -| (9, 9);
+	\draw (7, 9) -- (9, 9);
+\end{circuitikz}
+
+
+
+\end{document}
