@@ -27,7 +27,7 @@
 # =============================================================================
 # EXTERNALS
 # =============================================================================
-# None.
+from typing import Tuple
 
 
 
@@ -51,7 +51,65 @@ class Device :
 
   def __init__(self, name) :
     
+    # Name of your device
     self.name = name
+
+    # Internal parameters
+    self.regions = []
+
+
+
+  # ---------------------------------------------------------------------------
+  # METHOD: Device.addRegion()
+  # ---------------------------------------------------------------------------
+  def addRegion(self, domain : Tuple[float, float], model : Tuple[float, float], name : str = "") -> None :
+    """
+    Adds a new operating region to the device.
+
+    The function looks for overlaps and prevents adding a new region if there 
+    is a conflict in the domain definition.
+
+    Arguments:
+    - domain  = (xMin, xMax)  : domain definition
+    - model   = (a, b)        : parameters for the model y = a*x + b
+    - name                    : name of the region (optional)
+    """
+
+    for R in self.regions :
+      if self._hasOverlap(R) :
+        print("TODO")
+
+
+
+  # ---------------------------------------------------------------------------
+  # METHOD: Device._hasOverlap()                                      [PRIVATE]
+  # ---------------------------------------------------------------------------
+  def _hasOverlap(self, Ia : float, Ib : float, Ja : float, Jb : float) -> bool :
+    """
+    Returns True if the intervals I = [Ia, Ib] and J = [Ja, Jb] overlap
+    False otherwise.
+    """
+    
+    (Ia, Ib) = self._normalise(Ia, Ib)
+    (Ja, Jb) = self._normalise(Ja, Jb)
+
+
+    return True
+      
+
+
+  # ---------------------------------------------------------------------------
+  # METHOD: Device._normalise()                                       [PRIVATE]
+  # ---------------------------------------------------------------------------
+  def _normalise(self, a : float, b : float) -> Tuple[float, float] :
+    """
+    Returns a normalised version of an interval 
+    """
+
+    if (a > b) :
+      return (b, a)
+    else :
+      return (a, b)
 
 
 
@@ -73,3 +131,5 @@ class Device :
 if (__name__ == "__main__") :
   
   print("[INFO] Class definition 'Device' called as main: running unit tests...")
+
+  Q1 = Device("npn")
