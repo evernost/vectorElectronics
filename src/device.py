@@ -75,8 +75,10 @@ class Device :
     - name                    : name of the region (optional)
     """
 
+    domain = self._normalise(domain[0], domain[1])
+
     for R in self.regions :
-      if self._hasOverlap(R) :
+      if self._hasOverlap(R["domain"], domain) :
         print("TODO")
 
 
@@ -84,32 +86,36 @@ class Device :
   # ---------------------------------------------------------------------------
   # METHOD: Device._hasOverlap()                                      [PRIVATE]
   # ---------------------------------------------------------------------------
-  def _hasOverlap(self, Ia : float, Ib : float, Ja : float, Jb : float) -> bool :
+  def _hasOverlap(self, I : Tuple[float, float], J : Tuple[float, float]) -> bool :
     """
     Returns True if the intervals I = [Ia, Ib] and J = [Ja, Jb] overlap
     False otherwise.
     """
     
-    (Ia, Ib) = self._normalise(Ia, Ib)
-    (Ja, Jb) = self._normalise(Ja, Jb)
+    I = self._normalise(I)
+    J = self._normalise(J)
 
-
-    return True
+    if (I[1] < J[0]) :
+      return False
+    elif (J[1] < I[0]) :
+      return False
+    else :
+      return True
       
 
 
   # ---------------------------------------------------------------------------
   # METHOD: Device._normalise()                                       [PRIVATE]
   # ---------------------------------------------------------------------------
-  def _normalise(self, a : float, b : float) -> Tuple[float, float] :
+  def _normalise(self, I : Tuple[float, float]) -> Tuple[float, float] :
     """
-    Returns a normalised version of an interval 
+    Returns a normalised version of an interval.
     """
 
-    if (a > b) :
-      return (b, a)
+    if (I[0] > I[1]) :
+      return (I[1], I[0])
     else :
-      return (a, b)
+      return I
 
 
 
