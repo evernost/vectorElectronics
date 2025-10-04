@@ -75,11 +75,22 @@ class Device :
     - name                    : name of the region (optional)
     """
 
-    domain = self._normalise(domain[0], domain[1])
+    domain = self._normalise(domain)
 
-    for R in self.regions :
-      if self._hasOverlap(R["domain"], domain) :
-        print("TODO")
+    if (len(self.regions) == 0) :
+      self.regions.append({
+            "domain": domain
+          }
+        )
+    else :
+      for R in self.regions :
+        if self._hasOverlap(R["domain"], domain) :
+          print("[NOTE] Detected conflict in definitions domains")
+        else :
+          self.regions.append({
+              "domain": domain
+            }
+          )
 
 
 
@@ -139,3 +150,6 @@ if (__name__ == "__main__") :
   print("[INFO] Class definition 'Device' called as main: running unit tests...")
 
   Q1 = Device("npn")
+  Q1.addRegion((0.0, 0.7), (0.0, 0.0), "off")
+  Q1.addRegion((0.7, 100), (0.0, 0.0), "forward active")
+  
