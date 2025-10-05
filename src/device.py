@@ -27,14 +27,24 @@
 # =============================================================================
 # EXTERNALS
 # =============================================================================
+# Project libraries
+# None.
+
+# Standard libraries
 from typing import Tuple
+from enum import Enum
 
 
 
 # =============================================================================
 # CONSTANTS
 # =============================================================================
-# None.
+POS_INF = float("inf")
+NEG_INF = float("-inf")
+
+class Status(Enum) :
+  OK = 0
+  FAIL = 1
 
 
 
@@ -53,6 +63,8 @@ class Device :
     
     # Name of your device
     self.name = name
+    self.inUnits  = ""
+    self.outUnits = ""
 
     # Internal parameters
     self.regions = []
@@ -75,40 +87,38 @@ class Device :
     - name                    : name of the region (optional)
     """
 
+    # Swap the bounds in case they are inverted
     domain = self._normalise(domain)
 
-    if (len(self.regions) == 0) :
-      self.regions.append({
-            "domain": domain
-          }
-        )
-    else :
-      for R in self.regions :
-        if self._hasOverlap(R["domain"], domain) :
-          print("[NOTE] Detected conflict in definitions domains")
-        else :
-          self.regions.append({
-              "domain": domain
-            }
-          )
+    # Compare the domain definition against what already exists
+    for R in self.regions :
+      if self._hasOverlap(R["domain"], domain) :
+        print("[WARNING] Detected conflict in definitions domains")
+        return Status.FAIL
+
+    # Add the region
+    self.regions.append({"domain": domain, "model": model, "name": name})
+    print(f"[NOTE] Added model definition: {domain[0]} -> {domain[1]}")
+    return Status.OK
 
 
 
   # ---------------------------------------------------------------------------
   # METHOD: Device._hasOverlap()                                      [PRIVATE]
   # ---------------------------------------------------------------------------
-  def _hasOverlap(self, I : Tuple[float, float], J : Tuple[float, float]) -> bool :
+  def _hasOverlap(self, I, J) -> bool :
     """
-    Returns True if the intervals I = [Ia, Ib] and J = [Ja, Jb] overlap
-    False otherwise.
+    Returns True if the intervals I = [Ia, Ib] and J = [Ja, Jb] have a 
+    non-empty intersection.
+    Returns False otherwise.
     """
     
     I = self._normalise(I)
     J = self._normalise(J)
 
-    if (I[1] < J[0]) :
+    if (I[1] <= J[0]) :
       return False
-    elif (J[1] < I[0]) :
+    elif (J[1] <= I[0]) :
       return False
     else :
       return True
@@ -131,14 +141,44 @@ class Device :
 
 
   # ---------------------------------------------------------------------------
-  # METHOD: Device._getOperatingPoint()                               [PRIVATE]
+  # METHOD: Device.getOperatingPoint()
   # ---------------------------------------------------------------------------
-  def _getOperatingPoint(self) :
+  def getOperatingPoint(self, x) :
     """
     Description is TODO.
     """
 
-    print("TODO")
+    for R in self.regions :
+      if ((R["domain"][0] <= x) and (x <= R["domain"][1])) :
+        print(R["name"])
+
+
+
+  # ---------------------------------------------------------------------------
+  # METHOD: Device.eval()
+  # ---------------------------------------------------------------------------
+  def eval(self, x) :
+    """
+    Evaluates the device's output using the model matching the input.
+    """
+
+    return 0.0
+  
+
+
+  # ---------------------------------------------------------------------------
+  # METHOD: Device.plot()
+  # ---------------------------------------------------------------------------
+  def plot(self, domain) :
+    """
+    Plots the device's characteristic curve in a given domain.
+    """
+
+    if ((NEG_INF in domain) or (POS_INF in domain)) :
+      print("[ERROR] The plotting domain must be finite.")
+      return Status.FAIL  
+    
+    return Status.OK
 
 
 
@@ -150,6 +190,13 @@ if (__name__ == "__main__") :
   print("[INFO] Class definition 'Device' called as main: running unit tests...")
 
   Q1 = Device("npn")
-  Q1.addRegion((0.0, 0.7), (0.0, 0.0), "off")
-  Q1.addRegion((0.7, 100), (0.0, 0.0), "forward active")
+  iTh = 0.001   # In A
+  vTh = 0.7     # In V
+  gm = 0.5      # In A/V
+  Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0), "reverse")
+  Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0), "off")
+  Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh), "forward active")
+  Q1.addRegion((0.9, POS_INF),  (0.0, 0.0), "forward breakdown")
   
+  
+  Q1.getOperatingPoint(0.4)
