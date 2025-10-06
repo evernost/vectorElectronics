@@ -31,8 +31,9 @@
 # None.
 
 # Standard libraries
-from typing import Tuple
-from enum import Enum
+import numpy as np            # For math and 'matlab'-like processing
+from typing import Tuple      # For fancy function prototype hints
+from enum import Enum         # For fancy status using enum
 
 
 
@@ -189,14 +190,40 @@ if (__name__ == "__main__") :
   
   print("[INFO] Class definition 'Device' called as main: running unit tests...")
 
-  Q1 = Device("npn")
   iTh = 0.001   # In A
   vTh = 0.7     # In V
   gm = 0.5      # In A/V
-  Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0), "reverse")
-  Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0), "off")
+  Q1 = Device("npn")
+  Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),       "reverse")
+  Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),   "off")
   Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh), "forward active")
-  Q1.addRegion((0.9, POS_INF),  (0.0, 0.0), "forward breakdown")
-  
-  
+  Q1.addRegion((0.9, POS_INF),  (0.0, 0.0),       "forward breakdown")
   Q1.getOperatingPoint(0.4)
+  
+
+
+  # ---------------------------------------------------------------------------
+  # Example 1: emitter follower
+  # ---------------------------------------------------------------------------
+
+  # Emitter resistor
+  R_e = 100
+
+  # Input signal: 1Vpp sinewave + 2 Volts offset
+  nPts = 100
+  v_in = 1.0*np.linspace(0, 2*np.pi, nPts) + 2.0
+
+  # Solving using the linear assumption gives the output voltage:
+  # v_out = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
+  #
+  # We now study the values of 'v_out' as we browse through the different values
+  # of the model.
+  # Only one will make physical sense.
+  for (i, R) in enumerate(Q1.regions) :
+    a = R['model'][0]
+    b = R['model'][1]
+    v_out = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
+    print(f"*** REGION {i}: y = {a:0.5f}x + {b:0.5f} ***")
+    print(f"v_in = {v_in[0]:0.4f}V")
+    print(f"v_out = {v_out[0]:0.4f}V")
+    print()
