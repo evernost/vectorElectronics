@@ -31,10 +31,10 @@
 # None.
 
 # Standard libraries
-import numpy as np            # For math and 'matlab'-like processing
-from typing import Tuple      # For fancy function prototype hints
-from enum import Enum         # For fancy status using enum
-
+from typing import Tuple          # For fancy function prototype hints
+from enum import Enum             # For fancy status using enum
+import matplotlib.pyplot as plt   # For plotting
+import numpy as np                # For math and 'matlab'-like processing
 
 
 # =============================================================================
@@ -47,6 +47,14 @@ class Status(Enum) :
   OK = 0
   FAIL = 1
 
+class Region : 
+  def __init__(self, name, domain, model) :
+    self.name = name
+    self.domain = domain
+    self.model = model
+
+  def belongsTo(self, x) :
+    return ((self.domain[0] <= x) and (x <= self.domain[1]))
 
 
 # =============================================================================
@@ -69,6 +77,7 @@ class Device :
 
     # Internal parameters
     self.regions = []
+    self.nRegions = 0
 
 
 
@@ -93,12 +102,13 @@ class Device :
 
     # Compare the domain definition against what already exists
     for R in self.regions :
-      if self._hasOverlap(R["domain"], domain) :
+      if self._hasOverlap(R.domain, domain) :
         print("[WARNING] Detected conflict in definitions domains")
         return Status.FAIL
 
     # Add the region
-    self.regions.append({"domain": domain, "model": model, "name": name})
+    self.regions.append(Region(name, domain , model))
+    self.nRegions += 1
     print(f"[NOTE] Added model definition: {domain[0]} -> {domain[1]}")
     return Status.OK
 
@@ -150,8 +160,8 @@ class Device :
     """
 
     for R in self.regions :
-      if ((R["domain"][0] <= x) and (x <= R["domain"][1])) :
-        print(R["name"])
+      if ((R.domain[0] <= x) and (x <= R.domain[1])) :
+        print(R.name)
 
 
 
@@ -210,8 +220,8 @@ if (__name__ == "__main__") :
   R_e = 100
 
   # Input signal: 1Vpp sinewave + 2 Volts offset
-  nPts = 100
-  v_in = 1.0*np.linspace(0, 2*np.pi, nPts) + 2.0
+  nPts = 20
+  v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 2.0
 
   # Solving using the linear assumption gives the output voltage:
   # v_out = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
@@ -219,11 +229,35 @@ if (__name__ == "__main__") :
   # We now study the values of 'v_out' as we browse through the different values
   # of the model.
   # Only one will make physical sense.
-  for (i, R) in enumerate(Q1.regions) :
-    a = R['model'][0]
-    b = R['model'][1]
-    v_out = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
-    print(f"*** REGION {i}: y = {a:0.5f}x + {b:0.5f} ***")
-    print(f"v_in = {v_in[0]:0.4f}V")
-    print(f"v_out = {v_out[0]:0.4f}V")
+  v_out = np.zeros((nPts, Q1.nRegions))
+
+  for n in range(nPts) :
+    
+    print(f"v_in = {v_in[n]:0.4f}V")
+    
+    for (i, R) in enumerate(Q1.regions) :
+      a = R.model[0]
+      b = R.model[1]
+      v_out_reg = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
+
+      v_out[:, i] = v_out_reg
+
+      #print(f"*** REGION {i}: y = {a:0.5f}x + {b:0.5f} ***")
+      consCheck = R.belongsTo(v_in[n]-v_out[n][i])
+      print(f"v_out = {v_out[n][i]:0.4f}V\t\tv_in-v_out = {v_in[n]-v_out[n][i]:0.4f}V\t\tConsistent? {consCheck}\t\tREGION {i} ({R.name})")
+    
     print()
+
+
+plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, 'k--', label="v_in")
+
+# Plot each column of v_out
+for i in range(v_out.shape[1]):
+  plt.plot(np.linspace(0, 2*np.pi, nPts), v_out[:, i], label = f"v_out ({Q1.regions[i].name})")
+
+plt.xlabel("time (arbitrary)")
+plt.ylabel("voltage")
+plt.title("v_in vs v_out")
+plt.legend()
+plt.grid(True)
+plt.show()
