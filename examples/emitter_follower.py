@@ -23,12 +23,17 @@
 # =============================================================================
 # Project libraries
 import src.device as device
+from commons import *
 
 # Standard libraries
 import matplotlib.pyplot as plt   # For plotting
 import numpy as np                # For math and 'matlab'-like processing
 
 
+
+# =============================================================================
+# SAMPLE CODE
+# =============================================================================
 iTh = 0.001   # In A
 vTh = 0.7     # In V
 gm = 0.5      # In A/V
@@ -37,7 +42,6 @@ Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),       "reverse")
 Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),   "off")
 Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh), "forward active")
 Q1.addRegion((0.9, POS_INF),  (0.0, 0.0),       "forward breakdown")
-
 
 # Emitter resistor
 R_e = 100

@@ -28,7 +28,7 @@
 # EXTERNALS
 # =============================================================================
 # Project libraries
-# None.
+from commons import *
 
 # Standard libraries
 from typing import Tuple          # For fancy function prototype hints
@@ -40,8 +40,6 @@ import numpy as np                # For math and 'matlab'-like processing
 # =============================================================================
 # CONSTANTS
 # =============================================================================
-POS_INF = float("inf")
-NEG_INF = float("-inf")
 
 class Status(Enum) :
   OK = 0
@@ -121,6 +119,10 @@ class Device :
     # Add the region
     self.regions.append(Region(name, domain , model))
     self.nRegions += 1
+
+    # Sort regions
+    self.regions.sort(key = lambda R: R.domain[0])
+
     print(f"[NOTE] Added model definition: {domain[0]} -> {domain[1]}")
     return Status.OK
 
