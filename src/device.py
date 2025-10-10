@@ -41,10 +41,12 @@ import numpy as np                # For math and 'matlab'-like processing
 # CONSTANTS
 # =============================================================================
 
+# Helper class: STATUS
 class Status(Enum) :
   OK = 0
   FAIL = 1
 
+# Helper class: REGION
 class Region : 
   def __init__(self, name, domain, model) :
     self.name = name
@@ -56,7 +58,7 @@ class Region :
     Returns True if the input belongs to the definition domain of this
     region.
     """
-    return ((self.domain[0] <= x) and (x <= self.domain[1]))
+    return ((self.domain[0] <= x) & (x <= self.domain[1]))
   
   def eval(self, x) :
     """
@@ -187,7 +189,12 @@ class Device :
     Evaluates the device's output using the model matching the input.
     """
 
-    return 0.0
+    y = np.full_like(x, None, dtype = object)
+    for R in self.regions :
+      mask = R.belongsTo(x)
+      y[mask] = R.eval(x[mask])
+    
+    return y
   
 
 
@@ -225,4 +232,13 @@ if (__name__ == "__main__") :
   Q1.getOperatingPoint(0.4)
   
   # Plot the model for 'Q1'
-  # ...
+  nPts = 100
+  v_in = np.linspace(-1.0, 0.9, nPts)
+  i_out = Q1.eval(v_in)
+  plt.plot(v_in, 1000*i_out)
+  plt.xlabel(r"$v_{BE}$ (V)")
+  plt.ylabel(r"$i_{C}$ (mA)")
+  plt.title(r"$Q_1$ device curve")
+  plt.legend()
+  plt.grid(True)
+  plt.show()
