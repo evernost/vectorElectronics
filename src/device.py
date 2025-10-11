@@ -28,7 +28,7 @@
 # EXTERNALS
 # =============================================================================
 # Project libraries
-from commons import *
+from src.commons import *
 
 # Standard libraries
 from typing import Tuple          # For fancy function prototype hints
@@ -221,24 +221,24 @@ if (__name__ == "__main__") :
   
   print("[INFO] Class definition 'Device' called as main: running unit tests...")
 
-  iTh = 0.001   # In A
-  vTh = 0.7     # In V
-  gm = 0.5      # In A/V
+  iTh   = 0.001   # In A
+  vTh   = 0.7     # In V
+  gm    = 0.5     # In A/V
+  gmOvd = 10      # In A/V
   Q1 = Device("npn")
-  Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),       "reverse")
-  Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),   "off")
-  Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh), "forward active")
-  Q1.addRegion((0.9, POS_INF),  (0.0, 0.0),       "forward breakdown")
+  Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
+  Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "off")
+  Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
+  Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
   Q1.getOperatingPoint(0.4)
   
   # Plot the model for 'Q1'
   nPts = 100
-  v_in = np.linspace(-1.0, 0.9, nPts)
+  v_in = np.linspace(-0.25, 0.91, nPts)
   i_out = Q1.eval(v_in)
   plt.plot(v_in, 1000*i_out)
   plt.xlabel(r"$v_{BE}$ (V)")
   plt.ylabel(r"$i_{C}$ (mA)")
   plt.title(r"$Q_1$ device curve")
-  plt.legend()
   plt.grid(True)
   plt.show()

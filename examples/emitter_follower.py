@@ -17,13 +17,12 @@
 
 
 
-
 # =============================================================================
 # EXTERNALS
 # =============================================================================
 # Project libraries
 import src.device as device
-from commons import *
+from src.commons import *
 
 # Standard libraries
 import matplotlib.pyplot as plt   # For plotting
@@ -34,14 +33,15 @@ import numpy as np                # For math and 'matlab'-like processing
 # =============================================================================
 # SAMPLE CODE
 # =============================================================================
-iTh = 0.001   # In A
-vTh = 0.7     # In V
-gm = 0.5      # In A/V
+iTh   = 0.001   # In A
+vTh   = 0.7     # In V
+gm    = 0.5     # In A/V
+gmOvd = 10      # In A/V
 Q1 = device.Device("npn")
-Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),       "reverse")
-Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),   "off")
-Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh), "forward active")
-Q1.addRegion((0.9, POS_INF),  (0.0, 0.0),       "forward breakdown")
+Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
+Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "off")
+Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
+Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
 
 # Emitter resistor
 R_e = 100
@@ -69,8 +69,8 @@ for n in range(nPts) :
 
     v_out[:, i] = v_out_reg
 
-    #print(f"*** REGION {i}: y = {a:0.5f}x + {b:0.5f} ***")
-    consCheck = R.belongsTo(v_in[n]-v_out[n][i])
+    
+    consCheck = R.belongsTo(v_in[n]-v_out[n][i]) & (R.eval(v_in[n]-v_out[n][i]) >= 0)
     print(f"v_out = {v_out[n][i]:0.4f}V\t\tv_in-v_out = {v_in[n]-v_out[n][i]:0.4f}V\t\tConsistent? {consCheck}\t\tREGION {i} ({R.name})")
   
   print()
