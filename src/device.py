@@ -84,8 +84,11 @@ class Device :
     
     # Name of your device
     self.name = name
-    self.inUnits  = ""
-    self.outUnits = ""
+    
+    self.inputName  = "v_BE"
+    self.inputUnit  = "V"
+    self.outputName = "I_c"
+    self.outputUnit = "mA"
 
     # Internal parameters
     self.regions = []
@@ -157,7 +160,7 @@ class Device :
   # ---------------------------------------------------------------------------
   def _normalise(self, I : Tuple[float, float]) -> Tuple[float, float] :
     """
-    Returns a normalised version of an interval.
+    Returns (b, a) if the input interval is given as (a, b) with b < a.
     """
 
     if (I[0] > I[1]) :
@@ -168,15 +171,17 @@ class Device :
 
 
   # ---------------------------------------------------------------------------
-  # METHOD: Device.getOperatingPoint()
+  # METHOD: Device.testOperatingPoint()
   # ---------------------------------------------------------------------------
-  def getOperatingPoint(self, x) :
+  def testOperatingPoint(self, x) :
     """
     Description is TODO.
     """
 
+    print(f"Input = {x} {self.inputUnit}")
+
     for R in self.regions :
-      if ((R.domain[0] <= x) and (x <= R.domain[1])) :
+      if R.belongsTo(x) :
         print(R.name)
 
 
@@ -189,11 +194,20 @@ class Device :
     Evaluates the device's output using the model matching the input.
     """
 
+    assignCount = np.zeros_like(x, dtype = int)
     y = np.full_like(x, None, dtype = object)
     for R in self.regions :
       mask = R.belongsTo(x)
+      assignCount += mask.astype(int)
       y[mask] = R.eval(x[mask])
     
+    if np.any(assignCount == 0) :
+      print("[WARNING] Some inputs are not covered by the model definition.")
+
+    if np.any(assignCount >= 2) :
+      print("[WARNING] Some inputs are covered by the model definition more than once.")
+
+
     return y
   
 
@@ -201,15 +215,24 @@ class Device :
   # ---------------------------------------------------------------------------
   # METHOD: Device.plot()
   # ---------------------------------------------------------------------------
-  def plot(self, domain) :
+  def plot(self, nPts, range) :
     """
     Plots the device's characteristic curve in a given domain.
     """
 
-    if ((NEG_INF in domain) or (POS_INF in domain)) :
+    if ((NEG_INF in range) or (POS_INF in range)) :
       print("[ERROR] The plotting domain must be finite.")
-      return Status.FAIL  
+      return Status.FAIL
     
+    x = np.linspace(-0.25, 0.901, nPts)
+    y = Q1.eval(x)
+    plt.plot(x, 1000*y)
+    plt.xlabel(r"$v_{BE}$ (V)")
+    plt.ylabel(r"$i_{C}$ (mA)")
+    plt.title(r"$Q_1$ device curve")
+    plt.grid(True)
+    plt.show()
+
     return Status.OK
 
 
@@ -230,15 +253,7 @@ if (__name__ == "__main__") :
   Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "off")
   Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
   Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
-  Q1.getOperatingPoint(0.4)
+  Q1.testOperatingPoint(0.4)
   
   # Plot the model for 'Q1'
-  nPts = 100
-  v_in = np.linspace(-0.25, 0.91, nPts)
-  i_out = Q1.eval(v_in)
-  plt.plot(v_in, 1000*i_out)
-  plt.xlabel(r"$v_{BE}$ (V)")
-  plt.ylabel(r"$i_{C}$ (mA)")
-  plt.title(r"$Q_1$ device curve")
-  plt.grid(True)
-  plt.show()
+  Q1.plot(nPts = 100, range = (-0.1, 0.9))
