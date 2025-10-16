@@ -50,7 +50,9 @@ R_e = 100
 nPts = 20
 v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 2.0
 
-# Solving using the linear assumption gives the output voltage:
+# Solving using a linear assumption gives the following expression for the 
+# output voltage:
+#
 # v_out = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
 #
 # We now study the values of 'v_out' as we browse through the different values
@@ -63,14 +65,18 @@ for n in range(nPts) :
   print(f"v_in = {v_in[n]:0.4f}V")
   
   for (i, R) in enumerate(Q1.regions) :
+    
+    # Read the model for that region
     a = R.model[0]
     b = R.model[1]
-    v_out_reg = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
 
-    v_out[:, i] = v_out_reg
-
+    # Evaluate output with that model assumption
+    v_out[:, i] = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
     
+    # Check if the output makes physical sense or not
     consCheck = R.belongsTo(v_in[n]-v_out[n][i]) & (R.eval(v_in[n]-v_out[n][i]) >= 0)
+    
+    # Log the result
     print(f"v_out = {v_out[n][i]:0.4f}V\t\tv_in-v_out = {v_in[n]-v_out[n][i]:0.4f}V\t\tConsistent? {consCheck}\t\tREGION {i} ({R.name})")
   
   print()

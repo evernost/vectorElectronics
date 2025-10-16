@@ -207,7 +207,6 @@ class Device :
     if np.any(assignCount >= 2) :
       print("[WARNING] Some inputs are covered by the model definition more than once.")
 
-
     return y
   
 
