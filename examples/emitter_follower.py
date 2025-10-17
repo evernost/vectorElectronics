@@ -59,11 +59,13 @@ v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.2
 # of the model.
 # Only one will make physical sense.
 v_out = np.zeros((nPts, Q1.nRegions))
+v_out_valid = np.zeros((nPts, 1))
 
 for n in range(nPts) :
   
   print(f"v_in = {v_in[n]:0.4f}V")
   
+  validRegion = -1
   for (i, R) in enumerate(Q1.regions) :
     
     # Read the model for that region
@@ -73,20 +75,28 @@ for n in range(nPts) :
     # Evaluate output with that model assumption
     v_out[:, i] = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
     
-    # Converse case of the implication: for this 'v_out', does the 
-    # founding equation still hold?
+    # Converse case of the implication: 
+    # for this 'v_out', does the initial equation still hold?
     v_out_th = R_e*Q1.eval(v_in[n]-v_out[n][i])
-    isConsistent = abs(v_out_th - v_out[n][i]) < 0.0001
+    isValid = abs(v_out_th - v_out[n][i]) < 0.0001
     
     # Log the result
-    if (isConsistent) :
+    if (isValid) :
       print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t*REGION {i} ({R.name})")
+      if (validRegion != -1) :
+        print("[WARNING] There is a valid solution in at least 2 regions.")
+      else :
+        validRegion = i
+      v_out_valid[n] = v_out[n, i]
     else :
       print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({R.name})")
   
+  if (validRegion == -1) :
+    print("[WARNING] No solution found in any region!")
+
   print()
 
-
+plt.figure()
 plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, "k--", label = r"$v_{in}$")
 
 # Plot each column of v_out
@@ -98,4 +108,10 @@ plt.ylabel("voltage")
 plt.title(r"$v_{in}$ vs $v_{out}$")
 plt.legend()
 plt.grid(True)
+plt.show()
+
+
+plt.figure()
+plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, "k--", label = r"$v_{in}$")
+plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid, label = r"$v_{out}$")
 plt.show()
