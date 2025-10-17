@@ -246,7 +246,7 @@ if (__name__ == "__main__") :
   iTh   = 0.001   # In A
   vTh   = 0.7     # In V
   gm    = 0.5     # In A/V
-  gmOvd = 10      # In A/V
+  gmOvd = 10      # In A/V (overload transconductance)
   Q1 = Device("npn")
   Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
   Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "off")

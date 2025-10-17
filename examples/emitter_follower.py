@@ -36,7 +36,7 @@ import numpy as np                # For math and 'matlab'-like processing
 iTh   = 0.001   # In A
 vTh   = 0.7     # In V
 gm    = 0.5     # In A/V
-gmOvd = 10      # In A/V
+gmOvd = 10      # In A/V (overload transconductance)
 Q1 = device.Device("npn")
 Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
 Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "off")
@@ -46,12 +46,12 @@ Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward b
 # Emitter resistor
 R_e = 100
 
-# Input signal: 1Vpp sinewave + 2 Volts offset
+# Input signal: 1Vpp sinewave + 1.2 Volts offset
 nPts = 20
-v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 2.0
+v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.2
 
-# Solving using a linear assumption gives the following expression for the 
-# output voltage:
+# Solving for v_out using a linear assumption gives the following 
+# expression for the output voltage v_out = f(v_in) :
 #
 # v_out = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
 #
@@ -73,24 +73,29 @@ for n in range(nPts) :
     # Evaluate output with that model assumption
     v_out[:, i] = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
     
-    # Check if the output makes physical sense or not
-    consCheck = R.belongsTo(v_in[n]-v_out[n][i]) & (R.eval(v_in[n]-v_out[n][i]) >= 0)
+    # Converse case of the implication: for this 'v_out', does the 
+    # founding equation still hold?
+    v_out_th = R_e*Q1.eval(v_in[n]-v_out[n][i])
+    isConsistent = abs(v_out_th - v_out[n][i]) < 0.0001
     
     # Log the result
-    print(f"v_out = {v_out[n][i]:0.4f}V\t\tv_in-v_out = {v_in[n]-v_out[n][i]:0.4f}V\t\tConsistent? {consCheck}\t\tREGION {i} ({R.name})")
+    if (isConsistent) :
+      print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t*REGION {i} ({R.name})")
+    else :
+      print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({R.name})")
   
   print()
 
 
-plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, 'k--', label="v_in")
+plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, "k--", label = r"$v_{in}$")
 
 # Plot each column of v_out
 for i in range(v_out.shape[1]):
-  plt.plot(np.linspace(0, 2*np.pi, nPts), v_out[:, i], label = f"v_out ({Q1.regions[i].name})")
+  plt.plot(np.linspace(0, 2*np.pi, nPts), v_out[:, i], label = r"$v_{out}$" + f" ({Q1.regions[i].name})")
 
 plt.xlabel("time (arbitrary)")
 plt.ylabel("voltage")
-plt.title("v_in vs v_out")
+plt.title(r"$v_{in}$ vs $v_{out}$")
 plt.legend()
 plt.grid(True)
 plt.show()
