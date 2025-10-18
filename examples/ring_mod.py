@@ -2,7 +2,7 @@
 # =============================================================================
 # Project       : vectorElectronics
 # Module name   : -
-# File name     : diff_pair.py
+# File name     : ring_mod.py
 # File type     : Python script (Python 3)
 # Purpose       : 
 # Author        : QuBi (nitrogenium@outlook.fr)
@@ -14,8 +14,8 @@
 # =============================================================================
 # DESCRIPTION
 # =============================================================================
-# Piecewise linear model used to simulate a differential pair with emitter 
-# resistors.
+# Simulation of a diode ring (aka 'ring modulator') using a simple piecewise
+# linear model.
 
 
 

@@ -14,6 +14,7 @@
 # =============================================================================
 # DESCRIPTION
 # =============================================================================
+# Piecewise linear model used to simulate an emitter follower.
 
 
 
@@ -39,7 +40,7 @@ gm    = 0.5     # In A/V
 gmOvd = 10      # In A/V (overload transconductance)
 Q1 = device.Device("npn")
 Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
-Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "off")
+Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
 Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
 Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
 
@@ -47,8 +48,8 @@ Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward b
 R_e = 100
 
 # Input signal: 1Vpp sinewave + 1.2 Volts offset
-nPts = 20
-v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.2
+nPts = 100
+v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.4
 
 # Solving for v_out using a linear assumption gives the following 
 # expression for the output voltage v_out = f(v_in) :
