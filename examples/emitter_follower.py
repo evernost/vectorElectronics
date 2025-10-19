@@ -4,7 +4,7 @@
 # Module name   : -
 # File name     : emitter_follower.py
 # File type     : Python script (Python 3)
-# Purpose       : 
+# Purpose       : simulation of an emitter follower circuit
 # Author        : QuBi (nitrogenium@outlook.fr)
 # Creation date : Tuesday, 07 October 2025
 # -----------------------------------------------------------------------------
