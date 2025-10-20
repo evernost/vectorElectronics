@@ -4,9 +4,9 @@
 # Module name   : -
 # File name     : class_AB_amp.py
 # File type     : Python script (Python 3)
-# Purpose       : simulation of a BJT amplifier circuit (in class AB)
+# Purpose       : simulation of a BJT final stage amplifier circuit (in class AB)
 # Author        : QuBi (nitrogenium@outlook.fr)
-# Creation date : Tuesday, 07 October 2025
+# Creation date : Monday, 20 October 2025
 # -----------------------------------------------------------------------------
 # Best viewed with space indentation (2 spaces)
 # =============================================================================
@@ -14,7 +14,10 @@
 # =============================================================================
 # DESCRIPTION
 # =============================================================================
-# Description is TODO
+# Simulation of a class AB amplifier.
+#
+# Please refer to the schematic in '~/resources/ref_schematics.pdf' for the 
+# notations and conventions used.
 
 
 
@@ -38,16 +41,25 @@ iTh   = 0.001   # In A
 vTh   = 0.7     # In V
 gm    = 0.5     # In A/V
 gmOvd = 10      # In A/V (overload transconductance)
-Q1 = device.Device("npn")
-Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
-Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
-Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
-Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
 
-# Emitter resistor
-R_e = 100
+# Current source BJT
+Qs = device.Device("npn")
+Qs.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
+Qs.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
+Qs.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
+Qs.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
 
-# Input signal: 1Vpp sinewave + 1.2 Volts offset
+# Current drain BJT
+Qd = device.Device("pnp")
+Qd.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
+Qd.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
+Qd.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
+Qd.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
+
+# Emitter resistors
+R_e = 4.7
+
+# Input signal: 1Vpp sinewave
 nPts = 100
 v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.4
 
@@ -56,46 +68,53 @@ v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.4
 #
 # v_out = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
 #
-# We now study the values of 'v_out' as we browse through the different values
-# of the model.
-# Only one will make physical sense.
-v_out = np.zeros((nPts, Q1.nRegions))
-v_out_valid = np.zeros((nPts, 1))
 
+# Initialise the response array (for all regions)
+v_out_regs = np.zeros((nPts, Q1.nRegions*Q2.nRegions))
+
+# Initialise the response array (for the physical solution)
+v_out = np.zeros((nPts, 1))
+
+
+
+# -----------------------------------------------------------------------------
+# SOLVER LOOP
+# -----------------------------------------------------------------------------
 for n in range(nPts) :
   
   print(f"v_in = {v_in[n]:0.4f}V")
   
-  validRegion = -1
-  for (i, R) in enumerate(Q1.regions) :
-    
-    # Read the model for that region
-    a = R.model[0]
-    b = R.model[1]
+  validRegion = (-1, -1)
+  for (i, R1) in enumerate(Q1.regions) :
+    for (j, R2) in enumerate(Q2.regions) :
 
-    # Evaluate output with that model assumption
-    v_out[:, i] = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
-    
-    # Converse case of the implication: 
-    # for this 'v_out', does the initial equation still hold?
-    v_out_th = R_e*Q1.eval(v_in[n]-v_out[n][i])
-    isValid = abs(v_out_th - v_out[n][i]) < 0.0001
-    
-    # Log the result
-    if (isValid) :
-      print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t*REGION {i} ({R.name})")
-      if (validRegion != -1) :
-        print("[WARNING] There is a valid solution in at least 2 regions.")
+      # Read the model for that region
+      a1 = R1.model[0]
+      b1 = R.model[1]
+
+      # Evaluate output with that model assumption
+      v_out[:, i] = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
+      
+      # Converse case of the implication: 
+      # for this 'v_out', does the initial equation still hold?
+      v_out_th = R_e*Q1.eval(v_in[n]-v_out[n][i])
+      isValid = abs(v_out_th - v_out[n][i]) < 0.0001
+      
+      # Log the result
+      if (isValid) :
+        print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t*REGION {i} ({R.name})")
+        if (validRegion != -1) :
+          print("[WARNING] There is a valid solution in at least 2 regions.")
+        else :
+          validRegion = i
+        v_out_valid[n] = v_out[n, i]
       else :
-        validRegion = i
-      v_out_valid[n] = v_out[n, i]
-    else :
-      print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({R.name})")
-  
-  if (validRegion == -1) :
-    print("[WARNING] No solution found in any region!")
+        print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({R.name})")
+    
+    if (validRegion == -1) :
+      print("[WARNING] No solution found in any region!")
 
-  print()
+    print()
 
 plt.figure()
 plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, "k--", label = r"$v_{in}$")

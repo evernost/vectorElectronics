@@ -80,7 +80,7 @@
 \begin{circuitikz}
 	\draw (14, 11.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (14, 10);
 	\node[npn, tr circle](N1) at (14, 12){} node[anchor=west] at (N1.text){$Q_1$};
-	\node[pnp, tr circle] at (14, 7.5){};
+	\node[pnp, tr circle](N2) at (14, 7.5){} node[anchor=west] at (N2.text){$Q_2$};
 	\draw (14, 9.52) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (14, 8.27);
 	\draw (14, 9.52) -- (14, 10);
 	\draw (12, 11.75) to[american voltage source, l={$V_B/2$}] (12, 10.25);
@@ -88,8 +88,8 @@
 	\draw (13.16, 7.5) -| (12, 7.75);
 	\draw (13.16, 12) -| (12, 11.75);
 	\draw (12, 10.25) -| (12, 9.25);
-	\node[ocirc](N2) at (14, 13.75){} node[anchor=south] at (N2.text){$+V_{CC}$};
-	\node[ocirc](N3) at (14, 5.75){} node[anchor=north] at (N3.text){$-V_{CC}$};
+	\node[ocirc](N3) at (14, 13.75){} node[anchor=south] at (N3.text){$+V_{CC}$};
+	\node[ocirc](N4) at (14, 5.75){} node[anchor=north] at (N4.text){$-V_{CC}$};
 	\draw (14, 12.77) -| (14, 13.75);
 	\draw (14, 6.73) -- (14, 5.75);
 	\draw (14, 9.75) -| (15.75, 9.5);
@@ -97,7 +97,7 @@
 	\node[circ] at (14, 9.75){};
 	\node[eground2] at (15.75, 8.25){};
 	\node[circ] at (12, 9.75){};
-	\node[ocirc](N4) at (10.25, 9.75){} node[anchor=east] at (N4.text){$V_{IN}$};
+	\node[ocirc](N5) at (10.25, 9.75){} node[anchor=east] at (N5.text){$V_{IN}$};
 	\draw (10.25, 9.75) -- (12, 9.75);
 	\draw[line width=2pt, -latex] (14, 13.25) -- (14, 13);
 	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (14.5, 13.125){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (14, 13.5){$I_S$};
@@ -107,6 +107,19 @@
 	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (17.25, 8.875){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (16.75, 9.25){$V_{OUT}$};
 \end{circuitikz}
 
+
+\paragraph{Derivation}
+
+Assuming for a BJT that $I_C = f(V_{BE})$ we get the following:
+$$
+\left\{
+    \begin{array}{ll}
+        I_S = \frac{a_S}{1+R_E a_S}(V_{IN}-V_{OUT}+\frac{V_B}{2}) + \frac{b_S}{1+R_E a_S} \\
+        I_D = \frac{a_D}{1+R_E a_D}(-(V_{IN}-V_{OUT})+\frac{V_B}{2}) + \frac{b_D}{1+R_E a_D} \\
+        V_{OUT} = R_L(I_S-I_D)
+    \end{array}
+\right.
+$$
 
 
 \section*{Example 6: differential pair}
