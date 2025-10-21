@@ -43,25 +43,31 @@ gm    = 0.5     # In A/V
 gmOvd = 10      # In A/V (overload transconductance)
 
 # Current source BJT
-Qs = device.Device("npn")
-Qs.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
-Qs.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
-Qs.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
-Qs.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
+Q1 = device.Device("npn")
+Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
+Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
+Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
+Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
 
 # Current drain BJT
-Qd = device.Device("pnp")
-Qd.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
-Qd.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
-Qd.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
-Qd.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
+Q2 = device.Device("pnp")
+Q2.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
+Q2.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
+Q2.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
+Q2.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
 
 # Emitter resistors
 R_e = 4.7
 
+# Biasing voltage
+v_B = 1.5
+
+# Output load
+R_L = 32
+
 # Input signal: 1Vpp sinewave
 nPts = 100
-v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.4
+v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts))
 
 # Solving for v_out using a linear assumption gives the following 
 # expression for the output voltage v_out = f(v_in) :
@@ -85,18 +91,29 @@ for n in range(nPts) :
   print(f"v_in = {v_in[n]:0.4f}V")
   
   validRegion = (-1, -1)
-  for (i, R1) in enumerate(Q1.regions) :
-    for (j, R2) in enumerate(Q2.regions) :
+  for (i, regS) in enumerate(Q1.regions) :
+    for (j, regD) in enumerate(Q2.regions) :
 
       # Read the model for that region
-      a1 = R1.model[0]
-      b1 = R.model[1]
+      a_S = regS.model[0]
+      b_S = regS.model[1]
+      a_D = regD.model[0]
+      b_D = regD.model[1]
 
-      # Evaluate output with that model assumption
-      v_out[:, i] = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
+      A_S = a_S/(1 + R_e*a_S)
+      B_S = b_S/(1 + R_e*a_S)
+      A_D = a_D/(1 + R_e*a_D)
+      B_D = b_D/(1 + R_e*a_D)
+
+      # Evaluate the output under that assumption for the model
+      v_out[:, i] = (R_L / (1 + (A_S+A_D)*R_e)) * ((A_S + A_D)*v_in + (A_S - A_D)*v_B/2 + (B_S - B_D))
       
       # Converse case of the implication: 
       # for this 'v_out', does the initial equation still hold?
+      
+      
+      
+      
       v_out_th = R_e*Q1.eval(v_in[n]-v_out[n][i])
       isValid = abs(v_out_th - v_out[n][i]) < 0.0001
       

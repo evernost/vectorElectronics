@@ -97,13 +97,26 @@ for n in range(nPts) :
 
   print()
 
+
+# =============================================================================
+# PLOT OUTPUTS
+# =============================================================================
+
+plt.figure()
+plt.plot(np.linspace(0, 2*np.pi, nPts), v_in        , label = r"$v_{in}$")
+plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid , label = r"$v_{out}$")
+plt.xlabel("time (arbitrary)")
+plt.ylabel("voltage")
+plt.title(r"BJT emitter follower: $v_{in}$ vs $v_{out}$ curves")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
 plt.figure()
 plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, "k--", label = r"$v_{in}$")
-
-# Plot each column of v_out
 for i in range(v_out.shape[1]):
   plt.plot(np.linspace(0, 2*np.pi, nPts), v_out[:, i], label = r"$v_{out}$" + f" ({Q1.regions[i].name})")
-
 plt.xlabel("time (arbitrary)")
 plt.ylabel("voltage")
 plt.title(r"$v_{in}$ vs $v_{out}$")
@@ -112,7 +125,3 @@ plt.grid(True)
 plt.show()
 
 
-plt.figure()
-plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, "k--", label = r"$v_{in}$")
-plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid, label = r"$v_{out}$")
-plt.show()
