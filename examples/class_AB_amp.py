@@ -17,7 +17,7 @@
 # Simulation of a class AB amplifier.
 #
 # Please refer to the schematic in '~/resources/ref_schematics.pdf' for the 
-# notations and conventions used.
+# notations, conventions used and the derivations for the equations.
 
 
 
@@ -35,7 +35,7 @@ import numpy as np                # For math and 'matlab'-like processing
 
 
 # =============================================================================
-# SAMPLE CODE
+# SETTINGS
 # =============================================================================
 iTh   = 0.001   # In A
 vTh   = 0.7     # In V
@@ -69,32 +69,58 @@ R_L = 32
 nPts = 100
 v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts))
 
-# Solving for v_out using a linear assumption gives the following 
+
+
+# =============================================================================
+# STEP 1: EVALUATE OUTPUT FOR ALL REGIONS
+# =============================================================================
+# Solving for 'v_out' using a linear assumption for Q1/Q2 gives the following 
 # expression for the output voltage v_out = f(v_in) :
 #
-# v_out = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
+# ** see ref_schematics.pdf ***
 #
+v_out = np.zeros((nPts, Q1.nRegions*Q2.nRegions))
 
-# Initialise the response array (for all regions)
-v_out_regs = np.zeros((nPts, Q1.nRegions*Q2.nRegions))
+for (i, regS) in enumerate(Q1.regions) :
+  for (j, regD) in enumerate(Q2.regions) :
 
-# Initialise the response array (for the physical solution)
-v_out = np.zeros((nPts, 1))
+    # Read the model for that region
+    a_S = regS.model[0]
+    b_S = regS.model[1]
+    a_D = regD.model[0]
+    b_D = regD.model[1]
+
+    A_S = a_S/(1 + R_e*a_S)
+    B_S = b_S/(1 + R_e*a_S)
+    A_D = a_D/(1 + R_e*a_D)
+    B_D = b_D/(1 + R_e*a_D)
+
+    # Evaluate the output under that assumption for the model
+    idx = i + (Q1.nRegions*j)
+    v_out[:, i] = (R_L / (1 + (A_S+A_D)*R_e)) * ((A_S + A_D)*v_in + (A_S - A_D)*v_B/2 + (B_S - B_D))
+    
+    # Converse case of the implication: 
+    # for this 'v_out', does the initial equation still hold?
 
 
 
-# -----------------------------------------------------------------------------
-# SOLVER LOOP
-# -----------------------------------------------------------------------------
+# =============================================================================
+# STEP 2: PICK THE RIGHT SOLUTION FROM EACH REGION
+# =============================================================================
+# Converse case of the implication: 
+# for this 'v_out', does the initial equation still hold?
+
+v_out_valid = np.zeros((nPts, 1))
+validRegion = -1
+
 for n in range(nPts) :
   
   print(f"v_in = {v_in[n]:0.4f}V")
   
-  validRegion = (-1, -1)
+  validRegion = None
   for (i, regS) in enumerate(Q1.regions) :
     for (j, regD) in enumerate(Q2.regions) :
 
-      # Read the model for that region
       a_S = regS.model[0]
       b_S = regS.model[1]
       a_D = regD.model[0]
@@ -105,50 +131,36 @@ for n in range(nPts) :
       A_D = a_D/(1 + R_e*a_D)
       B_D = b_D/(1 + R_e*a_D)
 
-      # Evaluate the output under that assumption for the model
-      v_out[:, i] = (R_L / (1 + (A_S+A_D)*R_e)) * ((A_S + A_D)*v_in + (A_S - A_D)*v_B/2 + (B_S - B_D))
-      
-      # Converse case of the implication: 
-      # for this 'v_out', does the initial equation still hold?
-      
-      
-      
-      
-      v_out_th = R_e*Q1.eval(v_in[n]-v_out[n][i])
+      I_S = A_S*(  v_in[n] - v_out[n][i]  + v_B/2)
+      I_D = A_D*(-(v_in[n] - v_out[n][i]) + v_B/2)
+      v_out_th = R_L*(I_S - I_D)
+
       isValid = abs(v_out_th - v_out[n][i]) < 0.0001
-      
+
       # Log the result
       if (isValid) :
-        print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t*REGION {i} ({R.name})")
-        if (validRegion != -1) :
+        if not(validRegion is None) :
           print("[WARNING] There is a valid solution in at least 2 regions.")
         else :
-          validRegion = i
+          validRegion = (i,j)
         v_out_valid[n] = v_out[n, i]
-      else :
-        print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({R.name})")
+      #else :
+        #print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({R.name})")
     
-    if (validRegion == -1) :
-      print("[WARNING] No solution found in any region!")
+  if (validRegion is None) :
+    print("[WARNING] No solution found in any region!")
 
-    print()
 
+
+# =============================================================================
+# PLOT OUTPUTS
+# =============================================================================
 plt.figure()
-plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, "k--", label = r"$v_{in}$")
-
-# Plot each column of v_out
-for i in range(v_out.shape[1]):
-  plt.plot(np.linspace(0, 2*np.pi, nPts), v_out[:, i], label = r"$v_{out}$" + f" ({Q1.regions[i].name})")
-
+plt.plot(np.linspace(0, 2*np.pi, nPts), v_in        , label = r"$v_{in}$")
+plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid , label = r"$v_{out}$")
 plt.xlabel("time (arbitrary)")
 plt.ylabel("voltage")
-plt.title(r"$v_{in}$ vs $v_{out}$")
+plt.title(r"BJT emitter follower: $v_{in}$ vs $v_{out}$ curves")
 plt.legend()
 plt.grid(True)
-plt.show()
-
-
-plt.figure()
-plt.plot(np.linspace(0, 2*np.pi, nPts), v_in, "k--", label = r"$v_{in}$")
-plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid, label = r"$v_{out}$")
 plt.show()

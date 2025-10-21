@@ -32,7 +32,7 @@ import numpy as np                # For math and 'matlab'-like processing
 
 
 # =============================================================================
-# SAMPLE CODE
+# SETTINGS
 # =============================================================================
 iTh   = 0.001   # In A
 vTh   = 0.7     # In V
@@ -51,6 +51,11 @@ R_e = 100
 nPts = 100
 v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.4
 
+
+
+# =============================================================================
+# STEP 1: EVALUATE OUTPUT FOR ALL REGIONS
+# =============================================================================
 # Solving for v_out using a linear assumption gives the following 
 # expression for the output voltage v_out = f(v_in) :
 #
@@ -60,37 +65,51 @@ v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts)) + 1.4
 # of the model.
 # Only one will make physical sense.
 v_out = np.zeros((nPts, Q1.nRegions))
-v_out_valid = np.zeros((nPts, 1))
 
-for n in range(nPts) :
+for (i, reg) in enumerate(Q1.regions) :
   
+  # Read the model for that region
+  a = reg.model[0]
+  b = reg.model[1]
+
+  # Evaluate the output under that assumption
+  v_out[:, i] = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
+
+
+
+# =============================================================================
+# STEP 2: PICK THE RIGHT SOLUTION FROM EACH REGION
+# =============================================================================
+# Converse case of the implication: 
+# for this 'v_out', does the initial equation still hold?
+v_out_valid = np.zeros((nPts, 1))
+validRegion = -1
+
+# Check point by point
+for n in range(nPts) :
+
   print(f"v_in = {v_in[n]:0.4f}V")
   
   validRegion = -1
-  for (i, R) in enumerate(Q1.regions) :
-    
-    # Read the model for that region
-    a = R.model[0]
-    b = R.model[1]
+  for (i, reg) in enumerate(Q1.regions) :
 
-    # Evaluate output with that model assumption
-    v_out[:, i] = v_in * (R_e*a / (1 + R_e*a)) + R_e*b/(1 + R_e*a)
-    
-    # Converse case of the implication: 
-    # for this 'v_out', does the initial equation still hold?
+    # Evaluate 'v_out' from its original equation
     v_out_th = R_e*Q1.eval(v_in[n]-v_out[n][i])
+    
+    # Does that solution make sense?
+    # Reminder: 'v_out' is solution iff v_out = R_e*f(v_in-v_out)
     isValid = abs(v_out_th - v_out[n][i]) < 0.0001
     
     # Log the result
     if (isValid) :
-      print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t*REGION {i} ({R.name})")
+      print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t*REGION {i} ({reg.name})")
       if (validRegion != -1) :
         print("[WARNING] There is a valid solution in at least 2 regions.")
       else :
         validRegion = i
       v_out_valid[n] = v_out[n, i]
     else :
-      print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({R.name})")
+      print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({reg.name})")
   
   if (validRegion == -1) :
     print("[WARNING] No solution found in any region!")
@@ -98,10 +117,10 @@ for n in range(nPts) :
   print()
 
 
+
 # =============================================================================
 # PLOT OUTPUTS
 # =============================================================================
-
 plt.figure()
 plt.plot(np.linspace(0, 2*np.pi, nPts), v_in        , label = r"$v_{in}$")
 plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid , label = r"$v_{out}$")
