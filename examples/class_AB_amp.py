@@ -96,12 +96,9 @@ for (i, regS) in enumerate(Q1.regions) :
     B_D = b_D/(1 + R_e*a_D)
 
     # Evaluate the output under that assumption for the model
-    idx = i + (Q1.nRegions*j)
-    v_out[:, i] = (R_L / (1 + (A_S+A_D)*R_e)) * ((A_S + A_D)*v_in + (A_S - A_D)*v_B/2 + (B_S - B_D))
+    idx = j + (Q1.nRegions*i)
+    v_out[:, idx] = (R_L / (1 + (A_S+A_D)*R_L)) * ((A_S + A_D)*v_in + (A_S - A_D)*v_B/2 + (B_S - B_D))
     
-    # Converse case of the implication: 
-    # for this 'v_out', does the initial equation still hold?
-
 
 
 # =============================================================================
@@ -118,6 +115,7 @@ for n in range(nPts) :
   print(f"v_in = {v_in[n]:0.4f}V")
   
   validRegion = None
+  solCount = 0
   for (i, regS) in enumerate(Q1.regions) :
     for (j, regD) in enumerate(Q2.regions) :
 
@@ -131,36 +129,42 @@ for n in range(nPts) :
       A_D = a_D/(1 + R_e*a_D)
       B_D = b_D/(1 + R_e*a_D)
 
-      I_S = A_S*(  v_in[n] - v_out[n][i]  + v_B/2)
-      I_D = A_D*(-(v_in[n] - v_out[n][i]) + v_B/2)
+      idx = j + (Q1.nRegions*i)
+      I_S = A_S*(  v_in[n] - v_out[n, idx]  + v_B/2) + B_S
+      I_D = A_D*(-(v_in[n] - v_out[n, idx]) + v_B/2) + B_D
       v_out_th = R_L*(I_S - I_D)
 
-      isValid = abs(v_out_th - v_out[n][i]) < 0.0001
-
-      # Log the result
+      isValid = abs(v_out_th - v_out[n, idx]) < 0.0001
       if (isValid) :
-        if not(validRegion is None) :
-          print("[WARNING] There is a valid solution in at least 2 regions.")
-        else :
+
+        print(f"v_out_th = {v_out_th:0.3f} \t\t*v_out[n][{i},{j}] = {v_out[n, idx]:0.3f}")
+
+        if (validRegion is None) :
           validRegion = (i,j)
-        v_out_valid[n] = v_out[n, i]
-      #else :
-        #print(f"v_out = {v_out[n][i]:0.4f}V\t\tR_e*f(v_in-v_out) = {v_out_th:0.4f}V\t\t REGION {i} ({R.name})")
+        
+        v_out_valid[n] = v_out[n, idx]
+        solCount += 1
+      else :
+        print(f"v_out_th = {v_out_th:0.3f} \t\t v_out[n][{i},{j}] = {v_out[n, idx]:0.3f}")
     
-  if (validRegion is None) :
+  if (solCount == 0) :
     print("[WARNING] No solution found in any region!")
+  elif (solCount > 1) :
+    print("[WARNING] There is a valid solution in at least 2 regions.")
+
+  print()
 
 
 
 # =============================================================================
 # PLOT OUTPUTS
 # =============================================================================
-plt.figure()
-plt.plot(np.linspace(0, 2*np.pi, nPts), v_in        , label = r"$v_{in}$")
-plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid , label = r"$v_{out}$")
-plt.xlabel("time (arbitrary)")
-plt.ylabel("voltage")
-plt.title(r"BJT emitter follower: $v_{in}$ vs $v_{out}$ curves")
-plt.legend()
-plt.grid(True)
-plt.show()
+# plt.figure()
+# plt.plot(np.linspace(0, 2*np.pi, nPts), v_in        , label = r"$v_{in}$")
+# plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid , label = r"$v_{out}$")
+# plt.xlabel("time (arbitrary)")
+# plt.ylabel("voltage")
+# plt.title(r"BJT emitter follower: $v_{in}$ vs $v_{out}$ curves")
+# plt.legend()
+# plt.grid(True)
+# plt.show()
