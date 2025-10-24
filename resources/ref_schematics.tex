@@ -1,11 +1,29 @@
-\documentclass{article}
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools} % Charge amsmath.
+\usepackage{amssymb}
 \usepackage{circuitikz}
+\usepackage{fontspec}
+
+\setmainfont{Times New Roman}
 
 %
 % NOTE: schematics generated using the online tool: 'https://www.circuit2tikz.tf.fau.de/designer'
 %
 
+\title{Vector Electronics}
+\author{QuBi}
+\date{\today}
+
 \begin{document}
+
+\maketitle
+
+The purpose of this article is to describe a method for solving electronic circuits involving non-linear devices like diodes, bipolar transistors, MOSFETs, etc.
+
+\subsubsection*{An extension of the Small Signal Analysis}
+In the following, we will consider that the non-linear device has a characteristic curve that can be modelled as a \textit{piecewise linear function}. From that point on, we will investigate where this leads us. 
 
 \section*{Example 1: diode and resistor I}
 \begin{circuitikz}
@@ -110,16 +128,30 @@
 
 \paragraph{Derivation}
 
-Assuming for a BJT that $I_C = f(V_{BE})$ we get the following:
+Assuming that $I_C = f_S(V_{BE})$ for the NPN and $I_C = f_D(V_{EB})$ for the PNP we get the following:
+
 $$
 \left\{
     \begin{array}{ll}
-        I_S = \frac{a_S}{1+R_E a_S}(V_{IN}-V_{OUT}+\frac{V_B}{2}) + \frac{b_S}{1+R_E a_S} \\
-        I_D = \frac{a_D}{1+R_E a_D}(-(V_{IN}-V_{OUT})+\frac{V_B}{2}) + \frac{b_D}{1+R_E a_D} \\
+        I_S = f_S \left(v_{IN} - v_{OUT} + \dfrac{v_B}{2} - R_E I_S \right) \\
+        I_D = f_D \left(-(v_{OUT} - v_{IN}) + \dfrac{v_B}{2} - R_E I_D \right) \\
         V_{OUT} = R_L(I_S-I_D)
     \end{array}
 \right.
 $$
+
+With a linear assumption, it becomes:
+
+$$
+\left\{
+    \begin{array}{ll}
+        I_S = \dfrac{a_S}{1+R_E a_S}(V_{IN}-V_{OUT}+\dfrac{V_B}{2}) + \dfrac{b_S}{1+R_E a_S} \\
+        I_D = \dfrac{a_D}{1+R_E a_D}(-(V_{IN}-V_{OUT})+\dfrac{V_B}{2}) + \dfrac{b_D}{1+R_E a_D} \\
+        V_{OUT} = R_L(I_S-I_D)
+    \end{array}
+\right.
+$$
+
 
 
 \section*{Example 6: differential pair}
@@ -186,6 +218,7 @@ $$
 	\node[circ] at (13, 10){};
 	\node[circ] at (19, 10){};
 \end{circuitikz}
+
 
 
 \end{document}
