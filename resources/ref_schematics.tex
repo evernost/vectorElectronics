@@ -156,8 +156,8 @@ $$
 
 \section*{Example 6: differential pair}
 \begin{circuitikz}
-	\node[npn, tr circle](N1) at (5.84, 10){} node[anchor=west] at (N1.text){$Q_1$};
-	\node[npn, tr circle, xscale=-1](N2) at (8.16, 10){} node[anchor=east] at (N2.text){$Q_2$};
+	\node[npn, tr circle](N1) at (5.84, 10){} node[anchor=west] at ([xshift=0.08cm]N1.text){$Q_1$};
+	\node[npn, tr circle, xscale=-1](N2) at (8.16, 10){} node[anchor=east] at ([xshift=-0.08cm]N2.text){$Q_2$};
 	\draw (5.84, 9.23) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (5.84, 7.98);
 	\draw (8.16, 9.23) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (8.16, 7.98);
 	\draw (5.84, 12.02) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_C$}] (5.84, 10.77);
@@ -219,6 +219,9 @@ $$
 	\node[circ] at (19, 10){};
 \end{circuitikz}
 
+
+\section*{Example 8: the Gilbert Cell (analog multiplier)}
+That's a tough one, be patient...
 
 
 \end{document}
