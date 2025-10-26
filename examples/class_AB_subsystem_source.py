@@ -69,26 +69,17 @@ delta_v = np.linspace(-1.5, 1.5, nPts)
 #
 # ** see ref_schematics.pdf ***
 #
-v_out = np.zeros((nPts, Q1.nRegions*Q2.nRegions))
+i_S = np.zeros((nPts, Q1.nRegions))
 
-for (i, regS) in enumerate(Q1.regions) :
-  for (j, regD) in enumerate(Q2.regions) :
+for (i, reg) in enumerate(Q1.regions) :
+  
+  # Read the model for that region
+  a = reg.model[0]
+  b = reg.model[1]
 
-    # Read the model for that region
-    a_S = regS.model[0]
-    b_S = regS.model[1]
-    a_D = regD.model[0]
-    b_D = regD.model[1]
+  # Evaluate the output under that assumption
+  i_S[:, i] = delta_v*((-a) / (1 + a*R_e)) + ((a*v_B/2)+b)/((1 + a*R_e))
 
-    A_S = a_S/(1 + R_e*a_S)
-    B_S = b_S/(1 + R_e*a_S)
-    A_D = a_D/(1 + R_e*a_D)
-    B_D = b_D/(1 + R_e*a_D)
-
-    # Evaluate the output under that assumption for the model
-    idx = j + (Q1.nRegions*i)
-    v_out[:, idx] = (R_L / (1 + (A_S+A_D)*R_L)) * ((A_S + A_D)*v_in + (A_S - A_D)*v_B/2 + (B_S - B_D))
-    
 
 
 # =============================================================================
@@ -97,50 +88,37 @@ for (i, regS) in enumerate(Q1.regions) :
 # Converse case of the implication: 
 # for this 'v_out', does the initial equation still hold?
 
-v_out_valid = np.zeros((nPts, 1))
+i_S_valid = np.zeros((nPts, 1))
 validRegion = -1
 
+# Check point by point
 for n in range(nPts) :
+
+  print(f"delta_v = {delta_v[n]:0.4f}V")
   
-  print(f"v_in = {v_in[n]:0.4f}V")
-  
-  validRegion = None
-  solCount = 0
-  for (i, regS) in enumerate(Q1.regions) :
-    for (j, regD) in enumerate(Q2.regions) :
+  validRegion = -1
+  for (i, reg) in enumerate(Q1.regions) :
 
-      a_S = regS.model[0]
-      b_S = regS.model[1]
-      a_D = regD.model[0]
-      b_D = regD.model[1]
-
-      A_S = a_S/(1 + R_e*a_S)
-      B_S = b_S/(1 + R_e*a_S)
-      A_D = a_D/(1 + R_e*a_D)
-      B_D = b_D/(1 + R_e*a_D)
-
-      idx = j + (Q1.nRegions*i)
-      I_S = A_S*(  v_in[n] - v_out[n, idx]  + v_B/2) + B_S
-      I_D = A_D*(-(v_in[n] - v_out[n, idx]) + v_B/2) + B_D
-      v_out_th = R_L*(I_S - I_D)
-
-      isValid = abs(v_out_th - v_out[n, idx]) < 0.0001
-      if (isValid) :
-
-        print(f"v_out_th = {v_out_th:0.3f} \t\t*v_out[n][{i},{j}] = {v_out[n, idx]:0.3f}")
-
-        if (validRegion is None) :
-          validRegion = (i,j)
-        
-        v_out_valid[n] = v_out[n, idx]
-        solCount += 1
-      else :
-        print(f"v_out_th = {v_out_th:0.3f} \t\t v_out[n][{i},{j}] = {v_out[n, idx]:0.3f}")
+    # Evaluate 'i_S' from its original equation
+    i_S_th = Q1.eval(-delta_v[n] + v_B/2 - R_e*i_S[n, i])
     
-  if (solCount == 0) :
+    # Does that solution make sense?
+    # Reminder: 'i_S' is solution iff i_S = f(-delta_v + v_B/2 - R_e*i_S)
+    isValid = abs(i_S_th - i_S[n, i]) < 0.0001
+    
+    # Log the result
+    if (isValid) :
+      print(f"i_S = {i_S[n, i]:0.4f}V\t\tf(-delta_v + v_B/2 - R_e*i_S) = {i_S_th:0.4f}A\t\t*REGION {i} ({reg.name})")
+      if (validRegion != -1) :
+        print("[WARNING] There is a valid solution in at least 2 regions.")
+      else :
+        validRegion = i
+      i_S_valid[n] = i_S[n, i]
+    else :
+      print(f"i_S = {i_S[n, i]:0.4f}V\t\tf(-delta_v + v_B/2 - R_e*i_S) = {i_S_th:0.4f}A\t\t REGION {i} ({reg.name})")
+  
+  if (validRegion == -1) :
     print("[WARNING] No solution found in any region!")
-  elif (solCount > 1) :
-    print("[WARNING] There is a valid solution in at least 2 regions.")
 
   print()
 
@@ -149,12 +127,11 @@ for n in range(nPts) :
 # =============================================================================
 # PLOT OUTPUTS
 # =============================================================================
-# plt.figure()
-# plt.plot(np.linspace(0, 2*np.pi, nPts), v_in        , label = r"$v_{in}$")
-# plt.plot(np.linspace(0, 2*np.pi, nPts), v_out_valid , label = r"$v_{out}$")
-# plt.xlabel("time (arbitrary)")
-# plt.ylabel("voltage")
-# plt.title(r"BJT emitter follower: $v_{in}$ vs $v_{out}$ curves")
-# plt.legend()
-# plt.grid(True)
-# plt.show()
+plt.figure()
+plt.plot(delta_v, i_S_valid        , label = r"$i_S$")
+plt.xlabel("time (arbitrary)")
+plt.ylabel("voltage")
+plt.title(r"BJT emitter follower: $v_{in}$ vs $v_{out}$ curves")
+plt.legend()
+plt.grid(True)
+plt.show()
