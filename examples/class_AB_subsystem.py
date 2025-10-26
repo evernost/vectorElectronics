@@ -14,7 +14,7 @@
 # =============================================================================
 # DESCRIPTION
 # =============================================================================
-# Simulation of a class AB amplifier: the current source subsystem.
+# Simulation of a class AB amplifier: the current source/drain subsystem.
 #
 # Please refer to the schematic in '~/resources/ref_schematics.pdf' for the 
 # notations, conventions used and the derivations for the equations.
@@ -49,15 +49,22 @@ Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forw
 Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
 Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
 
+# Current drain BJT
+Q2 = device.Device("pnp")
+Q2.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
+Q2.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
+Q2.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
+Q2.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
+
 # Emitter resistors
 R_e = 4.7
 
 # Biasing voltage
 v_B = 1.5
 
-# Input signal: sweep from -1.5V to 1.5V
+# Input signal: linear sweep from -0.5V to 0.5V
 nPts = 100
-delta_v = np.linspace(-1.5, 1.5, nPts)
+delta_v = np.linspace(-0.5, 0.5, nPts)
 
 
 
@@ -65,20 +72,24 @@ delta_v = np.linspace(-1.5, 1.5, nPts)
 # STEP 1: EVALUATE OUTPUT FOR ALL REGIONS
 # =============================================================================
 # Solving for 'delta_v' using a linear assumption for Q1 gives the following 
-# expression for the collector current I_S = f(delta_v) :
+# expression for the collector current I_S = f(delta_v + ...) :
 #
 # ** see ref_schematics.pdf ***
 #
 i_S = np.zeros((nPts, Q1.nRegions))
+i_D = np.zeros((nPts, Q2.nRegions))
 
+# Current source
 for (i, reg) in enumerate(Q1.regions) :
-  
-  # Read the model for that region
   a = reg.model[0]
   b = reg.model[1]
-
-  # Evaluate the output under that assumption
   i_S[:, i] = delta_v*((-a) / (1 + a*R_e)) + ((a*v_B/2)+b)/((1 + a*R_e))
+
+# Current drain
+for (i, reg) in enumerate(Q2.regions) :
+  a = reg.model[0]
+  b = reg.model[1]
+  i_D[:, i] = delta_v*(a / (1 + a*R_e)) + ((a*v_B/2)+b)/((1 + a*R_e))
 
 
 
@@ -91,7 +102,6 @@ for (i, reg) in enumerate(Q1.regions) :
 i_S_valid = np.zeros((nPts, 1))
 validRegion = -1
 
-# Check point by point
 for n in range(nPts) :
 
   print(f"delta_v = {delta_v[n]:0.4f}V")
@@ -123,15 +133,48 @@ for n in range(nPts) :
   print()
 
 
+i_D_valid = np.zeros((nPts, 1))
+validRegion = -1
+
+for n in range(nPts) :  
+  validRegion = -1
+  for (i, reg) in enumerate(Q2.regions) :
+
+    # Evaluate 'i_D' from its original equation
+    i_D_th = Q1.eval(delta_v[n] + v_B/2 - R_e*i_D[n, i])
+    
+    # Does that solution make sense?
+    # Reminder: 'i_D' is solution iff i_D = f(delta_v + v_B/2 - R_e*i_D)
+    isValid = abs(i_D_th - i_D[n, i]) < 0.0001
+    
+    # Log the result
+    if (isValid) :
+      if (validRegion != -1) :
+        print("[WARNING] There is a valid solution in at least 2 regions.")
+      else :
+        validRegion = i
+      i_D_valid[n] = i_D[n, i]
+    else :
+      print(f"i_D = {i_D[n, i]:0.4f}V\t\tf(delta_v + v_B/2 - R_e*i_D) = {i_D_th:0.4f}A\t\t REGION {i} ({reg.name})")
+  
+  if (validRegion == -1) :
+    print("[WARNING] No solution found in any region!")
+
+  print()
+
+
+
+
 
 # =============================================================================
 # PLOT OUTPUTS
 # =============================================================================
 plt.figure()
-plt.plot(delta_v, i_S_valid        , label = r"$i_S$")
-plt.xlabel("time (arbitrary)")
-plt.ylabel("voltage")
-plt.title(r"BJT emitter follower: $v_{in}$ vs $v_{out}$ curves")
+plt.plot(delta_v, i_S_valid, label = r"$I_S$")
+plt.plot(delta_v, i_D_valid, label = r"$I_D$")
+plt.xlabel(r"$\Delta V$")
+plt.ylabel("Collector current")
+plt.title(r"Class AB subsystem: $I_S$ and $I_D$ vs. input voltage $\Delta V$")
 plt.legend()
 plt.grid(True)
 plt.show()
