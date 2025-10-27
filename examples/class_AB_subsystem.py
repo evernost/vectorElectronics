@@ -63,7 +63,7 @@ R_e = 4.7
 v_B = 1.5
 
 # Input signal: linear sweep from -0.5V to 0.5V
-nPts = 100
+nPts = 50
 delta_v = np.linspace(-0.5, 0.5, nPts)
 
 
@@ -84,6 +84,7 @@ for (i, reg) in enumerate(Q1.regions) :
   a = reg.model[0]
   b = reg.model[1]
   i_S[:, i] = delta_v*((-a) / (1 + a*R_e)) + ((a*v_B/2)+b)/((1 + a*R_e))
+  print(f"REGION {i} ({reg.name}): {a*R_e / (1 + a*R_e):.3f}")
 
 # Current drain
 for (i, reg) in enumerate(Q2.regions) :
@@ -154,8 +155,6 @@ for n in range(nPts) :
       else :
         validRegion = i
       i_D_valid[n] = i_D[n, i]
-    else :
-      print(f"i_D = {i_D[n, i]:0.4f}V\t\tf(delta_v + v_B/2 - R_e*i_D) = {i_D_th:0.4f}A\t\t REGION {i} ({reg.name})")
   
   if (validRegion == -1) :
     print("[WARNING] No solution found in any region!")

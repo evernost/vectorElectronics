@@ -4,15 +4,15 @@
         {
             "type": "rect",
             "position": {
-                "x": 118.11,
-                "y": -178.85
+                "x": 127.559,
+                "y": -151.181
             },
             "stroke": {
                 "style": "dotted"
             },
             "size": {
                 "x": 160.63,
-                "y": 170.079
+                "y": 188.976
             }
         },
         {
@@ -101,7 +101,7 @@
             },
             "position": {
                 "x": 151.181,
-                "y": -235.465
+                "y": -217.323
             },
             "id": "ocirc"
         },
@@ -110,33 +110,33 @@
             "points": [
                 {
                     "x": 151.181,
-                    "y": -198.426
+                    "y": -199.181
                 },
                 {
                     "x": 151.181,
-                    "y": -235.465
+                    "y": -217.323
                 }
             ],
             "stroke": {
                 "width": "0.4pt"
             },
             "directions": [
-                "-|"
+                null
             ]
         },
         {
             "type": "node",
             "position": {
                 "x": 151.181,
-                "y": -18.898
+                "y": 0
             },
             "id": "eground2"
         },
         {
             "type": "node",
             "position": {
-                "x": 94.488,
-                "y": -37.795
+                "x": 151.181,
+                "y": 0
             },
             "id": "ocirc"
         },
@@ -161,38 +161,17 @@
             "endArrow": "latex"
         },
         {
-            "type": "rect",
-            "position": {
-                "x": 170.078,
-                "y": -211.843
-            },
-            "stroke": {
-                "opacity": 0
-            },
-            "size": {
-                "x": 37.795,
-                "y": 28.346
-            },
-            "text": {
-                "text": "$I_S$",
-                "showPlaceholderText": true
-            }
-        },
-        {
             "type": "wire",
             "points": [
                 {
-                    "x": 94.488,
-                    "y": -47.244
+                    "x": 170.079,
+                    "y": 0
                 },
                 {
-                    "x": 122.835,
+                    "x": 170.079,
                     "y": -47.244
                 }
             ],
-            "stroke": {
-                "width": "0.4pt"
-            },
             "directions": [
                 null
             ],
@@ -201,8 +180,8 @@
         {
             "type": "rect",
             "position": {
-                "x": 108.661,
-                "y": -56.693
+                "x": 188.976,
+                "y": -23.622
             },
             "stroke": {
                 "opacity": 0
@@ -220,8 +199,8 @@
         {
             "type": "node",
             "position": {
-                "x": 122.835,
-                "y": -37.795
+                "x": 151.181,
+                "y": -47.244
             },
             "id": "ocirc"
         },
@@ -234,61 +213,15 @@
                 },
                 {
                     "x": 151.181,
-                    "y": -18.898
+                    "y": -47.244
                 }
             ],
             "stroke": {
                 "width": "0.4pt"
             },
             "directions": [
-                "-|"
+                null
             ]
-        },
-        {
-            "type": "wire",
-            "points": [
-                {
-                    "x": 122.835,
-                    "y": -37.795
-                },
-                {
-                    "x": 151.182,
-                    "y": -37.795
-                }
-            ],
-            "stroke": {
-                "width": "0.4pt"
-            },
-            "directions": [
-                "-|"
-            ]
-        },
-        {
-            "type": "wire",
-            "points": [
-                {
-                    "x": 94.488,
-                    "y": -37.795
-                },
-                {
-                    "x": 75.59,
-                    "y": -103.182
-                }
-            ],
-            "stroke": {
-                "width": "0.4pt"
-            },
-            "directions": [
-                "-|"
-            ]
-        },
-        {
-            "type": "node",
-            "position": {
-                "x": 151.182,
-                "y": -37.795
-            },
-            "id": "circ"
         },
         {
             "type": "rect",
@@ -307,6 +240,14 @@
                 "text": "$I_S$",
                 "showPlaceholderText": true
             }
+        },
+        {
+            "type": "node",
+            "position": {
+                "x": 75.59,
+                "y": -103.182
+            },
+            "id": "eground2"
         }
     ]
 }
