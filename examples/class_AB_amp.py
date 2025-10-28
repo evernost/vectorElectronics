@@ -42,15 +42,13 @@ vTh   = 0.7     # In V
 gm    = 0.5     # In A/V
 gmOvd = 10      # In A/V (overload transconductance)
 
-# Current source BJT
-Q1 = device.Device("npn")
-Q1.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
-Q1.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
-Q1.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
-Q1.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
+# Current source subsystem
+Q1 = device.Device("curr_src")
+Q1.addRegion((NEG_INF, 0.0), (0.0, 0.0),                             "reverse")
 
-# Current drain BJT
-Q2 = device.Device("pnp")
+
+# Current drain subsystem
+Q2 = device.Device("curr_drain")
 Q2.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
 Q2.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
 Q2.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")

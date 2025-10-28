@@ -20,7 +20,19 @@
 
 \maketitle
 
-The purpose of this article is to describe a method for solving electronic circuits involving non-linear devices like diodes, bipolar transistors, MOSFETs, etc.
+The purpose of this article is to describe an attempt to solve electronic circuits with non-linear devices like diodes, bipolar transistors, MOSFETs, etc.\\
+
+A common approach is to set the circuit at some operating point and wiggle around it with the input signal.\\
+For small variations, even the most non-linear device can be approximated by a linear model.
+The \textit{Small Signal Analysis}, as it is called, is a classical framework for that.\\
+
+However, some cases are trickier and require the device to operate way beyond the small signal hypothesis assumption. 
+The class AB amplifier is one example: each transistor in the push/pull pair goes from cutoff to linear region as the input changes.\\
+One could try to use a detailed model for the transistor (exponential curve), however:
+\begin{itemize}
+    \item the equations usually have no closed-form expression (equations combining $\exp()$ and polynomials) 
+    \item it doesn't give much insight on \textit{how} the thing works. 
+\end{itemize}
 
 \subsubsection*{An extension of the Small Signal Analysis}
 In the following, we will consider that the non-linear device has a characteristic curve that can be modelled as a \textit{piecewise linear function}. From that point on, we will investigate where this leads us. 
@@ -137,23 +149,27 @@ $$
         V_{OUT} = R_L(I_S-I_D)
     \end{array}
 \right.
-$$
+$$\\
 
-With a linear assumption, it becomes:
+% With a linear assumption, it becomes:
+% $$
+% \left\{
+%     \begin{array}{ll}
+%         I_S = \dfrac{a_S}{1+R_E a_S}(V_{IN}-V_{OUT}+\dfrac{V_B}{2}) + \dfrac{b_S}{1+R_E a_S} \\
+%         I_D = \dfrac{a_D}{1+R_E a_D}(-(V_{IN}-V_{OUT})+\dfrac{V_B}{2}) + \dfrac{b_D}{1+R_E a_D} \\
+%         V_{OUT} = R_L(I_S-I_D)
+%     \end{array}
+% \right.
+% $$\\
 
-$$
-\left\{
-    \begin{array}{ll}
-        I_S = \dfrac{a_S}{1+R_E a_S}(V_{IN}-V_{OUT}+\dfrac{V_B}{2}) + \dfrac{b_S}{1+R_E a_S} \\
-        I_D = \dfrac{a_D}{1+R_E a_D}(-(V_{IN}-V_{OUT})+\dfrac{V_B}{2}) + \dfrac{b_D}{1+R_E a_D} \\
-        V_{OUT} = R_L(I_S-I_D)
-    \end{array}
-\right.
-$$
+This time, the equations are trickier: the key variables $I_S$, $I_D$ and $V_{OUT}$ are all intertwined.
+We cannot carry out the analysis the way we did in the previous sections.\\
 
-This circuit is a bit trickier. Let's break it down as 2 separate components.
+Let's try to analyse the system as 2 independant subsystems.
 
 \subsection*{Class AB subsystem: the current source}
+If we split the full schematic in half and set the input voltage to a constant, we can simplify the current source of the circuit to a much simpler block:\\
+
 \begin{circuitikz}
 	\node[shape=rectangle, draw, line width=1pt, dash pattern={on 1pt off 4pt}, minimum width=4.215cm, minimum height=4.965cm] at (3.375, 4){};
 	\draw (4, 3.73) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (4, 2.48);
@@ -173,7 +189,7 @@ This circuit is a bit trickier. Let's break it down as 2 separate components.
 	\node[eground2] at (2, 2.73){};
 \end{circuitikz}
 
-Voltage and current law give the following:
+Using the usual voltage and currents laws gives the following source current:
 $$
 I_S = f_S \left(-\Delta V + \dfrac{v_B}{2} - R_E I_S \right) \\
 $$
