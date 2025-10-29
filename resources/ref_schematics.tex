@@ -20,22 +20,37 @@
 
 \maketitle
 
-The purpose of this article is to describe an attempt to solve electronic circuits with non-linear devices like diodes, bipolar transistors, MOSFETs, etc.\\
+The purpose of this article is to describe an attempt to solve electronic circuits with non-linear devices like diodes, bipolar transistors, JFETs, MOSFETs, etc.\\
 
 A common approach is to set the circuit at some operating point and wiggle around it with the input signal.\\
 For small variations, even the most non-linear device can be approximated by a linear model.
 The \textit{Small Signal Analysis}, as it is called, is a classical framework for that.\\
 
-However, some cases are trickier and require the device to operate way beyond the small signal hypothesis assumption. 
-The class AB amplifier is one example: each transistor in the push/pull pair goes from cutoff to linear region as the input changes.\\
-One could try to use a detailed model for the transistor (exponential curve), however:
+However, some circuits are trickier and make the device operate way beyond the small signal hypothesis.\\
+The class AB (push/pull) amplifier is one example: a transistor in the pair goes from cutoff to linear region as the input changes rises. 
+The other transistor does the opposite. Meanwhile, the output follows the input nicely. The circuit as a whole surprisingly acts as if everything were linear.\\
+To fully analyse this, one could try to use a full model of the transistor (exponential curve) however:
 \begin{itemize}
     \item the equations usually have no closed-form expression (equations combining $\exp()$ and polynomials) 
     \item it doesn't give much insight on \textit{how} the thing works. 
 \end{itemize}
 
 \subsubsection*{An extension of the Small Signal Analysis}
-In the following, we will consider that the non-linear device has a characteristic curve that can be modelled as a \textit{piecewise linear function}. From that point on, we will investigate where this leads us. 
+A nonlinear function can always be approximated by a piecewise affine (linear) function\footnote{In other words, the set of piecewise linear functions is dense in the space of continuous real-valued functions}, 
+provided the model is refined and enough control points are introduced.
+Thus, when analyzing a circuit, one can quite reasonably assume, as a first approximation, that the characteristic of a nonlinear component is in fact linear. \\
+The parameters of the line (slope and offset) may not yet be known, but they must necessarily correspond to one of the (slope, offset) pairs among those defined in the proposed piecewise affine model.\\
+
+The task then reduces to determining which pair applies.
+The existence of such a pair is "reassured" by the fact that every circuit necessarily has at least one operating point. 
+It is reasonable to assume that this solution is unique, even though certain "pathological" circuits may admit multiple possible operating points (stable or not). We will return to this point later.
+
+For most practical cases, the overall result is that every component can be treated as linear, thereby enabling the full use of linear analysis techniques (superposition principle, etc.) without any loss of generality.\\
+
+In summary, the piecewise-affine property of a nonlinear component propagates to all the properties of the electronic circuit in which it is embedded. 
+In this sense, we speak in this paper of a \textit{vector analysis} of the circuit. If one views a piecewise-affine function as an element of a vector space (which it is), then the circuit's properties—whatever they may be—are likewise contained within that same vector space.\\
+
+It may therefore be conceivable to interpret the action of a circuit on a nonlinear component as analogous to a matrix acting on a vector. The idea that a circuit might have a kind of “matrix analogue” is perhaps worth exploring further.
 
 \section*{Example 1: diode and resistor I}
 \begin{circuitikz}
