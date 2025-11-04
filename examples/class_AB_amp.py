@@ -37,22 +37,30 @@ import numpy as np                # For math and 'matlab'-like processing
 # =============================================================================
 # SETTINGS
 # =============================================================================
+# Add the models for the current source/drain subsystems.
+# See 'class_AB_subsystem.py' script for the simulation and the linked article 
+# for the full derivation.
+
 iTh   = 0.001   # In A
-vTh   = 0.7     # In V
-gm    = 0.5     # In A/V
-gmOvd = 10      # In A/V (overload transconductance)
+vTh   = 0.05    # In V
+Re    = 4.7     # In ohms
+gm    = 1/Re    # In A/V
 
-# Current source subsystem
-Q1 = device.Device("curr_src")
-Q1.addRegion((NEG_INF, 0.0), (0.0, 0.0),                             "reverse")
+# Virtual current source subsystem
+currSrc = device.Device()
+currSrc.addRegion((NEG_INF, vTh), (-gm, gm*vTh + iTh),   "forward active")
 
 
-# Current drain subsystem
+
+# Virtual current drain subsystem
 Q2 = device.Device("curr_drain")
 Q2.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
 Q2.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
 Q2.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
 Q2.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
+
+# TODO: plot the virtual device's curves
+# ...
 
 # Emitter resistors
 R_e = 4.7
