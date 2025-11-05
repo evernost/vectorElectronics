@@ -80,7 +80,7 @@ class Device :
   Description is TODO.
   """
 
-  def __init__(self, name) :
+  def __init__(self, name = "") :
     
     # Name of your device
     self.name = name

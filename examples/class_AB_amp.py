@@ -37,39 +37,41 @@ import numpy as np                # For math and 'matlab'-like processing
 # =============================================================================
 # SETTINGS
 # =============================================================================
-# Add the models for the current source/drain subsystems.
+# Add the models for the virtual current source/drain subsystems.
 # See 'class_AB_subsystem.py' script for the simulation and the linked article 
 # for the full derivation.
 
-iTh   = 0.001   # In A
-vTh   = 0.05    # In V
-Re    = 4.7     # In ohms
-gm    = 1/Re    # In A/V
+iTh     = 0.001   # In A
+vTh     = 0.05    # In V
+Re      = 4.7     # In ohms
+gm      = 1/Re    # In A/V
+gmWeak  = (0.001/0.7)*Re/(1 + (0.001/0.7)*Re)
 
 # Virtual current source subsystem
 currSrc = device.Device()
-currSrc.addRegion((NEG_INF, vTh), (-gm, gm*vTh + iTh),   "forward active")
+currSrc.addRegion((NEG_INF, vTh), (-gm, gm*vTh + iTh),          "forward active")
+currSrc.addRegion((vTh, POS_INF), (-gmWeak, gmWeak*vTh + iTh),  "weak forward active")
 
+# Virtual current source subsystem
+currDrain = device.Device()
+currDrain.addRegion((NEG_INF, -vTh), (gmWeak, gmWeak*vTh + iTh),  "weak forward active")
+currDrain.addRegion((-vTh, POS_INF), (gm, gm*vTh + iTh),          "forward active")
 
-
-# Virtual current drain subsystem
-Q2 = device.Device("curr_drain")
-Q2.addRegion((NEG_INF, 0.0),  (0.0, 0.0),                             "reverse")
-Q2.addRegion((0.0, vTh),      (iTh/vTh, 0.0),                         "weak forward active")
-Q2.addRegion((vTh, 0.9),      (gm, iTh-gm*vTh),                       "forward active")
-Q2.addRegion((0.9, POS_INF),  (gmOvd, 0.9*(gm-gmOvd) + (iTh-gm*vTh)), "forward breakdown")
 
 # TODO: plot the virtual device's curves
-# ...
+x = np.linspace(-0.5, 0.5, 100)
+ySrc    = currSrc.eval(x)
+yDrain  = currDrain.eval(x)
+plt.figure()
+plt.plot(x, 1000*ySrc, label = r"$I_S$")
+plt.plot(x, 1000*yDrain, label = r"$I_D$")
+plt.xlabel(r"$\Delta V$ (V)")
+plt.ylabel("Current (mA)")
+plt.title("Class AB subsystems")
+plt.legend()
+plt.grid(True)
+plt.show()
 
-# Emitter resistors
-R_e = 4.7
-
-# Biasing voltage
-v_B = 1.5
-
-# Output load
-R_L = 32
 
 # Input signal: 1Vpp sinewave
 nPts = 100

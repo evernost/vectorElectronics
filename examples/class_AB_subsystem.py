@@ -16,7 +16,7 @@
 # =============================================================================
 # Simulation of a class AB amplifier: the current source/drain subsystem.
 #
-# Please refer to the schematic in '~/resources/ref_schematics.pdf' for the 
+# Please refer to the schematic in '~/resources/article.pdf' for the 
 # notations, conventions used and the derivations for the equations.
 
 
@@ -159,10 +159,6 @@ for n in range(nPts) :
   if (validRegion == -1) :
     print("[WARNING] No solution found in any region!")
 
-  print()
-
-
-
 
 
 # =============================================================================
@@ -172,7 +168,7 @@ plt.figure()
 plt.plot(delta_v, i_S_valid, label = r"$I_S$")
 plt.plot(delta_v, i_D_valid, label = r"$I_D$")
 plt.xlabel(r"$\Delta V$")
-plt.ylabel(r"$Collector current I_C$")
+plt.ylabel(r"Collector current $I_C$")
 plt.title(r"Class AB subsystem: $I_S$ and $I_D$ vs. input voltage $\Delta V$")
 plt.legend()
 plt.grid(True)

@@ -14,7 +14,7 @@
 # =============================================================================
 # DESCRIPTION
 # =============================================================================
-# Piecewise linear model used to simulate an emitter follower.
+# Piecewise linear model used to simulate the 'rubber diode' circuit.
 
 
 
