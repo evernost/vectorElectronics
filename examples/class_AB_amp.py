@@ -37,13 +37,17 @@ import numpy as np                # For math and 'matlab'-like processing
 # =============================================================================
 # SETTINGS
 # =============================================================================
+# Emitter resistors
+Re = 4.7
+
+# Biasing voltage
+v_B = 1.5
+
 # Add the models for the virtual current source/drain subsystems.
 # See 'class_AB_subsystem.py' script for the simulation and the linked article 
 # for the full derivation.
-
 iTh     = 0.001   # In A
 vTh     = 0.05    # In V
-Re      = 4.7     # In ohms
 gm      = 1/Re    # In A/V
 gmWeak  = (0.001/0.7)*Re/(1 + (0.001/0.7)*Re)
 
@@ -57,8 +61,7 @@ currDrain = device.Device()
 currDrain.addRegion((NEG_INF, -vTh), (gmWeak, gmWeak*vTh + iTh),  "weak forward active")
 currDrain.addRegion((-vTh, POS_INF), (gm, gm*vTh + iTh),          "forward active")
 
-
-# TODO: plot the virtual device's curves
+# Plot the virtual device's curves
 x = np.linspace(-0.5, 0.5, 100)
 ySrc    = currSrc.eval(x)
 yDrain  = currDrain.eval(x)
@@ -71,7 +74,6 @@ plt.title("Class AB subsystems")
 plt.legend()
 plt.grid(True)
 plt.show()
-
 
 # Input signal: 1Vpp sinewave
 nPts = 100
@@ -87,10 +89,10 @@ v_in = 1.0*np.sin(np.linspace(0, 2*np.pi, nPts))
 #
 # ** see ref_schematics.pdf ***
 #
-v_out = np.zeros((nPts, Q1.nRegions*Q2.nRegions))
+v_out = np.zeros((nPts, currSrc.nRegions*currDrain.nRegions))
 
-for (i, regS) in enumerate(Q1.regions) :
-  for (j, regD) in enumerate(Q2.regions) :
+for (i, regS) in enumerate(currSrc.regions) :
+  for (j, regD) in enumerate(currDrain.regions) :
 
     # Read the model for that region
     a_S = regS.model[0]
