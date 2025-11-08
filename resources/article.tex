@@ -26,9 +26,11 @@ A common approach is to set the circuit at some operating point and wiggle it ar
 For small variations, even the most non-linear device can be approximated by a linear model.
 The \textit{Small Signal Analysis}, as it is called, is a classical framework for that.\\
 
-However, some circuits are trickier and make the device operate way beyond the small signal hypothesis.\\
-The class AB (push/pull) amplifier is one example: a transistor in the pair goes from cutoff to linear region as the input changes rises. 
-The other transistor does the opposite. Meanwhile, the output follows the input nicely. The circuit as a whole surprisingly acts as if everything were linear.\\
+However, some circuits are trickier and make one or more nonlinear devices operate way beyond the small signal hypothesis.
+
+The class AB (push/pull) amplifier is one example: a transistor in the pair goes from cutoff to linear region as the input rises. 
+The other transistor does the opposite. Meanwhile, the output follows the input nicely (the circuit as a whole surprisingly acts as if everything were linear.)\\
+
 To fully analyse this, one could try to use a full model of the transistor (exponential curve) however:
 \begin{itemize}
 	\item the equations usually have no closed-form expression (equations combining $\exp()$ and polynomials) 
@@ -36,61 +38,86 @@ To fully analyse this, one could try to use a full model of the transistor (expo
 \end{itemize}
 
 \subsubsection*{The Piecewise Linear Model}
-A nonlinear function can always be approximated by a piecewise affine (linear) function\footnote{In other words, the set of piecewise linear functions is dense in the space of continuous real-valued functions}, 
+A nonlinear continuous function can always be approximated by a piecewise affine (linear) function\footnote{In other words, the set of piecewise linear functions is dense in the space of continuous real-valued functions}, 
 provided the model is refined and enough control points are introduced.
 Thus, when analyzing a circuit, one can quite reasonably assume, as a first approximation, that the characteristic of a nonlinear component is in fact piecewise linear. \\
 The parameters of the linear relationship (slope and offset) may not yet be known for the present operating point, but they must necessarily correspond to one of the (slope, offset) pairs among those defined in the proposed piecewise affine model.\\
 
 The task then reduces to determining which pair applies at a given operating point.
 The existence of such a pair is "reassured" by the fact that every circuit necessarily has \textit{at least} one operating point. 
-It is reasonable to assume that this solution is unique, even though certain "pathological" circuits (e.g. with feedback) may admit multiple possible operating points (stable or not). We will return to this point later.
+It is reasonable to assume that this solution is unique.\footnote{Even though certain "pathological" circuits (e.g. with feedback) may admit multiple possible operating points (stable or not). We will return to this point later.}
 
 For most practical cases, the overall result is that every component can be treated as linear, thereby enabling the full use of linear analysis techniques (superposition principle, etc.) without any loss of generality.\\
 
-In summary, the piecewise-affine property of a nonlinear component propagates to all the properties of the electronic circuit in which it is embedded. 
-In this sense, we speak in this paper of a \textit{vector analysis} of the circuit. If one views a piecewise-affine function as an element of a vector space (which it is), then the circuit's properties—whatever they may be—are likewise contained within that same vector space.\\
+Notice that, since any linear transformation to a piecewise linear function is still a piecewise linear function, the very concrete consequence is that the piecewise-affine property of a nonlinear component \textbf{propagates} to all the properties of the electronic circuit in which it is embedded.
+
+In this sense, we speak in this paper of a \textit{Vector Analysis} of the circuit. If one views a piecewise-affine function as an element of a vector space (which it is) then the circuit's properties—whatever they may be: $V_{OUT}$ vs $V_{IN}$, $I/V$ characteristic, transmittance, input impedance, etc.—are likewise contained within that same vector space.\\
 
 It may therefore be conceivable to interpret the action of a circuit on a nonlinear component as analogous to a matrix acting on a vector. The idea that a circuit might have a kind of “matrix analogue” is perhaps worth exploring further.
 
 
 
 \section*{Example 1: diode and resistor I}
-One of the first application for a diode in a semiconductor lecture is the resistor-diode circuit. It corresponds to most of the LED polarisation circuits.
-Even though this is probably the simplest circuit involving a diode, it cannot be solved explicitely.\\
-Different approaches:
-\begin{itemize}
-	\item assume $V_D = 0.7V$ (or more for LEDs), determine $R$ for a target current (let say $5mA$)
-	\item solve iteratively: assume a voltage for $V_D$, use the diode $I-V$ model to determine the current, calculate the new $V_D$ based on the resistor current etc.
-\end{itemize}
+One of the first case study for a diode in a semiconductor lecture is the resistor-diode circuit. It corresponds to most of the LED polarisation circuits.
 
 \begin{circuitikz}
-	\node[eground2] at (9, 7.25){};
-	\draw (9, 11.25) to[american resistor, l={$R$}] (9, 9);
-	\draw (9, 9) to[empty diode, l={$D$}] (9, 7.5);
-	\node[ocirc](N1) at (7, 11.5){} node[anchor=east] at ([xshift=-0.08cm]N1.text){$V_{IN}$};
-	\draw (7, 11.5) -- (9, 11.5) -- (9, 11.25);
-	\node[ocirc](N2) at (11, 9){} node[anchor=west] at ([xshift=0.08cm]N2.text){$V_{OUT}$};
-	\draw (11, 9) -- (9, 9);
-	\node[circ] at (9, 9){};
-	\draw (9, 7.25) -| (9, 7.5);
+	\node[eground2] at (2, 1){};
+	\draw (2, 2.5) to[empty diode, l={$D$}] (2, 1);
+	\draw (2, 4.5) to[american resistor, /tikz/circuitikz/bipoles/length=1.05cm, l={$R$}] (2, 2.5);
+	\draw (2, 4.5) |- (1, 5);
+	\node[ocirc](N1) at (1, 5){} node[anchor=east] at (N1.west){$V$};
+	\draw[line width=1.6pt, -latex] (3.5, 1.25) -- (3.5, 2.5);
+	\draw[dash pattern={on 0.4pt off 1.6pt}] (2.25, 2.75) -- (3.5, 2.75);
+	\draw[dash pattern={on 0.4pt off 1.6pt}] (2.25, 1) -- (3.5, 1);
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.215cm] at (3.875, 1.875){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (3.875, 1.875){$V_D$};
+	\draw[line width=1.6pt, -latex] (2, 4.5) -- (2, 4.25);
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.215cm] at (2.5, 4.375){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (2.5, 4.375){$I_D$};
 \end{circuitikz}
+
+Even though this is probably the simplest circuit involving a diode, the exponential behaviour of the $I/V$ curve takes a bit of method to solve the circuit.
+
+Here are some common approaches:
+\begin{itemize}
+	\item Assume $V_D = 0.7V$ (or a few Volts for LEDs), determine $R$ for a target current (say $5mA$) \rightarrow Done! It's precise enough for most applications.
+	\item Iterative solving:
+		\begin{enumerate}
+			\item Assume a \textit{guess} voltage $V_D = 0.7V$ accross the diode (no need to be accurate)
+			\item Determine the current $I_D$ using the diode $I-V$ model: $I_D = I_S \left( \exp \left( \dfrac{V_D}{V_T}\right)-1\right)$
+			\item calculate the new $V_D$ using $V_D = V - R I_D$ 
+			\item go back to 2. until $V_D$ and $I_D$ eventually settle. 
+		\end{enumerate}
+		Convergence rate is insanely fast and the result gets accurate to a few digits after only 2 or 3 iteration. 
+		However, this method is more of a theoretical fact. It might be useful in a simulator, but for practical situations it won't bring much more precision. The natural dispersion in $I/V$ curves within the same batch of diodes, not even mentionning the accuracy of the model itself lowers the benefit of this method.
+	\item Solve using Lambert's W function
+	This function pops naturally when solving equations like $exp(x) = ax + b$. Though the conclusions are similar to the iterative method.
+\end{itemize}
 
 
 
 \section*{Example 2: diode and resistor II}
+This is a slight variation of the previous diode circuit.\\
+
+We now have a varying voltage source as input of the system, the diode voltage is the output. We want to see how the output varies with the input (assuming no current is drawn from the output).
+
 \begin{circuitikz}
-	\node[eground2] at (9, 6.5){};
-	\draw (9, 8.75) to[american resistor, l={$R$}] (9, 6.5);
-	\draw (9, 11.25) to[empty diode, l={$D$}] (9, 9.75);
-	\node[ocirc](N1) at (7, 11.5){} node[anchor=east] at ([xshift=-0.08cm]N1.text){$V_{IN}$};
-	\draw (7, 11.5) -- (9, 11.5) -- (9, 11.25);
-	\node[ocirc](N2) at (11, 9.25){} node[anchor=west] at ([xshift=0.08cm]N2.text){$V_{OUT}$};
-	\draw (11, 9.25) -- (9, 9.25);
-	\node[circ] at (9, 9.25){};
-	\draw (9, 9.25) -| (9, 9.75);
-	\draw (9, 8.75) -| (9, 9.25);
+	\node[eground2] at (2, 1){};
+	\draw (2, 2.5) to[empty diode, l={$D$}] (2, 1);
+	\draw (2, 4.5) to[american resistor, /tikz/circuitikz/bipoles/length=1.05cm, l={$R$}] (2, 2.5);
+	\draw (2, 4.5) |- (1, 5);
+	\node[ocirc](N1) at (1, 5){} node[anchor=east] at (N1.west){$V_{IN}$};
+	\draw[line width=1.6pt, -latex] (2, 4.5) -- (2, 4.25);
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.215cm] at (2.5, 4.375){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (2.5, 4.375){$I_D$};
+	\draw (2, 2.5) -- (3, 2.5);
+	\node[circ] at (2, 2.5){};
+	\node[ocirc](N2) at (3, 2.5){} node[anchor=west] at (N2.east){$V_{OUT}$};
 \end{circuitikz}
 
+For $V_{IN} > 0.7V$ a first good approximation is $V_{OUT} \simeq 0.7V$ regardless of the input voltage $V_{IN}$.
+
+It makes sense: for an increasing $V_{IN}$, the diode voltage cannot rise much as the exponential law would cause a massive increase in current, thereby reducing the diode voltage through the resistor.
+
+Like before, if we just assume $V_D = 0.7V$
+This is where the Piecewise Linear model can become handy. 
 
 
 \section*{Example 3: diode and resistor III}
@@ -452,7 +479,7 @@ In this section, we don't analyse the full schematic, only the 'top' part of the
 \begin{circuitikz}
 	\draw (3, 3.98) -| (3, 0.5);
 	\draw[line width=2pt, -latex] (3, 0.75) -- (3, 0.5);
-	\node[shape=rectangle, minimum width=1.715cm, minimum height=0.985cm] at (1.875, 0.74){} node[anchor=north east, align=right, text width=1.327cm, inner sep=6pt] at (2.75, 1.25){$I_C + \dfrac{\Delta I}{2}$};
+	\node[shape=rectangle, minimum width=1.715cm, minimum height=0.985cm] at (1.875, 0.76){} node[anchor=north east, align=right, text width=1.327cm, inner sep=6pt] at (2.75, 1.27){$I_C + \dfrac{\Delta I}{2}$};
 	\node[npn, tr circle](N1) at (5.5, 4.75){} node[anchor=west] at ([xshift=0.13cm]N1.text){$Q_2$};
 	\node[npn, tr circle, xscale=-1](N2) at (3, 4.75){} node[anchor=east] at ([xshift=-0.13cm]N2.text){$Q_1$};
 	\draw (4.25, 6.75) -- (4.25, 7.75);
@@ -464,14 +491,14 @@ In this section, we don't analyse the full schematic, only the 'top' part of the
 	\draw (3, 3.25) -- (6.75, 3.25);
 	\draw (3.84, 4.75) -- (4.66, 4.75);
 	\draw[line width=2pt, -latex] (6, 3.25) -- (6.25, 3.25);
-	\node[shape=rectangle, minimum width=1.715cm, minimum height=0.985cm] at (6.625, 0.72){} node[anchor=north east, align=right, text width=1.327cm, inner sep=6pt] at (7.5, 1.23){$I_C - \dfrac{\Delta I}{2}$};
+	\node[shape=rectangle, minimum width=1.965cm, minimum height=0.985cm] at (6.75, 0.72){} node[anchor=north east, align=right, text width=1.577cm, inner sep=6pt] at (7.75, 1.23){$I_C - \dfrac{\Delta I}{2}$};
 	\node[circ] at (3, 3.25){};
 	\node[circ] at (5.5, 1.75){};
 	\draw (3, 0.5) to[ioosource] (3, -1);
 	\draw (5.5, 0.48) to[ioosource] (5.5, -1.02);
 	\node[ocirc](N4) at (6.75, 3.25){} node[anchor=west] at (N4.east){$V_P$};
 	\draw[dash pattern={on 1.6pt off 1.6pt}] (5.5, -1.02) -- (5.5, -1.79);
-	\draw[line width=2pt, -latex] (8, 1.75) -- (8, 3.25);
+	\draw[line width=2pt, -latex] (8, 2) -- (8, 3);
 	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.465cm] at (8.625, 2.5){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (8.625, 2.5){$\Delta V$};
 	\node[circ] at (4.25, 4.75){};
 	\draw (3, 5.52) -| (3, 6.75) -- (5.5, 6.75) -| (5.5, 5.52);
@@ -480,15 +507,28 @@ In this section, we don't analyse the full schematic, only the 'top' part of the
 	\node[ocirc](N6) at (2, 5.75){} node[anchor=east] at (N6.west){$V_{BIAS}$};
 	\draw[line width=2pt, -latex] (6.25, 1.75) -- (5.971, 1.75);
 	\draw[line width=2pt, -latex] (5.5, 0.73) -- (5.5, 0.48);
-	\node[shape=rectangle, minimum width=0.686cm, minimum height=0.465cm] at (6.14, 3.75){} node[anchor=west, align=left, text width=0.298cm, inner sep=6pt] at (5.779, 3.75){$I_P$};
+	\node[shape=rectangle, minimum width=0.686cm, minimum height=0.465cm] at (6.14, 3.75){} node[anchor=west, align=left, text width=0.297cm, inner sep=6pt] at (5.779, 3.75){$I_P$};
 	\node[shape=rectangle, minimum width=0.686cm, minimum height=0.465cm] at (6.11, 2.25){} node[anchor=west, align=left, text width=0.297cm, inner sep=6pt] at (5.75, 2.25){$I_M$};
+	\draw[dash pattern={on 0.4pt off 1.6pt}] (7.5, 3.25) -- (9, 3.25);
+	\draw[dash pattern={on 0.4pt off 1.6pt}] (7.5, 1.75) -- (9, 1.75);
 \end{circuitikz}
 
-To simplify, we assume here that the bottom section of the ladder is a balanced current source: two branches, a 'common mode' control current $I_C$ to which a 'differential mode' signal current $\frac{\Delta I}{2}$ is respectively added or substracted.
-It is done easily with the Differential Pair studied earlier.
+To simplify, we assume here that the bottom section of the ladder is a balanced current source: two branches, a 'common mode' \textbf{control current} $I_C$ to which a 'differential mode' \textbf{signal current} $\frac{\Delta I}{2}$ is superimposed.
+
+Such source is easily done with the Differential Pair studied earlier.
 
 \subsection*{Derivation}
+As usual we denote the collector current $I_C$ as $I_C = f(V_{BE})$ and get:
+$$
+\left\{
+	\begin{array}{ll}
+		I_P = f(V_{BIAS}-V_P) - I_C - \frac{\Delta I_C}{2}\\
+		I_M = -f(V_{BIAS}-V_M) + I_C - \frac{\Delta I_C}{2}
+	\end{array}
+\right.
+$$\\
 
+With the piecewise linear assumption:
 $$
 \left\{
 	\begin{array}{ll}
@@ -498,12 +538,35 @@ $$
 \right.
 $$\\
 
-As soon as the output is loaded, $I_P = I_M$ and summing the 2 equations gives:
+Once the output is loaded, $I_P = I_M \triangleq I$, $V_P - V_M \triangleq \Delta V$ and summing the 2 equations gives:
 $$
--a V -\Delta I = 2I
+-a \Delta V - \Delta I = 2I
 $$\\
 
-In the previous examples we didn't care much about the transconductance $a$. But here we would miss a key element by doing so: $a$ is a function of the control current $I_C$.
+Put differently:
+$$
+\Delta V = -\dfrac{I + \Delta I}{a}
+$$\\
+
+If the load is a simple impedance $Z$, then $\Delta V = Z I$ and it becomes:
+$$
+\Delta V = -\dfrac{Z}{2+aZ} \Delta I
+$$\\
+
+\subsubsection*{The Resistive load case}
+TODO
+
+\subsubsection*{The Capacitive load case}
+For a capacitive load, $Z = \frac{1}{jC\omega}$. We write $a = \frac{1}{R}$ thus:
+$$
+\Delta V = R\dfrac{-1}{1 + 2jRC\omega} \Delta I
+$$\\
+
+Recall that $\Delta I$ is a \textit{current} replica of the input signal to be filtered.
+
+Now the key element to understand how this can be a parametric filter is to go back to the definition of $a$: $a$ is a function of the control current $I_C$.
+
+In the previous examples we didn't care much about the transconductance $a$.
 
 % \subsection*{Moog Ladder Filter: the left-handside subsystem}
 % Just like the Class AB Amplifier, the analysis of a \textit{ladder} of the filter had better be analysed using a very simplified model first.
