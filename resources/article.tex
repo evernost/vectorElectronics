@@ -114,7 +114,9 @@ We now have a varying voltage source as input of the system, the diode voltage i
 
 For $V_{IN} > 0.7V$ a first good approximation is $V_{OUT} \simeq 0.7V$ regardless of the input voltage $V_{IN}$.
 
-It makes sense: for an increasing $V_{IN}$, the diode voltage cannot rise much as the exponential law would cause a massive increase in current, thereby reducing the diode voltage through the resistor.
+It makes sense: for an increasing $V_{IN}$, the diode voltage cannot follow the input and rise as much: the exponential law would kick in and cause a massive increase in current, thereby reducing the diode voltage (through the resistor), opposing the initial voltage increase. 
+
+In a way, the diode voltage \textbf{does not} want to change.
 
 Like before, if we just assume $V_D = 0.7V$
 This is where the Piecewise Linear model can become handy. 
@@ -553,8 +555,23 @@ $$
 \Delta V = -\dfrac{Z}{2+aZ} \Delta I
 $$\\
 
+If we write that $a \triangleq \frac{1}{R_C}$ (the \textit{dynamic} resistance), we get this rather \textit{nice} expression:
+$$
+\Delta V = -\dfrac{1}{2} \left[ \dfrac{(2R_C) Z}{(2R_C) + Z} \right] \Delta I
+$$\\
+
 \subsubsection*{The Resistive load case}
-TODO
+With $Z=R$ we simply get:
+$$
+\Delta V = -\dfrac{1}{2} \left[ \dfrac{(2R_C) R}{(2R_C) + R} \right] \Delta I
+$$\\
+
+From the output perspective, we see a parallel resistor association: $2R_C$ and $R$, with some gain $-1/2$.
+
+Recall that $\Delta I$ is a \textit{current} replica of the input signal to be filtered.
+Now, it is key to remember that $a$ is the transconductance of the BJT in the model.
+
+In the previous circuits, just assuming that $a$ is much greater than 1 was enough. Here, we need some more hypothesis.
 
 \subsubsection*{The Capacitive load case}
 For a capacitive load, $Z = \frac{1}{jC\omega}$. We write $a = \frac{1}{R}$ thus:
@@ -562,7 +579,7 @@ $$
 \Delta V = R\dfrac{-1}{1 + 2jRC\omega} \Delta I
 $$\\
 
-Recall that $\Delta I$ is a \textit{current} replica of the input signal to be filtered.
+
 
 Now the key element to understand how this can be a parametric filter is to go back to the definition of $a$: $a$ is a function of the control current $I_C$.
 
