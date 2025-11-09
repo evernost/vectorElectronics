@@ -550,7 +550,7 @@ $$
 \Delta V = -\dfrac{I + \Delta I}{a}
 $$\\
 
-If the load is a simple impedance $Z$, then $\Delta V = Z I$ and it becomes:
+If the load is a simple impedance $Z$, then $I = \frac{\Delta V}{Z}$ and it becomes:
 $$
 \Delta V = -\dfrac{Z}{2+aZ} \Delta I
 $$\\
@@ -560,6 +560,16 @@ $$
 \Delta V = -\dfrac{1}{2} \left[ \dfrac{(2R_C) Z}{(2R_C) + Z} \right] \Delta I
 $$\\
 
+An observer looking at the impedance $Z$ would actually see a parallel association of the impedance $Z$ with some resistance $R_C$, with some $-1/2$ gain.
+Recall that $\Delta I$ is a \textit{current} replica of the input signal to be filtered.
+Now, it is key to remember that $a$ is the transconductance of the BJT in the model.
+
+In the previous circuits, just assuming that $a$ is much greater than 1 was enough. Here, we need some more hypothesis.
+
+\subsubsection*{Comparison without active loading}
+To fully understand this result, we now study what would happen without the transistors.
+
+
 \subsubsection*{The Resistive load case}
 With $Z=R$ we simply get:
 $$
@@ -567,11 +577,6 @@ $$
 $$\\
 
 From the output perspective, we see a parallel resistor association: $2R_C$ and $R$, with some gain $-1/2$.
-
-Recall that $\Delta I$ is a \textit{current} replica of the input signal to be filtered.
-Now, it is key to remember that $a$ is the transconductance of the BJT in the model.
-
-In the previous circuits, just assuming that $a$ is much greater than 1 was enough. Here, we need some more hypothesis.
 
 \subsubsection*{The Capacitive load case}
 For a capacitive load, $Z = \frac{1}{jC\omega}$. We write $a = \frac{1}{R}$ thus:
