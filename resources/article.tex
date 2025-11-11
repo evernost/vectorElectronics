@@ -471,61 +471,157 @@ That's a tough one, be patient...
 \section*{Example 10: the Moog Ladder Filter I}
 
 \subsubsection*{Description}
-The Moog Ladder Filter is a parametric low-pass filter used in audio applications.
-Its cutoff frequency can be freely adjusted using a control current, which makes it a very unique kind of filter.
-It gained its popularity and fame in the Moog Synthesizers, as early as the seventies.\\
+The Moog Ladder Filter is a parametric low-pass filter used in analog synthesizers.\\
 
+Its cutoff frequency can be freely adjusted using a control current, which makes it a very unique kind of filter.
+It gained its popularity and fame in the Moog Synthesizers, as early as the seventies. 
 The term \textit{Ladder Filter} comes from the way the schematic looks: its very much \textit{ladder-like}. 
-In this section, we don't analyse the full schematic, only the 'top' part of the filter:
+
+The full circuit might look intimidating at first. Let's zoom in on its building block:
 
 \begin{circuitikz}
-	\draw (3, 3.98) -| (3, 0.5);
-	\draw[line width=2pt, -latex] (3, 0.75) -- (3, 0.5);
-	\node[shape=rectangle, minimum width=1.715cm, minimum height=0.985cm] at (1.875, 0.76){} node[anchor=north east, align=right, text width=1.327cm, inner sep=6pt] at (2.75, 1.27){$I_C + \dfrac{\Delta I}{2}$};
+	\draw (3, 3.98) -- (3, -0.23);
+	\draw[line width=2pt, -latex] (3, 0.02) -- (3, -0.23);
+	\node[shape=rectangle, minimum width=1.965cm, minimum height=0.985cm] at (1.75, 0.03){} node[anchor=north east, align=right, text width=1.577cm, inner sep=6pt] at (2.75, 0.54){$I_C - \dfrac{\Delta I}{2}$};
 	\node[npn, tr circle](N1) at (5.5, 4.75){} node[anchor=west] at ([xshift=0.13cm]N1.text){$Q_2$};
 	\node[npn, tr circle, xscale=-1](N2) at (3, 4.75){} node[anchor=east] at ([xshift=-0.13cm]N2.text){$Q_1$};
-	\draw (4.25, 6.75) -- (4.25, 7.75);
-	\draw (2, 5.75) -| (4.25, 4.75);
-	\node[circ] at (4.25, 6.75){};
-	\node[ocirc](N3) at (4.25, 7.75){} node[anchor=south] at (N3.north){$V_{CC}$};
-	\draw[dash pattern={on 1.6pt off 1.6pt}] (3, -1) -- (3, -1.77);
-	\draw (5.5, 3.98) -| (5.5, 0.48);
-	\draw (3, 3.25) -- (6.75, 3.25);
+	\draw (0.5, 5.75) -| (4.25, 4.75);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (3, -1.73) -- (3, -2.5);
+	\draw (5.5, 3.98) -- (5.5, -0.25);
+	\draw (3, 3.25) -- (8, 3.25);
 	\draw (3.84, 4.75) -- (4.66, 4.75);
-	\draw[line width=2pt, -latex] (6, 3.25) -- (6.25, 3.25);
-	\node[shape=rectangle, minimum width=1.965cm, minimum height=0.985cm] at (6.75, 0.72){} node[anchor=north east, align=right, text width=1.577cm, inner sep=6pt] at (7.75, 1.23){$I_C - \dfrac{\Delta I}{2}$};
+	\draw[line width=2pt, -latex] (7.25, 3.25) -- (7.5, 3.25);
+	\node[shape=rectangle, minimum width=2.215cm, minimum height=0.985cm] at (6.875, -0.01){} node[anchor=north west, align=left, text width=1.827cm, inner sep=6pt] at (5.75, 0.5){$I_C + \dfrac{\Delta I}{2}$};
 	\node[circ] at (3, 3.25){};
 	\node[circ] at (5.5, 1.75){};
-	\draw (3, 0.5) to[ioosource] (3, -1);
-	\draw (5.5, 0.48) to[ioosource] (5.5, -1.02);
-	\node[ocirc](N4) at (6.75, 3.25){} node[anchor=west] at (N4.east){$V_P$};
-	\draw[dash pattern={on 1.6pt off 1.6pt}] (5.5, -1.02) -- (5.5, -1.79);
-	\draw[line width=2pt, -latex] (8, 2) -- (8, 3);
-	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.465cm] at (8.625, 2.5){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (8.625, 2.5){$\Delta V$};
+	\draw (3, -0.23) to[ioosource] (3, -1.73);
+	\draw (5.5, -0.25) to[ioosource] (5.5, -1.75);
+	\node[ocirc](N3) at (8, 3.25){} node[anchor=west] at (N3.east){$V_P$};
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (5.5, -1.75) -- (5.5, -2.52);
+	\draw[line width=2pt, -latex] (9.375, 2) -- (9.375, 3);
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.465cm] at (10, 2.5){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (10, 2.5){$\Delta V$};
 	\node[circ] at (4.25, 4.75){};
-	\draw (3, 5.52) -| (3, 6.75) -- (5.5, 6.75) -| (5.5, 5.52);
-	\draw (5.5, 1.75) -- (6.75, 1.75);
-	\node[ocirc](N5) at (6.75, 1.75){} node[anchor=west] at (N5.east){$V_M$};
-	\node[ocirc](N6) at (2, 5.75){} node[anchor=east] at (N6.west){$V_{BIAS}$};
-	\draw[line width=2pt, -latex] (6.25, 1.75) -- (5.971, 1.75);
-	\draw[line width=2pt, -latex] (5.5, 0.73) -- (5.5, 0.48);
-	\node[shape=rectangle, minimum width=0.686cm, minimum height=0.465cm] at (6.14, 3.75){} node[anchor=west, align=left, text width=0.297cm, inner sep=6pt] at (5.779, 3.75){$I_P$};
-	\node[shape=rectangle, minimum width=0.686cm, minimum height=0.465cm] at (6.11, 2.25){} node[anchor=west, align=left, text width=0.297cm, inner sep=6pt] at (5.75, 2.25){$I_M$};
-	\draw[dash pattern={on 0.4pt off 1.6pt}] (7.5, 3.25) -- (9, 3.25);
-	\draw[dash pattern={on 0.4pt off 1.6pt}] (7.5, 1.75) -- (9, 1.75);
+	\draw (5.5, 1.75) -| (8, 1.75);
+	\node[ocirc](N4) at (8, 1.75){} node[anchor=west] at (N4.east){$V_M$};
+	\node[ocirc](N5) at (0.5, 5.75){} node[anchor=east] at (N5.west){$V_{BIAS}$};
+	\draw[line width=2pt, -latex] (7.5, 1.75) -- (7.221, 1.75);
+	\draw[line width=2pt, -latex] (5.5, -0) -- (5.5, -0.25);
+	\node[shape=rectangle, minimum width=0.686cm, minimum height=0.465cm] at (7.36, 3.75){} node[anchor=west, align=left, text width=0.297cm, inner sep=6pt] at (7, 3.75){$I_P$};
+	\node[shape=rectangle, minimum width=0.686cm, minimum height=0.465cm] at (7.36, 2.25){} node[anchor=west, align=left, text width=0.297cm, inner sep=6pt] at (7, 2.25){$I_M$};
+	\draw[dash pattern={on 0.4pt off 1.6pt}] (8.875, 3.25) -- (10.375, 3.25);
+	\draw[dash pattern={on 0.4pt off 1.6pt}] (8.875, 1.75) -- (10.375, 1.75);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (5.5, 8.5) -- (5.5, 7.5);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (3, 8.5) -- (3, 7.5);
+	\draw (3, 5.52) |- (3, 7.5);
+	\draw (5.5, 7.5) |- (5.5, 5.52);
+	\draw[line width=2pt, -latex] (3, 7.25) -- (3, 7);
+	\draw[line width=2pt, -latex] (5.5, 7.25) -- (5.5, 7);
+	\node[shape=rectangle, minimum width=2.215cm, minimum height=0.985cm] at (6.875, 7.25){} node[anchor=north west, align=left, text width=1.827cm, inner sep=6pt] at (5.75, 7.76){$I_C + \dfrac{\Delta I'}{2}$};
+	\node[shape=rectangle, minimum width=1.965cm, minimum height=0.985cm] at (1.75, 7.26){} node[anchor=north east, align=right, text width=1.577cm, inner sep=6pt] at (2.75, 7.77){$I_C - \dfrac{\Delta I'}{2}$};
+	\node[shape=rectangle, draw, line width=1pt, dash pattern={on 4pt off 4pt}, minimum width=4.965cm, minimum height=4.985cm] at (4.25, 3.74){};
 \end{circuitikz}
 
-To simplify, we assume here that the bottom section of the ladder is a balanced current source: two branches, a 'common mode' \textbf{control current} $I_C$ to which a 'differential mode' \textbf{signal current} $\frac{\Delta I}{2}$ is superimposed.
+This building block can be seen as a \textbf{current transformation} core. A balanced current is drawn from the bottom section, and another pair of currents emerges from the top section. 
 
-Such source is easily done with the Differential Pair studied earlier.
+Considering the symmetry of the circuit, it makes sense to denote these currents as differential mode current too: $I_C \pm \frac{\Delta I'}{2}$.\\
 
-\subsection*{Derivation}
-As usual we denote the collector current $I_C$ as $I_C = f(V_{BE})$ and get:
+The current drawn has specific properties:
+\begin{itemize}
+	\item A \textbf{control} current $I_C$ applied in common mode
+	\item A \textbf{signal} current $\frac{\Delta I}{2}$ applied in differential mode.
+\end{itemize}
+Such source is straightforward with the Differential Pair studied earlier.\\
+
+
+
+Now the questions are essentially: 
+\begin{itemize}
+	\item How is the input signal $\Delta I$ turned into the output signal $\Delta I'$?
+	\item What is the output voltage $\Delta V$?
+\end{itemize}
+
+\subsection*{Output current derivation}
+As usual we denote the collector current $I_C$ as $I_C = f(V_{BE})$. We neglect the contribution of the base current and assume the transistors have similar properties.
+
 $$
 \left\{
 	\begin{array}{ll}
-		I_P = f(V_{BIAS}-V_P) - I_C - \frac{\Delta I_C}{2}\\
-		I_M = -f(V_{BIAS}-V_M) + I_C - \frac{\Delta I_C}{2}
+		I_P = f(V_{BIAS}-V_P) - I_C + \dfrac{\Delta I}{2}\\
+		I_M = -f(V_{BIAS}-V_M) + I_C + \dfrac{\Delta I}{2}
+	\end{array}
+\right.
+$$\\
+
+The output current $\Delta I'$ is defined by :
+$$
+\left\{
+	\begin{array}{ll}
+		I_C - \dfrac{\Delta I'}{2} = f(V_{BIAS} - V_P)\\
+		I_C + \dfrac{\Delta I'}{2} = f(V_{BIAS} - V_M)
+	\end{array}
+\right.
+$$\\
+
+Combining the 2 systems of equations we get:
+$$
+\left\{
+	\begin{array}{ll}
+		\dfrac{\Delta I'}{2} = \dfrac{\Delta I}{2} - I_P\\
+		\dfrac{\Delta I'}{2} = \dfrac{\Delta I}{2} - I_M
+	\end{array}
+\right.
+$$\\
+
+Once the output is loaded, $I_P = I_M \triangleq I$, $V_P - V_M \triangleq \Delta V$. 
+
+The new schematic:
+
+\begin{circuitikz}
+\node[shape=rectangle, minimum width=3.465cm, minimum height=0.715cm] at (4.25, 1.375){} node[anchor=center, align=center, text width=3.077cm, inner sep=6pt] at (4.25, 1.375){$(I_C, \Delta I)$};
+	\node[shape=rectangle, minimum width=3.465cm, minimum height=0.715cm] at (4.25, 6.625){} node[anchor=center, align=center, text width=3.077cm, inner sep=6pt] at (4.25, 6.625){$(I_C, \Delta I')$};
+	\node[shape=rectangle, draw, line width=1pt, dash pattern={on 4pt off 4pt}, minimum width=4.965cm, minimum height=4.465cm] at (4.25, 4){};
+	\draw (3, 3.98) -- (3, 1);
+	\draw[line width=2pt, -latex] (3, 1.5) -- (3, 1.25);
+	\node[npn, tr circle](N1) at (5.5, 4.75){} node[anchor=west] at ([xshift=0.13cm]N1.text){$Q_2$};
+	\node[npn, tr circle, xscale=-1](N2) at (3, 4.75){} node[anchor=east] at ([xshift=-0.13cm]N2.text){$Q_1$};
+	\draw (0.5, 5.75) -| (4.25, 4.75);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (3, -0.48) -- (3, -1.25);
+	\draw (5.5, 3.98) -- (5.5, 1);
+	\draw (3, 3.25) -- (3.5, 3.25);
+	\draw (3.84, 4.75) -- (4.66, 4.75);
+	\draw[line width=2pt, -latex] (3.25, 3.25) -- (3.5, 3.25);
+	\node[circ] at (3, 3.25){};
+	\node[circ] at (5.5, 3.25){};
+	\draw (3, 1) to[ioosource] (3, -0.5);
+	\draw (5.5, 1) to[ioosource] (5.5, -0.5);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (5.5, -0.5) -- (5.5, -1.27);
+	\draw[line width=2pt, -latex] (5, 2.75) -- (3.5, 2.75);
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.465cm] at (4.25, 2.25){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (4.25, 2.25){$\Delta V$};
+	\node[circ] at (4.25, 4.75){};
+	\draw (5.5, 3.25) -- (5, 3.25);
+	\node[ocirc](N3) at (0.5, 5.75){} node[anchor=east] at (N3.west){$V_{BIAS}$};
+	\node[shape=rectangle, minimum width=0.686cm, minimum height=0.465cm] at (3.36, 3.73){} node[anchor=west, align=left, text width=0.297cm, inner sep=6pt] at (3, 3.73){$I$};
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (5.5, 8.25) -- (5.5, 7.25);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (3, 8.25) -- (3, 7.25);
+	\draw (3, 5.52) |- (3, 7.25);
+	\draw (5.5, 7.25) |- (5.5, 5.52);
+	\draw[line width=2pt, -latex] (3, 6.75) -- (3, 6.5);
+	\draw[line width=2pt, -latex] (5.5, 6.75) -- (5.5, 6.5);
+	\draw (3.5, 3.25) to[european resistor, /tikz/circuitikz/bipoles/length=1.05cm] (5, 3.25);
+	\draw[line width=2pt, -latex] (5.5, 1.5) -- (5.5, 1.25);
+\end{circuitikz}
+
+And summing the 2 equations finally gives:
+\fbox{$\Delta I' = \Delta I  - 2I$}
+
+
+\subsection*{Output Voltage derivation}
+Starting from:
+$$
+\left\{
+	\begin{array}{ll}
+		I_P = f(V_{BIAS}-V_P) - I_C + \dfrac{\Delta I}{2}\\
+		I_M = -f(V_{BIAS}-V_M) + I_C + \dfrac{\Delta I}{2}
 	\end{array}
 \right.
 $$\\
@@ -534,37 +630,32 @@ With the piecewise linear assumption:
 $$
 \left\{
 	\begin{array}{ll}
-		I_P = -a V_P - I_C - \dfrac{\Delta I}{2} + a V_{BIAS} + b\\
-		I_M = a V_M + I_C - \dfrac{\Delta I}{2} - a V_{BIAS} - b
+		I_P = -a V_P - I_C + \dfrac{\Delta I}{2} + a V_{BIAS} + b\\
+		I_M = a V_M + I_C + \dfrac{\Delta I}{2} - a V_{BIAS} - b
 	\end{array}
 \right.
 $$\\
 
-Once the output is loaded, $I_P = I_M \triangleq I$, $V_P - V_M \triangleq \Delta V$ and summing the 2 equations gives:
+ and summing the 2 equations gives:
 $$
--a \Delta V - \Delta I = 2I
+2I = -a \Delta V + \Delta I
 $$\\
 
-Put differently:
+If the load is a simple impedance $Z$, then $I = \dfrac{\Delta V}{Z}$.
+
+Also, remember that $a$ is the gain in the $I_C = f(V_{BE})$ relationship. So we can write $a \triangleq \frac{1}{R_C}$ (the \textit{dynamic} resistance), we get this rather \textit{nice} expression:
 $$
-\Delta V = -\dfrac{I + \Delta I}{a}
+\Delta V = \dfrac{1}{2} \dfrac{1}{\frac{1}{2R_C} + \frac{1}{Z}} \Delta I
 $$\\
 
-If the load is a simple impedance $Z$, then $I = \frac{\Delta V}{Z}$ and it becomes:
+Or put differently:
 $$
-\Delta V = -\dfrac{Z}{2+aZ} \Delta I
+\Delta V = \dfrac{1}{2} \left[ \dfrac{(2R_C) Z}{(2R_C) + Z} \right] \Delta I
 $$\\
 
-If we write that $a \triangleq \frac{1}{R_C}$ (the \textit{dynamic} resistance), we get this rather \textit{nice} expression:
-$$
-\Delta V = -\dfrac{1}{2} \left[ \dfrac{(2R_C) Z}{(2R_C) + Z} \right] \Delta I
-$$\\
+The expression looks familiar: the voltage accross the load is the load itself parallel to some control resistance, up to a $1/2$ factor.
 
-An observer looking at the impedance $Z$ would actually see a parallel association of the impedance $Z$ with some resistance $R_C$, with some $-1/2$ gain.
-Recall that $\Delta I$ is a \textit{current} replica of the input signal to be filtered.
-Now, it is key to remember that $a$ is the transconductance of the BJT in the model.
 
-In the previous circuits, just assuming that $a$ is much greater than 1 was enough. Here, we need some more hypothesis.
 
 \subsubsection*{Comparison without active loading}
 To fully understand this result, we now study what would happen without the transistors.
