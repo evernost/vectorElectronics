@@ -82,17 +82,18 @@ Here are some common approaches:
 	\item Iterative solving:
 		\begin{enumerate}
 			\item Assume a \textit{guess} voltage $V_D = 0.7V$ accross the diode (no need to be accurate)
-			\item Determine the current $I_D$ using the diode $I-V$ model: $I_D = I_S \left( \exp \left( \dfrac{V_D}{V_T}\right)-1\right)$
-			\item calculate the new $V_D$ using $V_D = V - R I_D$ 
-			\item go back to 2. until $V_D$ and $I_D$ eventually settle. 
+			\item Determine the current $I_D$ using the diode $I/V$ model: $I_D = I_S \left( \exp \left( \dfrac{V_D}{V_T}\right)-1\right)$
+			\item Calculate the new $V_D$: $V_D = V - R I_D$ 
+			\item Go back to 2. until $V_D$ and $I_D$ eventually settle. 
 		\end{enumerate}
 		Convergence rate is insanely fast and the result gets accurate to a few digits after only 2 or 3 iteration. 
-		However, this method is more of a theoretical fact. It might be useful in a simulator, but for practical situations it won't bring much more precision. The natural dispersion in $I/V$ curves within the same batch of diodes, not even mentionning the accuracy of the model itself lowers the benefit of this method.
+		However, this method is more of a theoretical fact. It might be useful in a simulator, but for practical situations it won't bring much more precision. The natural dispersion in $I/V$ curves within the same batch of diodes, the lack of detailed information about the model (\textit{e.g.} $I_S$), not even mentionning the limits of the model itself lowers the benefit of this method.
 	\item Solve using Lambert's W function
 	This function pops naturally when solving equations like $exp(x) = ax + b$. Though the conclusions are similar to the iterative method.
 \end{itemize}
 
-
+% TODO: precision analysis on V_D vs I_S,\eta,°T to show that they are huge contributors.
+% Therefore, considering their dispersion, its pretty useless.
 
 \section*{Example 2: diode and resistor II}
 This is a slight variation of the previous diode circuit.\\
@@ -188,15 +189,16 @@ The Common Collector circuit:
 	\node[circ] at (12, 9){};
 \end{circuitikz}
 
-So just like we did with the diode previously: we assume a linear model $I_C = f(V_{BE}) = a V_{BE} + b$ with $a$ and $b$ depending on the operating point (Reverse, Cutoff, Forward Active)\\
+So just like we did with the diode previously: we assume a linear model $I_C = f(V_{BE}) = a V_{BE} + b$ with $a$ and $b$ depending on the operating point (Reverse, Cutoff, Forward Active).
+
 $$
 	V_{OUT} = R_E f(V_{IN} - V_{OUT}) = a R_E \left(V_{IN} - V_{OUT} \right) + b
 $$
 
 Rearranging for $V_{OUT}$:
-$$
-	V_{OUT} = \dfrac{a R_E}{1 + a R_E} V_{IN} + \dfrac{b}{1 + a R_E}
-$$
+
+\fbox{$V_{OUT} = \dfrac{a R_E}{1 + a R_E} V_{IN} + \dfrac{b}{1 + a R_E}$}
+
 
 \subsubsection*{A BJT is an op amp in disguise.}
 We've just seen that a BJT in the common emitter arrangement is basically always 'on'. It's the very high transconductance past the $V_{BE} = 0.7V$ that makes all the system work.\\
@@ -246,7 +248,7 @@ It is quite common to have a potentiometer for the resistors $R_1$ and $R_2$ to 
 \end{circuitikz}
 
 \subsubsection*{Derivation}
-As always, it is safe to neglect the base current.
+Just like with the examples before, we can ignore the base current as a first approximation.
 \begin{equation}
 \begin{split}
 I & = I_R + I_C \\
@@ -265,6 +267,10 @@ Observations:
 
 
 \section*{Example 6: class AB amplifier}
+
+The Class AB Amplifier (or \textit{Push-Pull}) 
+
+
 \begin{circuitikz}
 	\draw (14, 11.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (14, 10);
 	\node[npn, tr circle](N1) at (14, 12){} node[anchor=west] at (N1.text){$Q_1$};
@@ -394,6 +400,9 @@ Notice that now, $I_S$ and $I_D$ are no longer defined recursively, and also the
 
 
 \section*{Example 7: the Differential Pair}
+
+The Differential Pair (or Long Tailed Pair 😏) is the bread and butter of Operational Amplifiers.
+
 \begin{circuitikz}
 	\node[npn, tr circle](N1) at (5.84, 10){} node[anchor=west] at ([xshift=0.08cm]N1.text){$Q_1$};
 	\node[npn, tr circle, xscale=-1](N2) at (8.16, 10){} node[anchor=east] at ([xshift=-0.08cm]N2.text){$Q_2$};
@@ -468,7 +477,7 @@ Notice that now, $I_S$ and $I_D$ are no longer defined recursively, and also the
 That's a tough one, be patient...
 
 
-\section*{Example 10: the Moog Ladder Filter I}
+\section*{Example 10: the Moog Ladder Filter}
 
 \subsubsection*{Description}
 The Moog Ladder Filter is a parametric low-pass filter used in analog synthesizers.\\
@@ -523,62 +532,26 @@ The full circuit might look intimidating at first. Let's zoom in on its building
 
 This building block can be seen as a \textbf{current transformation} core. A balanced current is drawn from the bottom section, and another pair of currents emerges from the top section. 
 
-Considering the symmetry of the circuit, it makes sense to denote these currents as differential mode current too: $I_C \pm \frac{\Delta I'}{2}$.\\
+The bottom currents are imposed. We don't know the top currents yet, but considering the symmetry of the circuit, it makes sense to denote them as a differential mode current too: $I_C \pm \frac{\Delta I'}{2}$.\\
 
-The current drawn has specific properties:
+The current drawn from the bottom of the block has specific properties:
 \begin{itemize}
 	\item A \textbf{control} current $I_C$ applied in common mode
 	\item A \textbf{signal} current $\frac{\Delta I}{2}$ applied in differential mode.
 \end{itemize}
 Such source is straightforward with the Differential Pair studied earlier.\\
 
-
-
-Now the questions are essentially: 
+Let's analyse how the circuit behaves as we load it:
 \begin{itemize}
-	\item How is the input signal $\Delta I$ turned into the output signal $\Delta I'$?
-	\item What is the output voltage $\Delta V$?
+	\item $I_P = I_M \triangleq I$
+	\item $V_P - V_M \triangleq \Delta V$.
 \end{itemize}
 
-\subsection*{Output current derivation}
-As usual we denote the collector current $I_C$ as $I_C = f(V_{BE})$. We neglect the contribution of the base current and assume the transistors have similar properties.
-
-$$
-\left\{
-	\begin{array}{ll}
-		I_P = f(V_{BIAS}-V_P) - I_C + \dfrac{\Delta I}{2}\\
-		I_M = -f(V_{BIAS}-V_M) + I_C + \dfrac{\Delta I}{2}
-	\end{array}
-\right.
-$$\\
-
-The output current $\Delta I'$ is defined by :
-$$
-\left\{
-	\begin{array}{ll}
-		I_C - \dfrac{\Delta I'}{2} = f(V_{BIAS} - V_P)\\
-		I_C + \dfrac{\Delta I'}{2} = f(V_{BIAS} - V_M)
-	\end{array}
-\right.
-$$\\
-
-Combining the 2 systems of equations we get:
-$$
-\left\{
-	\begin{array}{ll}
-		\dfrac{\Delta I'}{2} = \dfrac{\Delta I}{2} - I_P\\
-		\dfrac{\Delta I'}{2} = \dfrac{\Delta I}{2} - I_M
-	\end{array}
-\right.
-$$\\
-
-Once the output is loaded, $I_P = I_M \triangleq I$, $V_P - V_M \triangleq \Delta V$. 
-
-The new schematic:
+If we denote $(I, i)$ as a current pair of common mode current $I$ and differential mode $i/2$, the schematic can be further simplified to:
 
 \begin{circuitikz}
-\node[shape=rectangle, minimum width=3.465cm, minimum height=0.715cm] at (4.25, 1.375){} node[anchor=center, align=center, text width=3.077cm, inner sep=6pt] at (4.25, 1.375){$(I_C, \Delta I)$};
-	\node[shape=rectangle, minimum width=3.465cm, minimum height=0.715cm] at (4.25, 6.625){} node[anchor=center, align=center, text width=3.077cm, inner sep=6pt] at (4.25, 6.625){$(I_C, \Delta I')$};
+	\node[shape=rectangle, minimum width=3.465cm, minimum height=0.965cm] at (4.25, 1.25){} node[anchor=center, align=center, text width=3.077cm, inner sep=6pt] at (4.25, 1.25){$(I_C, \Delta I)$};
+	\node[shape=rectangle, minimum width=3.465cm, minimum height=0.965cm] at (4.25, 6.75){} node[anchor=center, align=center, text width=3.077cm, inner sep=6pt] at (4.25, 6.75){$(I_C, \Delta I')$};
 	\node[shape=rectangle, draw, line width=1pt, dash pattern={on 4pt off 4pt}, minimum width=4.965cm, minimum height=4.465cm] at (4.25, 4){};
 	\draw (3, 3.98) -- (3, 1);
 	\draw[line width=2pt, -latex] (3, 1.5) -- (3, 1.25);
@@ -607,16 +580,20 @@ The new schematic:
 	\draw (5.5, 7.25) |- (5.5, 5.52);
 	\draw[line width=2pt, -latex] (3, 6.75) -- (3, 6.5);
 	\draw[line width=2pt, -latex] (5.5, 6.75) -- (5.5, 6.5);
-	\draw (3.5, 3.25) to[european resistor, /tikz/circuitikz/bipoles/length=1.05cm] (5, 3.25);
+	\draw (3.5, 3.25) to[european resistor, /tikz/circuitikz/bipoles/length=1.05cm, l={$Z$}] (5, 3.25);
 	\draw[line width=2pt, -latex] (5.5, 1.5) -- (5.5, 1.25);
 \end{circuitikz}
 
-And summing the 2 equations finally gives:
-\fbox{$\Delta I' = \Delta I  - 2I$}
-
+Now the questions are essentially: 
+\begin{itemize}
+	\item What is the differential current transfer function $\Delta I' = H(\Delta I)$?
+	\item What is voltage transfer function $\Delta V = G(\Delta I)$?
+\end{itemize}
 
 \subsection*{Output Voltage derivation}
-Starting from:
+As usual we denote the collector current $I_C$ as $I_C = f(V_{BE})$. We neglect the contribution of the base current and assume the transistors have similar properties.
+
+With KCL we get:
 $$
 \left\{
 	\begin{array}{ll}
@@ -624,9 +601,9 @@ $$
 		I_M = -f(V_{BIAS}-V_M) + I_C + \dfrac{\Delta I}{2}
 	\end{array}
 \right.
-$$\\
+$$
 
-With the piecewise linear assumption:
+With the piecewise linear assumption it becomes:
 $$
 \left\{
 	\begin{array}{ll}
@@ -634,81 +611,173 @@ $$
 		I_M = a V_M + I_C + \dfrac{\Delta I}{2} - a V_{BIAS} - b
 	\end{array}
 \right.
-$$\\
+$$
 
- and summing the 2 equations gives:
+Once loaded, summing the 2 equations gives:
 $$
 2I = -a \Delta V + \Delta I
-$$\\
-
-If the load is a simple impedance $Z$, then $I = \dfrac{\Delta V}{Z}$.
-
-Also, remember that $a$ is the gain in the $I_C = f(V_{BE})$ relationship. So we can write $a \triangleq \frac{1}{R_C}$ (the \textit{dynamic} resistance), we get this rather \textit{nice} expression:
 $$
-\Delta V = \dfrac{1}{2} \dfrac{1}{\frac{1}{2R_C} + \frac{1}{Z}} \Delta I
-$$\\
 
-Or put differently:
+If the load is a simple impedance $Z$, then $I = \frac{\Delta V}{Z}$. Also, remember that $a$ is the gain in the $I_C = f(V_{BE})$ relationship, therefore it can be seen as an inverse resistance (the \textit{dynamic} resistance).
+
+So we can write $a \triangleq \frac{1}{R_C}$, we get this rather \textit{nice} expression:
 $$
-\Delta V = \dfrac{1}{2} \left[ \dfrac{(2R_C) Z}{(2R_C) + Z} \right] \Delta I
-$$\\
+\Delta V = \left[ \dfrac{(2R_C) Z}{(2R_C) + Z} \right] \dfrac{\Delta I}{2}
+$$
 
-The expression looks familiar: the voltage accross the load is the load itself parallel to some control resistance, up to a $1/2$ factor.
+Which is also known as:
+$$
+\Delta V = \left( 2R_C // Z \right) \dfrac{\Delta I}{2}
+$$
 
+This is an elementary $V=RI$ relationship!\\
+
+So from the load's perspective, it's as if it were stimulated with the signal (differential current $\Delta I$), parallel to some resistance $2R_C$ that depends on the transconductance of $Q1$ and $Q2$ (\textit{i.e.} the gain $a$ in the piecewise linear model).
+
+
+\begin{circuitikz}
+	\draw (1.75, 3.25) -| (1.75, 4.5);
+	\draw[line width=2pt, -latex] (1.75, 4.04) -| (1.75, 3.75);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (4.5, 3.25) -- (2.75, 3.25);
+	\draw[line width=2pt, -latex] (3.625, 1.25) -- (3.625, 3);
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.715cm] at (4, 2.125){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (4, 2.125){$\Delta V$};
+	\draw (2.5, 3) to[european resistor, /tikz/circuitikz/bipoles/length=1.05cm, l={$Z$}] (2.5, 1.25);
+	\draw (1, 2.75) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l_={$2R_C$}] (1, 1.5);
+	\draw (1, 1.5) -- (1, 1) -- (2.5, 1) -| (2.5, 1.25);
+	\draw (1, 2.75) -- (1, 3.25) -| (2.5, 3);
+	\node[circ] at (1.75, 3.25){};
+	\node[circ] at (1.75, 1){};
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (4.5, 1) -| (2.75, 1);
+	\draw (1.75, 1) -- (1.75, 0.5);
+	\node[shape=rectangle, minimum width=1.075cm, minimum height=0.965cm] at (2.445, 4){} node[anchor=west, align=left, text width=0.687cm, inner sep=6pt] at (1.89, 4){$\dfrac{\Delta I}{2}$};
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (1.75, -0) -| (1.75, 0.5);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (1.75, 4.5) -| (1.75, 5.25);
+\end{circuitikz}
 
 
 \subsubsection*{Comparison without active loading}
 To fully understand this result, we now study what would happen without the transistors.
 
 
-\subsubsection*{The Resistive load case}
-With $Z=R$ we simply get:
+%\subsubsection*{The Resistive load case}
+%With $Z=R$ we simply get:
+%$$
+%\Delta V = -\dfrac{1}{2} \left[ \dfrac{(2R_C) R}{(2R_C) + R} \right] \Delta I
+%$$\\
+%
+%
+%
+%From the output perspective, we see a parallel resistor association: $2R_C$ and $R$, with some gain $-1/2$.
+%
+%\subsubsection*{The Capacitive load case}
+%For a capacitive load, $Z = \frac{1}{jC\omega}$. We write $a = \frac{1}{R}$ thus:
+%
+%\fbox{$\Delta V = R\dfrac{-1}{1 + 2jRC\omega} \Delta I$}
+%
+%
+%Now the key element to understand how this can be a parametric filter is to go back to the definition of $a$: $a$ is a function of the control current $I_C$.
+%
+%In the previous examples we didn't care much about the transconductance $a$.
+
+
+\subsection*{Output current derivation}
+We've established that:
 $$
-\Delta V = -\dfrac{1}{2} \left[ \dfrac{(2R_C) R}{(2R_C) + R} \right] \Delta I
-$$\\
-
-From the output perspective, we see a parallel resistor association: $2R_C$ and $R$, with some gain $-1/2$.
-
-\subsubsection*{The Capacitive load case}
-For a capacitive load, $Z = \frac{1}{jC\omega}$. We write $a = \frac{1}{R}$ thus:
+\left\{
+	\begin{array}{ll}
+		I_P = f(V_{BIAS}-V_P) - I_C + \dfrac{\Delta I}{2}\\
+		I_M = -f(V_{BIAS}-V_M) + I_C + \dfrac{\Delta I}{2}
+	\end{array}
+\right.
 $$
-\Delta V = R\dfrac{-1}{1 + 2jRC\omega} \Delta I
-$$\\
+
+The output current $\Delta I'$ is defined by :
+$$
+\left\{
+	\begin{array}{ll}
+		I_C - \dfrac{\Delta I'}{2} = f(V_{BIAS} - V_P)\\
+		I_C + \dfrac{\Delta I'}{2} = f(V_{BIAS} - V_M)
+	\end{array}
+\right.
+$$
+
+Combining the 2 systems of equations we get:
+$$
+\left\{
+	\begin{array}{ll}
+		\dfrac{\Delta I'}{2} = \dfrac{\Delta I}{2} - I_P\\
+		\dfrac{\Delta I'}{2} = \dfrac{\Delta I}{2} - I_M
+	\end{array}
+\right.
+$$
+
+Summing the 2 finally gives:
+\fbox{$\Delta I' = \Delta I  - 2I$}\\
+
+With a load impedance $Z$ it follows that:
+\begin{equation}
+\begin{split}
+\Delta I'	& = \Delta I - \dfrac{2}{Z} \Delta V \\
+ 			& = \Delta I - \dfrac{2}{Z} (2R_C // Z) \dfrac{\Delta I}{2}\\
+			& = \left( 1 - \dfrac{2R_C}{2R_C + Z} \right) \Delta I\\
+			& = \dfrac{Z}{2R_C + Z} \Delta I
+\end{split}
+\end{equation}
+
+So finally the differential current transfer function:
+\fbox{$\Delta I' = \dfrac{Z}{2R_C + Z} \Delta I$}\\
+
+We can update the abstract schematic view in terms of \textit{current transformation}:
+
+\begin{circuitikz}
+	\node[shape=rectangle, minimum width=3.465cm, minimum height=0.965cm] at (4.25, 3.27){} node[anchor=center, align=center, text width=3.077cm, inner sep=6pt] at (4.25, 3.27){$(I_C, \Delta I)$};
+	\node[shape=rectangle, minimum width=3.465cm, minimum height=0.965cm] at (4.25, 6.75){} node[anchor=center, align=center, text width=3.077cm, inner sep=6pt] at (4.25, 6.75){$(I_C, \dfrac{Z}{2R_C + Z} \Delta I)$};
+	\node[shape=rectangle, draw, line width=1pt, dash pattern={on 4pt off 4pt}, minimum width=4.965cm, minimum height=1.715cm] at (4.25, 4.875){};
+	\draw (2.25, 4.25) -| (2.25, 2.25);
+	\draw[line width=2pt, -latex] (2.25, 2.75) -- (2.25, 2.5);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (2.25, 0.77) -- (2.25, -0);
+	\draw (6.25, 4.27) -| (6.25, 2.27);
+	\draw (2.25, 2.25) to[ioosource] (2.25, 0.75);
+	\draw (6.25, 2.27) to[ioosource] (6.25, 0.77);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (6.25, 0.77) -- (6.25, -0);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (6.25, 8.23) -- (6.25, 7.23);
+	\draw[dash pattern={on 1.6pt off 1.6pt}] (2.25, 8.23) -- (2.25, 7.23);
+	\draw (2.25, 5.5) -- (2.25, 7.23);
+	\draw (6.25, 7.23) -- (6.25, 5.5);
+	\draw[line width=2pt, -latex] (2.25, 6.73) -- (2.25, 6.48);
+	\draw[line width=2pt, -latex] (6.25, 6.73) -- (6.25, 6.48);
+	\draw (3.5, 4.75) to[european resistor, /tikz/circuitikz/bipoles/length=1.05cm, l={$Z$}] (5, 4.75);
+	\draw[line width=2pt, -latex] (6.25, 2.77) -- (6.25, 2.52);
+\end{circuitikz}
 
 
-
-Now the key element to understand how this can be a parametric filter is to go back to the definition of $a$: $a$ is a function of the control current $I_C$.
-
-In the previous examples we didn't care much about the transconductance $a$.
-
-% \subsection*{Moog Ladder Filter: the left-handside subsystem}
-% Just like the Class AB Amplifier, the analysis of a \textit{ladder} of the filter had better be analysed using a very simplified model first.
-% The symmetry of the circuit invites us to split it in half.
-
-% \begin{circuitikz}
-% 	\node[shape=rectangle, draw, line width=1pt, dash pattern={on 4pt off 4pt}, minimum width=3.715cm, minimum height=5.465cm] at (1.875, 3.25){};
-% 	\node[shape=rectangle, minimum width=0.84cm, minimum height=0.465cm] at (2.438, 3.25){} node[anchor=east, align=right, text width=0.452cm, inner sep=6pt] at (2.875, 3.25){$I_C$};
-% 	\draw (3, 5.77) -- (3, 6.25);
-% 	\node[ocirc](N1) at (3, 6.25){} node[anchor=south] at (N1.north){$V_{CC}$};
-% 	\draw[line width=2pt, -latex] (3, 3.25) -| (3, 3);
-% 	\node[circ] at (3, 3.75){};
-% 	\draw[dash pattern={on 1.6pt off 1.6pt}] (3, 1.5) -- (3, 0.73);
-% 	\draw[line width=2pt, -latex] (5, 2.75) -| (5, 3.75);
-% 	\node[shape=rectangle, minimum width=1.09cm, minimum height=0.985cm] at (5.563, 3.26){} node[anchor=west, align=left, text width=0.702cm, inner sep=6pt] at (5, 3.26){$V$};
-% 	\node[npn, tr circle] at (3, 5){};
-% 	\draw (3, 3) to[ioosource] (3, 1.5);
-% 	\draw (3, 4.23) -- (3, 3);
-% 	\draw (3, 3.75) |- (4.75, 3.75);
-% 	\node[eground2] at (4.75, 2.25){};
-% 	\draw (4.75, 2.25) -- (4.75, 2.75);
-% 	\draw[line width=2pt, -latex] (4.25, 3.75) -- (4.5, 3.75);
-% 	\node[shape=rectangle, minimum width=0.84cm, minimum height=0.465cm] at (4.312, 4.25){} node[anchor=center, align=center, text width=0.452cm, inner sep=6pt] at (4.312, 4.25){$I$};
-% 	\draw (1.5, 5) |- (2.16, 5);
-% 	\node[ocirc](N2) at (1.5, 5){} node[anchor=east] at (N2.west){$V_{BIAS}$};
-% 	\node[ocirc] at (4.75, 3.75){};
-% 	\node[ocirc] at (4.75, 2.75){};
-% \end{circuitikz}
+From which we can derive 2 regimes:
+\begin{itemize}	
+	\item $R_C \gg \left|Z\right|$ (low $I_C$): $\Delta I \rightarrow 0$
+	\item $R_C \ll \left|Z\right|$ (high $I_C$): $\Delta I \rightarrow \Delta I$ (no change)
+\end{itemize}
 
 
+Let's get more precise. The dynamic resistance (so the gain in the I/V curve) $R_C$ can be expressed explicitly as a function of $I_C$ therefore giving a more refined description of the transfer curve.
+
+For a BJT:
+\begin{equation}
+\begin{split}
+	a	& = \left. \frac{\partial I_C}{\partial V_{BE}} \right|_{V_{BE} = V_{BE}^0}\\
+ 		& = \left. \frac{\partial }{\partial V_{BE}} \right|_{V_{BE} = V_{BE}^0} I_S \exp \left( \right)\\
+		& = \left( 1 - \dfrac{2R_C}{2R_C + Z} \right) \Delta I\\
+		& = \dfrac{Z}{2R_C + Z} \Delta I
+\end{split}
+	a = 
+\end{equation}
+
+ 
+\subsection*{Limits}
+
+
+\subsubsection*{Large signal analysis}
+Unlike the Emitter Follower, there's no feedback here to rely on. Hence, we expect deviation from the model if the input is too wide.
+
+\subsubsection*{Mismatch}
 
 \end{document}

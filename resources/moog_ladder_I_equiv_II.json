@@ -1,0 +1,345 @@
+{
+    "version": "0.1",
+    "components": [
+        {
+            "type": "rect",
+            "position": {
+                "x": 160.63,
+                "y": -123.591
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 132.284,
+                "y": 37.796
+            },
+            "text": {
+                "text": "$(I_C, \\Delta I)$",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 160.63,
+                "y": -255.118
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 132.283,
+                "y": 37.795
+            },
+            "text": {
+                "text": "$(I_C, \\dfrac{Z}{2R_C + Z} \\Delta I)$",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 160.63,
+                "y": -184.252
+            },
+            "stroke": {
+                "style": "dashed"
+            },
+            "size": {
+                "x": 188.976,
+                "y": 66.142
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 85.039,
+                    "y": -160.63
+                },
+                {
+                    "x": 85.039,
+                    "y": -85.039
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "-|"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 85.039,
+                    "y": -103.937
+                },
+                {
+                    "x": 85.039,
+                    "y": -94.488
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                null
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 85.039,
+                    "y": -29.103
+                },
+                {
+                    "x": 85.039,
+                    "y": 0
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dashed"
+            },
+            "directions": [
+                "|-"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 236.221,
+                    "y": -161.387
+                },
+                {
+                    "x": 236.221,
+                    "y": -85.796
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "-|"
+            ]
+        },
+        {
+            "type": "path",
+            "points": [
+                {
+                    "x": 85.039,
+                    "y": -85.039
+                },
+                {
+                    "x": 85.039,
+                    "y": -28.347
+                }
+            ],
+            "id": "ioosource"
+        },
+        {
+            "type": "path",
+            "points": [
+                {
+                    "x": 236.221,
+                    "y": -85.796
+                },
+                {
+                    "x": 236.221,
+                    "y": -29.103
+                }
+            ],
+            "id": "ioosource"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 236.221,
+                    "y": -29.103
+                },
+                {
+                    "x": 236.221,
+                    "y": 0
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dashed"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 236.22,
+                    "y": -311.055
+                },
+                {
+                    "x": 236.22,
+                    "y": -273.26
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dashed"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 85.039,
+                    "y": -311.055
+                },
+                {
+                    "x": 85.039,
+                    "y": -273.26
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dashed"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 85.039,
+                    "y": -207.874
+                },
+                {
+                    "x": 85.039,
+                    "y": -273.26
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "|-"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 236.22,
+                    "y": -273.26
+                },
+                {
+                    "x": 236.22,
+                    "y": -207.874
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "|-"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 85.039,
+                    "y": -254.362
+                },
+                {
+                    "x": 85.039,
+                    "y": -244.913
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                null
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 236.22,
+                    "y": -254.362
+                },
+                {
+                    "x": 236.22,
+                    "y": -244.913
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                null
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "path",
+            "points": [
+                {
+                    "x": 132.283,
+                    "y": -179.528
+                },
+                {
+                    "x": 188.976,
+                    "y": -179.528
+                }
+            ],
+            "label": {
+                "value": "Z",
+                "distance": "0.12cm"
+            },
+            "id": "european resistor",
+            "scale": {
+                "x": 0.75,
+                "y": 0.75
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 236.221,
+                    "y": -104.694
+                },
+                {
+                    "x": 236.221,
+                    "y": -95.245
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                null
+            ],
+            "endArrow": "latex"
+        }
+    ]
+}

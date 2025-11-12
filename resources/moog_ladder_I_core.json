@@ -5,14 +5,14 @@
             "type": "rect",
             "position": {
                 "x": 160.63,
-                "y": -51.969
+                "y": -47.244
             },
             "stroke": {
                 "opacity": 0
             },
             "size": {
                 "x": 132.283,
-                "y": 28.346
+                "y": 37.796
             },
             "text": {
                 "text": "$(I_C, \\Delta I)$",
@@ -25,14 +25,14 @@
             "type": "rect",
             "position": {
                 "x": 160.63,
-                "y": -250.394
+                "y": -255.118
             },
             "stroke": {
                 "opacity": 0
             },
             "size": {
                 "x": 132.283,
-                "y": 28.346
+                "y": 37.795
             },
             "text": {
                 "text": "$(I_C, \\Delta I')$",
@@ -543,6 +543,10 @@
                     "y": -122.835
                 }
             ],
+            "label": {
+                "value": "Z",
+                "distance": "0.12cm"
+            },
             "id": "european resistor",
             "scale": {
                 "x": 0.75,

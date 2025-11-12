@@ -1,0 +1,355 @@
+{
+    "version": "0.1",
+    "components": [
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -198.425
+                },
+                {
+                    "x": 37.795,
+                    "y": -160.629
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -179.527
+                },
+                {
+                    "x": 37.795,
+                    "y": -170.078
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                null
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -104.693
+                },
+                {
+                    "x": 37.795,
+                    "y": -75.59
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dashed"
+            },
+            "directions": [
+                "|-"
+            ]
+        },
+        {
+            "type": "path",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -160.629
+                },
+                {
+                    "x": 37.795,
+                    "y": -103.937
+                }
+            ],
+            "id": "ioosource"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -292.157
+                },
+                {
+                    "x": 37.795,
+                    "y": -254.362
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dashed"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -217.323
+                },
+                {
+                    "x": 37.795,
+                    "y": -255.118
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -235.464
+                },
+                {
+                    "x": 37.795,
+                    "y": -226.015
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                null
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "path",
+            "points": [
+                {
+                    "x": 56.693,
+                    "y": -207.874
+                },
+                {
+                    "x": 113.386,
+                    "y": -207.874
+                }
+            ],
+            "label": {
+                "value": "Z",
+                "distance": "0.12cm"
+            },
+            "id": "european resistor",
+            "scale": {
+                "x": 0.75,
+                "y": 0.75
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 132.283,
+                    "y": -197.669
+                },
+                {
+                    "x": 132.283,
+                    "y": -159.873
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 132.283,
+                    "y": -178.771
+                },
+                {
+                    "x": 132.283,
+                    "y": -169.322
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                null
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 132.283,
+                    "y": -103.937
+                },
+                {
+                    "x": 132.283,
+                    "y": -74.834
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dashed"
+            },
+            "directions": [
+                "|-"
+            ]
+        },
+        {
+            "type": "path",
+            "points": [
+                {
+                    "x": 132.283,
+                    "y": -159.873
+                },
+                {
+                    "x": 132.283,
+                    "y": -103.181
+                }
+            ],
+            "id": "ioosource"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 132.283,
+                    "y": -291.401
+                },
+                {
+                    "x": 132.283,
+                    "y": -253.606
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dashed"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 132.283,
+                    "y": -216.567
+                },
+                {
+                    "x": 132.283,
+                    "y": -254.362
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 132.283,
+                    "y": -234.708
+                },
+                {
+                    "x": 132.283,
+                    "y": -225.259
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                null
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -217.323
+                },
+                {
+                    "x": 37.795,
+                    "y": -198.425
+                },
+                {
+                    "x": 56.693,
+                    "y": -207.874
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "-|",
+                "|-"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 113.386,
+                    "y": -207.874
+                },
+                {
+                    "x": 132.283,
+                    "y": -216.567
+                },
+                {
+                    "x": 132.283,
+                    "y": -198.425
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "-|",
+                "-|"
+            ]
+        },
+        {
+            "type": "node",
+            "position": {
+                "x": 37.795,
+                "y": -207.874
+            },
+            "id": "circ"
+        },
+        {
+            "type": "node",
+            "position": {
+                "x": 132.283,
+                "y": -207.874
+            },
+            "id": "circ"
+        }
+    ]
+}
