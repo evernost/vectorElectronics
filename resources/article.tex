@@ -268,54 +268,56 @@ Observations:
 
 \section*{Example 6: class AB amplifier}
 
-The Class AB Amplifier (or \textit{Push-Pull}) 
+The Class AB Amplifier (or \textit{Push-Pull}) is the typical output stage for many IC devices (op amps, audio amplifiers, etc.) when there is to drive a load with some power.
 
+We present here below a simplified view of the circuit in its most general case (with emitter resistors). The polarisation stages are abstracted as simple voltage sources (it doesn't matter much for now).
 
 \begin{circuitikz}
-	\draw (14, 11.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (14, 10);
-	\node[npn, tr circle](N1) at (14, 12){} node[anchor=west] at (N1.text){$Q_1$};
-	\node[pnp, tr circle](N2) at (14, 7.5){} node[anchor=west] at (N2.text){$Q_2$};
-	\draw (14, 9.52) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (14, 8.27);
-	\draw (14, 9.52) -- (14, 10);
-	\draw (12, 11.75) to[american voltage source, l={$V_B/2$}] (12, 10.25);
-	\draw (12, 9.25) to[american voltage source, l={$V_B/2$}] (12, 7.75);
-	\draw (13.16, 7.5) -| (12, 7.75);
-	\draw (13.16, 12) -| (12, 11.75);
-	\draw (12, 10.25) -| (12, 9.25);
-	\node[ocirc](N3) at (14, 13.75){} node[anchor=south] at (N3.text){$+V_{CC}$};
-	\node[ocirc](N4) at (14, 5.75){} node[anchor=north] at (N4.text){$-V_{CC}$};
-	\draw (14, 12.77) -| (14, 13.75);
-	\draw (14, 6.73) -- (14, 5.75);
-	\draw (14, 9.75) -| (15.75, 9.5);
-	\draw (15.75, 9.5) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_L$}] (15.75, 8.25);
-	\node[circ] at (14, 9.75){};
-	\node[eground2] at (15.75, 8.25){};
-	\node[circ] at (12, 9.75){};
-	\node[ocirc](N5) at (10.25, 9.75){} node[anchor=east] at (N5.text){$V_{IN}$};
-	\draw (10.25, 9.75) -- (12, 9.75);
-	\draw[line width=2pt, -latex] (14, 13.25) -- (14, 13);
-	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (14.5, 13.125){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (14, 13.5){$I_S$};
-	\draw[line width=2pt, -latex] (14, 6.5) -- (14, 6.25);
-	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (14.5, 6.355){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (14, 6.73){$I_D$};
-	\draw[-latex] (16.75, 8.25) -- (16.75, 9.5);
-	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (17.25, 8.875){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (16.75, 9.25){$V_{OUT}$};
+	\draw (4, 8.02) -| (4, 9);
+	\draw (0.25, 5) -- (2, 5);
+	\draw (4, 6.5) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (4, 5.25);
+	\node[npn, tr circle](N1) at (4, 7.25){} node[anchor=west] at (N1.text){$Q_1$};
+	\node[pnp, tr circle](N2) at (4, 2.75){} node[anchor=west] at (N2.text){$Q_2$};
+	\draw (4, 4.77) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (4, 3.52);
+	\draw (4, 4.77) -- (4, 5.25);
+	\draw (2, 7) to[american voltage source, l={$V_B/2$}] (2, 5.5);
+	\draw (2, 4.5) to[american voltage source, l={$V_B/2$}] (2, 3);
+	\draw (3.16, 2.75) -| (2, 3);
+	\draw (3.16, 7.25) -| (2, 7);
+	\draw (2, 5.5) -| (2, 4.5);
+	\node[ocirc](N3) at (4, 9){} node[anchor=south] at (N3.text){$+V_{CC}$};
+	\draw (4, 1.98) -- (4, 1);
+	\draw (4, 5) -| (5.75, 4.75);
+	\draw (5.75, 4.75) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_L$}] (5.75, 3.5);
+	\node[circ] at (4, 5){};
+	\node[eground2] at (5.75, 3.5){};
+	\node[circ] at (2, 5){};
+	\node[ocirc](N4) at (0.25, 5){} node[anchor=east] at (N4.text){$V_{IN}$};
+	\draw[line width=2pt, -latex] (4, 8.5) -- (4, 8.25);
+	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (4.5, 8.375){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (4, 8.75){$I_S$};
+	\draw[line width=2pt, -latex] (4, 1.75) -- (4, 1.5);
+	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (4.5, 1.605){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (4, 1.98){$I_D$};
+	\draw[-latex] (6.75, 3.5) -- (6.75, 4.75);
+	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (7.25, 4.125){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (6.75, 4.5){$V_{OUT}$};
+	\node[ocirc](N5) at (4, 1){} node[anchor=north] at (N5.text){$-V_{CC}$};
+	\draw[dash pattern={on 0.4pt off 1.6pt}] (5.75, 5) -- (7, 5);
 \end{circuitikz}
 
 \paragraph{Derivation}
-Assuming that $I_C = f_S(V_{BE})$ for the NPN and $I_C = f_D(V_{EB})$ for the PNP we get the following:
+We assume that the base current are negligible. The collector currents are expressed as $I_C = f_S(V_{BE})$ for the NPN and $I_C = f_D(V_{EB})$ for the PNP. $V_B$ is usually around $1.4V$. $V_{IN}$ is the input voltage to amplify, we consider it is a fixed value. Then:
 
 $$
 \left\{
 	\begin{array}{ll}
-		I_S = f_S \left(v_{IN} - v_{OUT} + \dfrac{v_B}{2} - R_E I_S \right) \\
-		I_D = f_D \left(-(v_{OUT} - v_{IN}) + \dfrac{v_B}{2} - R_E I_D \right) \\
+		I_S = f_S \left(V_{IN} - V_{OUT} + \dfrac{V_B}{2} - R_E I_S \right) \\
+		I_D = f_D \left(-(V_{OUT} - V_{IN}) + \dfrac{V_B}{2} - R_E I_D \right) \\
 		V_{OUT} = R_L(I_S-I_D)
 	\end{array}
 \right.
 $$\\
 
-This time, the equations are trickier: the key variables $I_S$, $I_D$ and $V_{OUT}$ are all intertwined.
-We cannot carry out the analysis the way we did in the previous sections.\\
+This time, the equations are trickier: the unknowns $I_S$, $I_D$ and $V_{OUT}$ are all intertwined.
+$I_S$ depends on $I_S$ (feedback) and $V_{OUT}$, but $V_{OUT}$ itself depends on $I_S$...\\
 
 Let's try to analyse the system as 2 independant subsystems.
 
