@@ -5,7 +5,7 @@
             "type": "wire",
             "points": [
                 {
-                    "x": 9.449,
+                    "x": 37.795,
                     "y": -188.976
                 },
                 {
@@ -132,7 +132,7 @@
                 "distance": "0.12cm"
             },
             "position": {
-                "x": 9.449,
+                "x": 37.795,
                 "y": -188.976
             },
             "id": "ocirc"
@@ -239,9 +239,6 @@
                     "y": -188.976
                 }
             ],
-            "stroke": {
-                "width": "0.4pt"
-            },
             "directions": [
                 null
             ],
@@ -281,7 +278,7 @@
                 "width": "1.5pt"
             },
             "directions": [
-                null
+                "-|"
             ],
             "endArrow": "latex"
         },
@@ -301,7 +298,7 @@
                 "width": "1.5pt"
             },
             "directions": [
-                null
+                "-|"
             ],
             "endArrow": "latex"
         },
@@ -338,6 +335,44 @@
             },
             "text": {
                 "text": "$I_D$",
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 198.425,
+                    "y": -188.976
+                },
+                {
+                    "x": 207.874,
+                    "y": -188.976
+                }
+            ],
+            "stroke": {
+                "width": "1.5pt"
+            },
+            "directions": [
+                "-|"
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 207.874,
+                "y": -203.15
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 37.795,
+                "y": 28.346
+            },
+            "text": {
+                "text": "$I_L$",
                 "showPlaceholderText": true
             }
         }

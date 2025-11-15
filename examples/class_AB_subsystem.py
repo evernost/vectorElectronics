@@ -150,15 +150,19 @@ for n in range(nPts) :
     
     # Log the result
     if (isValid) :
+      print(f"i_D = {i_D[n, i]:0.4f}V\t\tf(delta_v + V_B/2 - R_e*i_D) = {i_S_th:0.4f}A\t\t*REGION {i} ({reg.name})")
       if (validRegion != -1) :
         print("[WARNING] There is a valid solution in at least 2 regions.")
       else :
         validRegion = i
       i_D_valid[n] = i_D[n, i]
+    else :
+      print(f"i_D = {i_D[n, i]:0.4f}V\t\tf(delta_v + V_B/2 - R_e*i_D) = {i_S_th:0.4f}A\t\t REGION {i} ({reg.name})")
   
   if (validRegion == -1) :
     print("[WARNING] No solution found in any region!")
 
+  print()
 
 
 # =============================================================================
