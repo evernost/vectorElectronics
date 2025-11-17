@@ -405,6 +405,155 @@ We can treat the Source Subsystem as a \textit{virtual} device with its own $I_S
 
 To explicit it, let's apply a voltage $\Delta V$ in the range $-2.0V ... 2.0V$, evaluate $I_S$ using the equation above and pick the gain/offset pair $(a(\Delta V), b(\Delta V))$ that works.
 
+\begin{table}[h]
+\centering
+	\begin{tabular}{|c||c|c|c|}
+		\hline
+		BJT Mode & Gain/Offset & $I_S = \hat{f}_S (\Delta V)$ \\ \hline
+
+		Reverse 
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = 0 \\
+			b = 0
+		\end{array}
+		\right.$
+		& 
+		$I_S(\Delta V) = 0$	\\ \hline
+
+		Weak Forward
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = \frac{I_{TH}}{V_{TH}} \\
+			b = 0
+		\end{array}
+		\right.$
+		& 
+		$I_S(\Delta V) = \dfrac{-a}{1+aR_E} \left( \Delta V-\dfrac{V_B}{2} \right)$	\\ \hline
+
+		Forward
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = g_m \\
+			b = I_{TH}-g_m V_{TH}
+		\end{array}
+		\right.$ 
+		& D \\ \hline
+	\end{tabular}
+\end{table}
+
+Using continuity at $V_{BE} = V_{TH}$, we get:
+
+
+
+
+\begin{table}[h]
+\centering
+	\begin{tabular}{|c||c|c|}
+		\hline
+		BJT Mode & BJT Curve & Source Subsystem \\ \hline
+
+		Reverse & 
+		\begin{tikzpicture}
+			\draw[-latex] (1, 1) -- (5, 1);
+			\draw[-latex] (3, 0.75) -- (3, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (5.5, 1){} node[anchor=center] at (N1.text){$V_{BE}$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (3, 3.375){} node[anchor=center] at (N2.text){$I_C$};
+			\draw[line width=2pt] (1, 1) -- (3, 1);
+			\draw[dash pattern={on 0.4pt off 0.8pt}] (3, 1) -- (4.25, 1.25);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (4.25, 1.25) -- (4.75, 3);
+			\node[circ, xscale=1.2, yscale=1.2] at (3, 1){};
+		\end{tikzpicture}
+		& 
+		\begin{tikzpicture}
+			\draw[-latex] (8, 1) -- (13, 1);
+			\draw[-latex] (9, 0.75) -- (9, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (13.5, 1){} node[anchor=center] at (N1.text){$\Delta V$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (9, 3.375){} node[anchor=center] at (N2.text){$I_S$};
+			\draw[line width=2pt] (11, 1) -- (12.75, 1);
+			\node[circ, xscale=1.2, yscale=1.2] at (11, 1){};
+			\draw (11, 0.75) -- (11, 1.25);
+			\draw (9.25, 0.75) -- (9.25, 1.25);
+			\node[shape=rectangle, minimum width=0.465cm, minimum height=0.84cm](N3) at (11, 0.187){} node[anchor=center] at (N3.text){$\dfrac{V_B}{2}$};
+			\node[shape=rectangle, minimum width=2.465cm, minimum height=0.965cm](N4) at (9.25, -0.5){} node[anchor=center] at (N4.text){$\dfrac{V_B}{2}-V_{TH}$};
+			\draw (8.75, 0.157) -- (9.25, 0.657);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (9.25, 1.5);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (9.25, 1.5) -- (8.25, 3.5);
+		\end{tikzpicture}
+		\\ \hline
+
+		Weak Forward &
+		\begin{tikzpicture}
+			\draw[-latex] (1, 1) -- (5, 1);
+			\draw[-latex] (3, 0.75) -- (3, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (5.5, 1){} node[anchor=center] at (N1.text){$V_{BE}$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (3, 3.375){} node[anchor=center] at (N2.text){$I_C$};
+			\draw[line width=2pt] (3, 1) -- (4.25, 1.25);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (4.25, 1.25) -- (4.75, 3);
+			\node[circ, xscale=1.2, yscale=1.2] at (3, 1){};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (1, 1.006) -- (3, 1.006);
+			\node[circ, xscale=1.2, yscale=1.2] at (4.25, 1.25){};
+		\end{tikzpicture}
+		& 
+		\begin{tikzpicture}
+			\draw (11, 0.75) -- (11, 1.25);
+			\draw[-latex] (8, 1) -- (13, 1);
+			\draw[-latex] (9, 0.75) -- (9, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (13.5, 1){} node[anchor=center] at (N1.text){$\Delta V$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (9, 3.375){} node[anchor=center] at (N2.text){$I_S$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (12.75, 1);
+			\node[circ, xscale=1.2, yscale=1.2] at (11, 1){};
+			\draw (9.25, 0.75) -- (9.25, 1.25);
+			\node[shape=rectangle, minimum width=0.465cm, minimum height=0.84cm](N3) at (11, 0.187){} node[anchor=center] at (N3.text){$\dfrac{V_B}{2}$};
+			\node[shape=rectangle, minimum width=2.465cm, minimum height=0.965cm](N4) at (9.25, -0.5){} node[anchor=center] at (N4.text){$\dfrac{V_B}{2}-V_{TH}$};
+			\draw (8.75, 0.157) -- (9.25, 0.657);
+			\draw[line width=2pt] (11, 1) -- (9.25, 1.5);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (9.25, 1.5) -- (8.25, 3.5);
+			\node[circ, xscale=1.2, yscale=1.2] at (9.25, 1.5){};
+		\end{tikzpicture}
+		\\ \hline
+
+		Forward & 
+		\begin{tikzpicture}[scale=0.8]
+			\draw[-latex] (1, 1) -- (5, 1);
+			\draw[-latex] (3, 0.75) -- (3, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (5.5, 1){} node[anchor=center] at (N1.text){$V_{BE}$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (3, 3.375){} node[anchor=center] at (N2.text){$I_C$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (3, 1) -- (4.25, 1.25);
+			\draw[line width=2pt] (4.25, 1.25) -- (4.75, 3);
+			\node[circ, xscale=1.2, yscale=1.2] at (4.75, 3){};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (1, 1) -- (3, 1);
+			\node[circ, xscale=1.2, yscale=1.2] at (4.25, 1.25){};
+		\end{tikzpicture}
+		& 
+		\begin{tikzpicture}
+			% Paths, nodes and wires:
+			\draw (11, 0.75) -- (11, 1.25);
+			\draw[-latex] (8, 1) -- (13, 1);
+			\draw[-latex] (9, 0.75) -- (9, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (13.5, 1){} node[anchor=center] at (N1.text){$\Delta V$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (9, 3.375){} node[anchor=center] at (N2.text){$I_S$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (12.75, 1);
+			\draw (9.25, 0.75) -- (9.25, 1.25);
+			\node[shape=rectangle, minimum width=0.465cm, minimum height=0.84cm](N3) at (11, 0.187){} node[anchor=center] at (N3.text){$\dfrac{V_B}{2}$};
+			\node[shape=rectangle, minimum width=2.465cm, minimum height=0.965cm](N4) at (9.25, -0.5){} node[anchor=center] at (N4.text){$\dfrac{V_B}{2}-V_{TH}$};
+			\draw (8.75, 0.157) -- (9.25, 0.657);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (9.25, 1.5);
+			\draw[line width=2pt] (9.25, 1.5) -- (8.25, 3.5);
+			\node[circ, xscale=1.2, yscale=1.2] at (9.25, 1.5){};
+			\node[circ, xscale=1.2, yscale=1.2] at (8.25, 3.5){};
+		\end{tikzpicture}
+		\\ \hline
+	\end{tabular}
+\end{table}
+
+
+
+
+
 
 
 \paragraph{Note:} if you want to try this device experimentally, do not do it by imposing $\Delta V$ directly and measuring $I_S$; the relationship is too sensitive and that would yield imprecise results. It is better to drain a controlled current instead, and measure the voltage $\Delta V$. 

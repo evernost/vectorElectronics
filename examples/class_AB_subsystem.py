@@ -63,7 +63,7 @@ R_e = 4.7
 v_B = 1.5
 
 # Input signal: linear sweep from -0.5V to 0.5V
-nPts = 50
+nPts = 500
 delta_v = np.linspace(-0.5, 0.5, nPts)
 
 
