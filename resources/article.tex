@@ -443,22 +443,23 @@ To explicit it, let's apply a voltage $\Delta V$ in the range $-2.0V ... 2.0V$, 
 			b = I_{TH}-g_m V_{TH}
 		\end{array}
 		\right.$ 
-		& D \\ \hline
+		&
+		$I_S(\Delta V) = \dfrac{-g_m}{1+g_mR_E} \left(\dfrac{V_B}{2} - \Delta V + I_{TH} - gmV_{TH} \right) $\\ \hline
 	\end{tabular}
 \end{table}
 
-Using continuity at $V_{BE} = V_{TH}$, we can determine the voltage $\Delta V^F$ where the source subsystem starts to put $Q1$ in the forward mode:
+Using continuity at $V_{BE} = V_{TH}$, we can determine the voltage $\Delta V^F$ where the source subsystem makes $Q_1$ to go from Weak Forward to Forward mode:
 $$
 	\Delta V^F = \dfrac{V_B}{2} - \dfrac{1}{1-\dfrac{aR_E}{1+aR_E}} V_{TH} \simeq \dfrac{V_B}{2} - V_{TH}
 $$
 
-Which is a very expected result: TODO.
+In practical applications, $V_B \simeq 2 V_{TH}$, therefore $\Delta V^F \simeq 0$.
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{|m{1.5cm}||m{5cm}|m{7cm}|}
+	\begin{tabular}{|m{1.5cm}||m{5cm}|m{6cm}|}
 		\hline
-		BJT Mode & BJT Curve & Source Subsystem \\ \hline
+		BJT Mode & BJT Operating point & Source Subsystem \\ \hline
 
 		Reverse & 
 		\begin{tikzpicture}
