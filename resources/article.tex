@@ -5,6 +5,8 @@
 \usepackage{amssymb}
 \usepackage{circuitikz}
 \usepackage{fontspec}
+\usepackage{array}
+\usepackage{float}
 
 \setmainfont{Times New Roman}
 
@@ -406,7 +408,7 @@ We can treat the Source Subsystem as a \textit{virtual} device with its own $I_S
 To explicit it, let's apply a voltage $\Delta V$ in the range $-2.0V ... 2.0V$, evaluate $I_S$ using the equation above and pick the gain/offset pair $(a(\Delta V), b(\Delta V))$ that works.
 
 \begin{table}[h]
-\centering
+	\centering
 	\begin{tabular}{|c||c|c|c|}
 		\hline
 		BJT Mode & Gain/Offset & $I_S = \hat{f}_S (\Delta V)$ \\ \hline
@@ -445,14 +447,16 @@ To explicit it, let's apply a voltage $\Delta V$ in the range $-2.0V ... 2.0V$, 
 	\end{tabular}
 \end{table}
 
-Using continuity at $V_{BE} = V_{TH}$, we get:
+Using continuity at $V_{BE} = V_{TH}$, we can determine the voltage $\Delta V^F$ where the source subsystem starts to put $Q1$ in the forward mode:
+$$
+	\Delta V^F = \dfrac{V_B}{2} - \dfrac{1}{1-\dfrac{aR_E}{1+aR_E}} V_{TH} \simeq \dfrac{V_B}{2} - V_{TH}
+$$
 
+Which is a very expected result: TODO.
 
-
-
-\begin{table}[h]
-\centering
-	\begin{tabular}{|c||c|c|}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{1.5cm}||m{5cm}|m{7cm}|}
 		\hline
 		BJT Mode & BJT Curve & Source Subsystem \\ \hline
 
@@ -482,8 +486,7 @@ Using continuity at $V_{BE} = V_{TH}$, we get:
 			\draw (8.75, 0.157) -- (9.25, 0.657);
 			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (9.25, 1.5);
 			\draw[dash pattern={on 0.4pt off 1.6pt}] (9.25, 1.5) -- (8.25, 3.5);
-		\end{tikzpicture}
-		\\ \hline
+		\end{tikzpicture} \\ \hline
 
 		Weak Forward &
 		\begin{tikzpicture}
@@ -513,11 +516,10 @@ Using continuity at $V_{BE} = V_{TH}$, we get:
 			\draw[line width=2pt] (11, 1) -- (9.25, 1.5);
 			\draw[dash pattern={on 0.4pt off 1.6pt}] (9.25, 1.5) -- (8.25, 3.5);
 			\node[circ, xscale=1.2, yscale=1.2] at (9.25, 1.5){};
-		\end{tikzpicture}
-		\\ \hline
+		\end{tikzpicture} \\ \hline
 
 		Forward & 
-		\begin{tikzpicture}[scale=0.8]
+		\begin{tikzpicture}
 			\draw[-latex] (1, 1) -- (5, 1);
 			\draw[-latex] (3, 0.75) -- (3, 3);
 			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (5.5, 1){} node[anchor=center] at (N1.text){$V_{BE}$};
@@ -530,7 +532,6 @@ Using continuity at $V_{BE} = V_{TH}$, we get:
 		\end{tikzpicture}
 		& 
 		\begin{tikzpicture}
-			% Paths, nodes and wires:
 			\draw (11, 0.75) -- (11, 1.25);
 			\draw[-latex] (8, 1) -- (13, 1);
 			\draw[-latex] (9, 0.75) -- (9, 3);
@@ -545,8 +546,7 @@ Using continuity at $V_{BE} = V_{TH}$, we get:
 			\draw[line width=2pt] (9.25, 1.5) -- (8.25, 3.5);
 			\node[circ, xscale=1.2, yscale=1.2] at (9.25, 1.5){};
 			\node[circ, xscale=1.2, yscale=1.2] at (8.25, 3.5){};
-		\end{tikzpicture}
-		\\ \hline
+		\end{tikzpicture} \\ \hline
 	\end{tabular}
 \end{table}
 
