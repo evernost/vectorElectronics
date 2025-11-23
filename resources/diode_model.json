@@ -1,0 +1,443 @@
+{
+    "version": "0.1",
+    "components": [
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 188.976,
+                    "y": -56.693
+                },
+                {
+                    "x": 264.567,
+                    "y": -264.567
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                "--"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 75.591,
+                    "y": -255.118
+                },
+                {
+                    "x": 75.591,
+                    "y": -302.362
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "looselydotted"
+            },
+            "directions": [
+                "-|"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 37.795,
+                    "y": -37.795
+                },
+                {
+                    "x": 292.913,
+                    "y": -37.795
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "-|"
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 75.591,
+                    "y": -28.346
+                },
+                {
+                    "x": 75.59,
+                    "y": -226.715
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "-|"
+            ],
+            "endArrow": "latex"
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 75.59,
+                    "y": -37.739
+                },
+                {
+                    "x": 9.448,
+                    "y": -37.739
+                }
+            ],
+            "stroke": {
+                "width": "1.9pt"
+            },
+            "directions": [
+                "-|"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 75.59,
+                    "y": -37.739
+                },
+                {
+                    "x": 188.976,
+                    "y": -56.636
+                }
+            ],
+            "stroke": {
+                "width": "2pt"
+            },
+            "directions": [
+                "--"
+            ]
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 309.449,
+                "y": -37.795
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 42.52,
+                "y": 38.551
+            },
+            "text": {
+                "text": "$V_D$",
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 75.59,
+                "y": -235.786
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 42.52,
+                "y": 19.653
+            },
+            "text": {
+                "text": "$I_D$",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 188.976,
+                    "y": -28.29
+                },
+                {
+                    "x": 188.976,
+                    "y": -47.188
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "--"
+            ]
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 188.976,
+                "y": -18.464
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 42.52,
+                "y": 19.653
+            },
+            "text": {
+                "text": "$0.7V$",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 66.141,
+                    "y": -56.636
+                },
+                {
+                    "x": 85.039,
+                    "y": -56.636
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "--"
+            ]
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 44.881,
+                "y": -57.015
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 42.52,
+                "y": 19.653
+            },
+            "text": {
+                "text": "$I_{TH}$",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 207.874,
+                    "y": -113.386
+                },
+                {
+                    "x": 236.22,
+                    "y": -113.386
+                },
+                {
+                    "x": 236.22,
+                    "y": -188.976
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt"
+            },
+            "directions": [
+                "-|",
+                null
+            ]
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 249.212,
+                "y": -151.181
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 25.984,
+                "y": 75.591
+            },
+            "text": {
+                "text": "$g_{m}$",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 224.41,
+                "y": -103.559
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 33.071,
+                "y": 19.653
+            },
+            "text": {
+                "text": "$1$",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 75.591,
+                    "y": -56.693
+                },
+                {
+                    "x": 188.976,
+                    "y": -56.636
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dotted"
+            },
+            "directions": [
+                "-|"
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 188.976,
+                    "y": -37.795
+                },
+                {
+                    "x": 188.976,
+                    "y": -56.636
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "dotted"
+            },
+            "directions": [
+                "-|"
+            ]
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 42.52,
+                "y": -274.016
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 66.142,
+                "y": 18.898
+            },
+            "text": {
+                "text": "reverse",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 132.283,
+                "y": -274.016
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 113.386,
+                "y": 18.898
+            },
+            "text": {
+                "text": "cutoff",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "rect",
+            "position": {
+                "x": 226.772,
+                "y": -264.567
+            },
+            "stroke": {
+                "opacity": 0
+            },
+            "size": {
+                "x": 75.591,
+                "y": 37.795
+            },
+            "text": {
+                "text": "forward active",
+                "align": 1,
+                "justify": 0,
+                "showPlaceholderText": true
+            }
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 188.976,
+                    "y": -37.795
+                },
+                {
+                    "x": 188.976,
+                    "y": -302.362
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "looselydotted"
+            },
+            "directions": [
+                null
+            ]
+        },
+        {
+            "type": "wire",
+            "points": [
+                {
+                    "x": 264.567,
+                    "y": -37.795
+                },
+                {
+                    "x": 264.567,
+                    "y": -302.362
+                }
+            ],
+            "stroke": {
+                "width": "0.4pt",
+                "style": "looselydotted"
+            },
+            "directions": [
+                "-|"
+            ]
+        }
+    ]
+}

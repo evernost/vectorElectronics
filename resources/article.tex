@@ -97,6 +97,129 @@ Here are some common approaches:
 % TODO: precision analysis on V_D vs I_S,\eta,°T to show that they are huge contributors.
 % Therefore, considering their dispersion, its pretty useless.
 
+\subsubsection*{Derivation}
+To apply the method described in this article, we first linearise each non-linear device of the circuit. Here, there is only the diode $D$, for which we write:
+$$
+	I_D = f(V_D) = aV_D + b
+$$
+
+The operating point of this circuit is going to set the diode in one of the regions depicted here below.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{2.5cm}||m{4cm}|m{6cm}|}
+		\hline
+		Diode mode & Gain/Offset & Curve\\ 
+		\hline
+		Reverse 
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = 0 \\
+			b = 0
+		\end{array}
+		\right.$
+		& 
+		\begin{tikzpicture}[scale=0.6]
+			\draw (5, 1.5) -- (5.5, 5.5);
+			\draw[-latex] (1.5, 1) |- (6.25, 1);
+			\draw[-latex] (2, 0.75) -| (2, 5.999);
+			\draw (2, 0.999) -| (5, 1.498);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.465cm] at (6.812, 1){} node[anchor=west, align=left, text width=0.702cm, inner sep=6pt] at (6.25, 1){$V_D$};
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (2, 6.239){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (2, 6.239){$I_D$};
+			\draw (5, 0.749) -- (5, 1.249);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (5, 0.489){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (5, 0.489){$0.7V$};
+			\draw (1.75, 1.498) -- (2.25, 1.498);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (1.187, 1.509){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (1.187, 1.509){$I_{TH}$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (5, 1) -| (5, 1.498);
+			\draw[dash pattern={on 0.4pt off 3.2pt}] (5, 1) -- (5, 6);
+			\draw (2, 0.999) -- (5, 1.498);
+			\draw[line width=2pt] (0.5, 1) -- (2, 1);
+		\end{tikzpicture}\\
+		\hline
+		"Weak Forward"
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = \frac{I_{TH}}{V_{TH}} \\
+			b = 0
+		\end{array}
+		\right.$
+		& 
+		\begin{tikzpicture}[scale=0.6]
+			\draw (5, 1.5) -- (5.5, 5.5);
+			\draw[-latex] (1.5, 1) |- (6.25, 1);
+			\draw[-latex] (2, 0.75) -| (2, 5.999);
+			\draw (2, 0.999) -| (5, 1.498);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.465cm] at (6.812, 1){} node[anchor=west, align=left, text width=0.702cm, inner sep=6pt] at (6.25, 1){$V_D$};
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (2, 6.239){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (2, 6.239){$I_D$};
+			\draw (5, 0.749) -- (5, 1.249);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (5, 0.489){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (5, 0.489){$0.7V$};
+			\draw (1.75, 1.498) -- (2.25, 1.498);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (1.187, 1.509){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (1.187, 1.509){$I_{TH}$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (5, 1) -| (5, 1.498);
+			\draw[dash pattern={on 0.4pt off 3.2pt}] (5, 1) -- (5, 6);
+			\draw[line width=2pt] (2, 0.999) -- (5, 1.498);
+			\draw (0.5, 1) -- (2, 1);
+		\end{tikzpicture}\\
+		\hline
+		Forward
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = g_m \\
+			b = I_{TH}-g_m V_{TH}
+		\end{array}
+		\right.$ 
+		&
+		\begin{tikzpicture}[scale=0.6]
+			\draw[line width=2pt] (5, 1.5) -- (5.5, 5.5);
+			\draw[-latex] (1.5, 1) |- (6.25, 1);
+			\draw[-latex] (2, 0.75) -| (2, 5.999);
+			\draw (2, 0.999) -| (5, 1.498);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.465cm] at (6.812, 1){} node[anchor=west, align=left, text width=0.702cm, inner sep=6pt] at (6.25, 1){$V_D$};
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (2, 6.239){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (2, 6.239){$I_D$};
+			\draw (5, 0.749) -- (5, 1.249);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (5, 0.489){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (5, 0.489){$0.7V$};
+			\draw (1.75, 1.498) -- (2.25, 1.498);
+			\node[shape=rectangle, minimum width=1.09cm, minimum height=0.485cm] at (1.187, 1.509){} node[anchor=center, align=center, text width=0.702cm, inner sep=6pt] at (1.187, 1.509){$I_{TH}$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (5, 1) -| (5, 1.498);
+			\draw[dash pattern={on 0.4pt off 3.2pt}] (5, 1) -- (5, 6);
+			\draw (2, 0.999) -- (5, 1.498);
+			\draw (0.5, 1) -- (2, 1);
+			\node[shape=rectangle, minimum width=2.277cm, minimum height=0.936cm] at (6.406, 2.765){} node[anchor=west, align=left, text width=1.889cm, inner sep=6pt] at (5.25, 2.765){slope = $g_m$};
+		\end{tikzpicture}\\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+
+We don't know in what region the diode operates at yet, so $a$ and $b$ are unknown, but that is not an issue: the equation stays the same so we can carry on and solve for $V_D$ regardless:
+$$
+	V_D = V - RI_D = V - R \left( aV_D + b \right)
+$$
+
+%\fbox{$V_D = \dfrac{1}{1 + aR}V - \dfrac{bR}{1 + aR}$}
+
+\centerline{\fbox{$V_D = \dfrac{1}{1 + aR}V - \dfrac{bR}{1 + aR}$}}
+
+Now there are different interpretations depending on the bias point.  
+
+\paragraph{Forward bias}\mbox{}\\
+
+In particular, when $V \gg V_{TH}$, we can make the hypothesis that the diode is in Forward mode. We get:
+$$
+	V_D = \dfrac{1}{1 + g_mR}V + \dfrac{g_mR}{1 + g_mR}V_{TH} - \dfrac{RI_{TH}}{1 + g_mR}
+$$
+
+The specific feature of the Forward operating mode is that the transconductance $g_m$ is particularly high, which makes several terms negligible. So finally:
+
+\centerline{\fbox{$V_D \simeq V_{TH}$}}
+
+Which is a common result and this whole calculation justifies the usual diode approximation: the output does not depend on the polarisation voltage $V$ anymore.
+
+
 \section*{Example 2: diode and resistor II}
 This is a slight variation of the previous diode circuit.\\
 
@@ -264,7 +387,11 @@ I & = I_R + I_C \\
 \end{split}
 \end{equation}
 
-The solution is more straightforward as there is no feedback involved here.
+So:
+
+\centerline{\fbox{$V = \dfrac{R_1+R_2}{1+aR_2}\left(I-b\right)$}}
+
+The derivation is more straightforward as there is no feedback involved here.
 Observations:
 \begin{itemize}
 	\item starts to act as a diode when $\frac{R_2}{R_1+R_2} \simeq 0.7V$
@@ -396,7 +523,7 @@ $$
 
 Under a linear model assumption $f_S(V) = aV+b$, we can write that:
 $$
-I_S = a \left(-\Delta V + \dfrac{V_B}{2} - R_E I_S \right) + b \\
+	I_S = a \left(-\Delta V + \dfrac{V_B}{2} - R_E I_S \right) + b
 $$
 
 Finally, after a bit of algebra:
@@ -411,7 +538,7 @@ To explicit it, let's apply a voltage $\Delta V$ in the range $-2.0V ... 2.0V$, 
 	\centering
 	\begin{tabular}{|c||c|c|c|}
 		\hline
-		BJT Mode & Gain/Offset & $I_S = \hat{f}_S (\Delta V)$ \\ \hline
+		BJT mode & Gain/Offset & $I_S = \hat{f}_S (\Delta V)$ \\ \hline
 
 		Reverse 
 		& 
