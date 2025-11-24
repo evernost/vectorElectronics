@@ -217,7 +217,36 @@ The specific feature of the Forward operating mode is that the transconductance 
 
 \centerline{\fbox{$V_D \simeq V_{TH}$}}
 
-Which is a common result and this whole calculation justifies the usual diode approximation: the output does not depend on the polarisation voltage $V$ anymore.
+Which is a very common result, and this whole calculation justifies the usual diode approximation: the output does not depend on the polarisation voltage $V$ anymore.
+
+The analysis is not complete though, and only one direction of the implication was done:
+$$
+	 \text{initial conditions } (V, R) \Rightarrow D \text{ is in Forward mode}
+$$
+
+Strictly speaking, we would have to check that $D$ being in forward mode is compatible with these conditions.
+
+
+\paragraph{"Weak Forward" bias}\mbox{}\\
+
+The previous linearised equations allows us to study what happens in a less common case: the diode is below its conduction threshold.
+
+From
+$$
+	V_D = \dfrac{1}{1 + aR}V - \dfrac{bR}{1 + aR}
+$$
+
+and since $b = 0$, we now get:
+$$
+	V_D \simeq V
+$$
+
+But that would be equivalent to say that the diode doesn't conduct at all.
+
+Using the fact that $a \ll 1$, a less \textit{crude} approximation would give:
+$$
+	V_D = (1 - aR)V
+$$
 
 
 \section*{Example 2: diode and resistor II}
