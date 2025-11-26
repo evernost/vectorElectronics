@@ -58,7 +58,6 @@ In this sense, we speak in this paper of a \textit{Vector Analysis} of the circu
 It may therefore be conceivable to interpret the action of a circuit on a nonlinear component as analogous to a matrix acting on a vector. The idea that a circuit might have a kind of “matrix analogue” is perhaps worth exploring further.
 
 
-
 \section*{Example 1: diode and resistor I}
 One of the first case study for a diode in a semiconductor lecture is the resistor-diode circuit. It corresponds to most of the LED polarisation circuits.
 
@@ -78,26 +77,35 @@ One of the first case study for a diode in a semiconductor lecture is the resist
 
 Even though this is probably the simplest circuit involving a diode, the exponential behaviour of the $I/V$ curve takes a bit of method to solve the circuit.
 
-Here are some common approaches:
-\begin{itemize}
-	\item Assume $V_D = 0.7V$ (or a few Volts for LEDs), determine $R$ for a target current (say $5mA$) \rightarrow Done! It's precise enough for most applications.
-	\item Iterative solving:
-		\begin{enumerate}
-			\item Assume a \textit{guess} voltage $V_D = 0.7V$ accross the diode (no need to be accurate)
-			\item Determine the current $I_D$ using the diode $I/V$ model: $I_D = I_S \left( \exp \left( \dfrac{V_D}{V_T}\right)-1\right)$
-			\item Calculate the new $V_D$: $V_D = V - R I_D$ 
-			\item Go back to 2. until $V_D$ and $I_D$ eventually settle. 
-		\end{enumerate}
-		Convergence rate is insanely fast and the result gets accurate to a few digits after only 2 or 3 iteration. 
-		However, this method is more of a theoretical fact. It might be useful in a simulator, but for practical situations it won't bring much more precision. The natural dispersion in $I/V$ curves within the same batch of diodes, the lack of detailed information about the model (\textit{e.g.} $I_S$), not even mentionning the limits of the model itself lowers the benefit of this method.
-	\item Solve using Lambert's W function
-	This function pops naturally when solving equations like $exp(x) = ax + b$. Though the conclusions are similar to the iterative method.
-\end{itemize}
+Here are some common approaches.
+
+\subsubsection*{Method 1: the fixed diode voltage}
+Assume $V_D = 0.7V$ (or up to a few Volts for LEDs) and fixed. Determine $R$ for a target current, say $I_D = 5mA$:
+$$
+	I_D = \dfrac{V - V_D}{R}
+$$
+
+Done! It's precise enough for most applications.
+
+\subsubsection*{Method 2: the iterative solving}
+	\begin{enumerate}
+		\item Assume a \textit{guess} voltage $V_D = 0.7V$ accross the diode (no need to be accurate)
+		\item Determine the current $I_D$ using the diode $I/V$ model: $I_D = I_S \left( \exp \left( \dfrac{V_D}{V_T}\right)-1\right)$
+		\item Calculate the new $V_D$: $V_D = V - R I_D$ 
+		\item Go back to 2. until $V_D$ and $I_D$ eventually settle. 
+	\end{enumerate}
+	Convergence rate is insanely fast and the result gets accurate to a few digits after only 2 or 3 iteration. 
+	However, this method is more of a theoretical fact. It might be useful in a simulator, but for practical situations it won't bring much more precision. The natural dispersion in $I/V$ curves within the same batch of diodes, the lack of detailed information about the model (\textit{e.g.} $I_S$), not even mentioning the limits of the model itself lowers the benefit of this method.
+
+\subsubsection*{Method 3: Analytical solving (Lambert's W function)}
+Assume we know how to solve for $x$ in the equation $\exp(x) = ax + b$ with $a \in \mathbb{R}^*$ and $b \in \mathbb{R}$. 
+
+Although the analytical method could in principle yield better results, the conclusions here are similar to the previous method: the solution can't be better than the weakest element of the model.
 
 % TODO: precision analysis on V_D vs I_S,\eta,°T to show that they are huge contributors.
 % Therefore, considering their dispersion, its pretty useless.
 
-\subsubsection*{Derivation}
+\subsubsection*{Method 4: Use of a Piecewise Linear model}
 To apply the method described in this article, we first linearise each non-linear device of the circuit. Here, there is only the diode $D$, for which we write:
 $$
 	I_D = f(V_D) = aV_D + b
@@ -107,9 +115,9 @@ The operating point of this circuit is going to set the diode in one of the regi
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{|m{2.5cm}||m{4cm}|m{6cm}|}
+	\begin{tabular}{|m{2.5cm}||m{4cm}|m{5cm}|}
 		\hline
-		Diode mode & Gain/Offset & Curve\\ 
+		\textbf{Diode mode} & \textbf{Gain/Offset} & \textbf{Curve}\\ 
 		\hline
 		Reverse 
 		& 
@@ -192,8 +200,6 @@ The operating point of this circuit is going to set the diode in one of the regi
 		\hline
 	\end{tabular}
 \end{table}
-
-
 
 We don't know in what region the diode operates at yet, so $a$ and $b$ are unknown, but that is not an issue: the equation stays the same so we can carry on and solve for $V_D$ regardless:
 $$
@@ -302,7 +308,26 @@ Another variation on a theme of a Diode and Resistor circuit. This time, we have
 
 \section*{Example 4: the Common Collector (or \textit{Emitter Follower})}
 
-\subsubsection*{Derivation}
+Now moving onto applications of Bipolar Junction Transistors (BJT), let's study one of the most basic linear application of it.
+
+\begin{circuitikz}
+	\node[npn, tr circle](N1) at (12, 10.001){} node[anchor=west] at (N1.text){$Q_1$};
+	\draw (12, 9.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (12, 6.96);
+	\node[eground2] at (12, 6.96){};
+	\draw (13.5, 9) -- (12, 9);
+	\draw (11.16, 10.001) |- (10, 10);
+	\draw (12, 10.75) -- (12, 11.5);
+	\node[vcc] at (12, 11.5){};
+	\node[ocirc](N2) at (10, 10){} node[anchor=east] at (N2.text){$V_{IN}$};
+	\node[ocirc](N3) at (13.5, 9){} node[anchor=west] at (N3.text){$V_{OUT}$};
+	\node[circ] at (12, 9){};
+\end{circuitikz}
+
+
+The Common Collector Circuit helps isolating the input voltage from its output.
+
+
+\subsubsection*{Transfert function}
 For the BJT, we use the following model:
 
 \begin{circuitikz}
@@ -332,20 +357,6 @@ For the BJT, we use the following model:
 
 As we will see, for the common collector, the actual values for $g_m$ and $I_{TH}$ do not matter that much. However, this is not true in the general case. We will illustrate that in later examples.\\
 
-The Common Collector circuit:
-
-\begin{circuitikz}
-	\node[npn, tr circle](N1) at (12, 10.001){} node[anchor=west] at (N1.text){$Q_1$};
-	\draw (12, 9.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (12, 6.96);
-	\node[eground2] at (12, 6.96){};
-	\draw (13.5, 9) -- (12, 9);
-	\draw (11.16, 10.001) |- (10, 10);
-	\draw (12, 10.75) -- (12, 11.5);
-	\node[vcc] at (12, 11.5){};
-	\node[ocirc](N2) at (10, 10){} node[anchor=east] at (N2.text){$V_{IN}$};
-	\node[ocirc](N3) at (13.5, 9){} node[anchor=west] at (N3.text){$V_{OUT}$};
-	\node[circ] at (12, 9){};
-\end{circuitikz}
 
 So just like we did with the diode previously: we assume a linear model $I_C = f(V_{BE}) = a V_{BE} + b$ with $a$ and $b$ depending on the operating point (Reverse, Cutoff, Forward Active).
 
@@ -358,11 +369,17 @@ Rearranging for $V_{OUT}$:
 \fbox{$V_{OUT} = \dfrac{a R_E}{1 + a R_E} V_{IN} + \dfrac{b}{1 + a R_E}$}
 
 
+
 \subsubsection*{A BJT is an op amp in disguise.}
 We've just seen that a BJT in the common emitter arrangement is basically always 'on'. It's the very high transconductance past the $V_{BE} = 0.7V$ that makes all the system work.\\
 Applying a very high gain to a voltage difference reminds us of op amps. Under the hood, an op amp is voltage difference amplifier with a massive gain ($>10^6$)\\
 The high gain is rarely used as such because it is not very predictable, controlled and uniform in frequency. 
 We much prefer to use this 'unreliable' gain in a feedback loop. It reduces the amplification, but it is more robust to part to part fluctuation
+
+
+
+\subsubsection*{Input Impedance}
+*** SECTION IS TODO*** .
 
 
 
@@ -406,7 +423,7 @@ It is quite common to have a potentiometer for the resistors $R_1$ and $R_2$ to 
 \end{circuitikz}
 
 \subsubsection*{Derivation}
-Just like with the examples before, we can ignore the base current as a first approximation.
+Just like with the examples before, we can ignore the base current as a first approximation. Then:
 \begin{equation}
 \begin{split}
 I & = I_R + I_C \\
@@ -420,8 +437,110 @@ So:
 
 \centerline{\fbox{$V = \dfrac{R_1+R_2}{1+aR_2}\left(I-b\right)$}}
 
-The derivation is more straightforward as there is no feedback involved here.
-Observations:
+We can now have a closer look at the behaviour for the different operating regions of the transistor:
+
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{1.5cm}||m{5cm}|m{6cm}|}
+		\hline
+		\textbf{BJT Mode} & \textbf{BJT Operating point} & \textbf{Rubber Diode} \\ \hline
+
+		Reverse & 
+		\begin{tikzpicture}
+			\draw[-latex] (1, 1) -- (5, 1);
+			\draw[-latex] (3, 0.75) -- (3, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (5.5, 1){} node[anchor=center] at (N1.text){$V_{BE}$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (3, 3.375){} node[anchor=center] at (N2.text){$I_C$};
+			\draw[line width=2pt] (1, 1) -- (3, 1);
+			\draw[dash pattern={on 0.4pt off 0.8pt}] (3, 1) -- (4.25, 1.25);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (4.25, 1.25) -- (4.75, 3);
+			\node[circ, xscale=1.2, yscale=1.2] at (3, 1){};
+		\end{tikzpicture}
+		& 
+		\begin{tikzpicture}
+			\draw[-latex] (8, 1) -- (13, 1);
+			\draw[-latex] (9, 0.75) -- (9, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (13.5, 1){} node[anchor=center] at (N1.text){$\Delta V$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (9, 3.375){} node[anchor=center] at (N2.text){$I_S$};
+			\draw[line width=2pt] (11, 1) -- (12.75, 1);
+			\node[circ, xscale=1.2, yscale=1.2] at (11, 1){};
+			\draw (11, 0.75) -- (11, 1.25);
+			\draw (9.25, 0.75) -- (9.25, 1.25);
+			\node[shape=rectangle, minimum width=0.465cm, minimum height=0.84cm](N3) at (11, 0.187){} node[anchor=center] at (N3.text){$\dfrac{V_B}{2}$};
+			\node[shape=rectangle, minimum width=2.465cm, minimum height=0.965cm](N4) at (9.25, -0.5){} node[anchor=center] at (N4.text){$\dfrac{V_B}{2}-V_{TH}$};
+			\draw (8.75, 0.157) -- (9.25, 0.657);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (9.25, 1.5);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (9.25, 1.5) -- (8.25, 3.5);
+		\end{tikzpicture} \\ \hline
+
+		Weak Forward &
+		\begin{tikzpicture}
+			\draw[-latex] (1, 1) -- (5, 1);
+			\draw[-latex] (3, 0.75) -- (3, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (5.5, 1){} node[anchor=center] at (N1.text){$V_{BE}$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (3, 3.375){} node[anchor=center] at (N2.text){$I_C$};
+			\draw[line width=2pt] (3, 1) -- (4.25, 1.25);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (4.25, 1.25) -- (4.75, 3);
+			\node[circ, xscale=1.2, yscale=1.2] at (3, 1){};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (1, 1.006) -- (3, 1.006);
+			\node[circ, xscale=1.2, yscale=1.2] at (4.25, 1.25){};
+		\end{tikzpicture}
+		& 
+		\begin{tikzpicture}
+			\draw (11, 0.75) -- (11, 1.25);
+			\draw[-latex] (8, 1) -- (13, 1);
+			\draw[-latex] (9, 0.75) -- (9, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (13.5, 1){} node[anchor=center] at (N1.text){$\Delta V$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (9, 3.375){} node[anchor=center] at (N2.text){$I_S$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (12.75, 1);
+			\node[circ, xscale=1.2, yscale=1.2] at (11, 1){};
+			\draw (9.25, 0.75) -- (9.25, 1.25);
+			\node[shape=rectangle, minimum width=0.465cm, minimum height=0.84cm](N3) at (11, 0.187){} node[anchor=center] at (N3.text){$\dfrac{V_B}{2}$};
+			\node[shape=rectangle, minimum width=2.465cm, minimum height=0.965cm](N4) at (9.25, -0.5){} node[anchor=center] at (N4.text){$\dfrac{V_B}{2}-V_{TH}$};
+			\draw (8.75, 0.157) -- (9.25, 0.657);
+			\draw[line width=2pt] (11, 1) -- (9.25, 1.5);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (9.25, 1.5) -- (8.25, 3.5);
+			\node[circ, xscale=1.2, yscale=1.2] at (9.25, 1.5){};
+		\end{tikzpicture} \\ \hline
+
+		Forward & 
+		\begin{tikzpicture}
+			\draw[-latex] (1, 1) -- (5, 1);
+			\draw[-latex] (3, 0.75) -- (3, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (5.5, 1){} node[anchor=center] at (N1.text){$V_{BE}$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (3, 3.375){} node[anchor=center] at (N2.text){$I_C$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (3, 1) -- (4.25, 1.25);
+			\draw[line width=2pt] (4.25, 1.25) -- (4.75, 3);
+			\node[circ, xscale=1.2, yscale=1.2] at (4.75, 3){};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (1, 1) -- (3, 1);
+			\node[circ, xscale=1.2, yscale=1.2] at (4.25, 1.25){};
+		\end{tikzpicture}
+		& 
+		\begin{tikzpicture}
+			\draw (11, 0.75) -- (11, 1.25);
+			\draw[-latex] (8, 1) -- (13, 1);
+			\draw[-latex] (9, 0.75) -- (9, 3);
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N1) at (13.5, 1){} node[anchor=center] at (N1.text){$\Delta V$};
+			\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm](N2) at (9, 3.375){} node[anchor=center] at (N2.text){$I_S$};
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (12.75, 1);
+			\draw (9.25, 0.75) -- (9.25, 1.25);
+			\node[shape=rectangle, minimum width=0.465cm, minimum height=0.84cm](N3) at (11, 0.187){} node[anchor=center] at (N3.text){$\dfrac{V_B}{2}$};
+			\node[shape=rectangle, minimum width=2.465cm, minimum height=0.965cm](N4) at (9.25, -0.5){} node[anchor=center] at (N4.text){$\dfrac{V_B}{2}-V_{TH}$};
+			\draw (8.75, 0.157) -- (9.25, 0.657);
+			\draw[dash pattern={on 0.4pt off 1.6pt}] (11, 1) -- (9.25, 1.5);
+			\draw[line width=2pt] (9.25, 1.5) -- (8.25, 3.5);
+			\node[circ, xscale=1.2, yscale=1.2] at (9.25, 1.5){};
+			\node[circ, xscale=1.2, yscale=1.2] at (8.25, 3.5){};
+		\end{tikzpicture} \\ \hline
+	\end{tabular}
+\end{table}
+
+
+
+
+A few observations:
 \begin{itemize}
 	\item starts to act as a diode when $\frac{R_2}{R_1+R_2} \simeq 0.7V$
 	\item when active, the new transconductance becomes $\hat{g}_m=\frac{1 + g_m R_2}{R_1+R_2}$
@@ -706,8 +825,6 @@ In practical applications, $V_B \simeq 2 V_{TH}$, therefore $\Delta V^F \simeq 0
 		\end{tikzpicture} \\ \hline
 	\end{tabular}
 \end{table}
-
-
 
 
 
