@@ -863,19 +863,71 @@ And:
 \fbox{$I_D = \dfrac{1}{R_E}\dfrac{a R_E}{1+a R_E}\Delta V + \dfrac{a \frac{V_B}{2} + b}{1 + a R_E} = \hat{f}_D (\Delta V)$}
 
 \subsection*{Class AB subsystem: summary}
-Let's see now how we can combine the subsystems to solve for the class AB entirely.
-If we treat these subsystems as a \textit{virtual device} (nonlinear) the original system of equation becomes much simpler:\\
+Let's see now how we can combine the subsystems to solve for the class AB entirely. Recall the simplified view of the system:
+
+
+\begin{circuitikz}
+	\draw (1, 5) -| (2, 5);
+	\draw (4, 4.25) -- (4, 5.75);
+	\draw (2, 5.75) -| (2, 4.25);
+	\draw (4, 5) -| (5.75, 4.75);
+	\draw (5.75, 4.75) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_L$}] (5.75, 3.5);
+	\node[circ] at (4, 5){};
+	\node[eground2] at (5.75, 3.5){};
+	\node[circ] at (2, 5){};
+	\node[ocirc](N1) at (1, 5){} node[anchor=east] at (N1.text){$V_{IN}$};
+	\draw[-latex] (6.75, 3.5) -- (6.75, 4.75);
+	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (7.25, 4.125){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (6.75, 4.5){$V_{OUT}$};
+	\draw[dash pattern={on 0.4pt off 1.6pt}] (5.75, 5) -- (7, 5);
+	\node[shape=rectangle, draw, line width=1pt, minimum width=2.965cm, minimum height=1.465cm] at (3, 6.5){} node[anchor=center, align=center, text width=2.577cm, inner sep=6pt] at (3, 6.5){Source subsystem};
+	\node[shape=rectangle, draw, line width=1pt, minimum width=2.965cm, minimum height=1.465cm] at (3, 3.5){} node[anchor=center, align=center, text width=2.577cm, inner sep=6pt] at (3, 3.5){Drain subsystem};
+	\draw[line width=1pt, -latex] (2.25, 5) -- (3.75, 5);
+	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (3, 4.625){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (2.5, 5){$\Delta V$};
+	\draw[line width=1.5pt, -latex] (4, 5.5) -| (4, 5.25);
+	\draw[line width=1.5pt, -latex] (4, 4.75) -| (4, 4.5);
+	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (4.5, 5.375){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (4, 5.75){$I_S$};
+	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (4.5, 4.625){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (4, 5){$I_D$};
+	\draw[line width=1.5pt, -latex] (5.25, 5) -- (5.5, 5);
+	\node[shape=rectangle, minimum width=0.965cm, minimum height=0.715cm] at (5.5, 5.375){} node[anchor=north west, align=left, text width=0.577cm, inner sep=6pt] at (5, 5.75){$I_L$};
+\end{circuitikz}
+
+Therefore:\\
 
 $$
-	V_{OUT} = R_L \left( \hat{f}_S \left(v_{IN} - v_{OUT} \right) - \hat{f}_D \left(v_{OUT} - v_{IN} \right) \right)
+	V_{OUT} = R_L \left( \hat{f}_S \left(V_{IN} - V_{OUT} \right) - \hat{f}_D \left(V_{OUT} - V_{IN} \right) \right)
 $$\\
 
-Notice that now, $I_S$ and $I_D$ are no longer defined recursively, and also the $v_B$ and $R_E$ terms are integrated in the nonlinear functions $\hat{f}_S$ and $\hat{f}_D$
+The equation exhibits an ultimate recursion that we need to get rid of. For that, we need to study this last function:
+$$
+	\hat{f}(\Delta V) \triangleq \hat{f}_S(-\Delta V) - \hat{f}_D(\Delta V)
+$$
+
+To simplify the analysis, we consider that $\Delta V^F = 0$.
+
+
+By linearity, we know that $\hat{f}$ is piecewise linear too.
+
+
+
+Then:
+$$
+	V_{OUT} = R_L\hat{f}(V_{OUT}-V_{IN}) 
+$$
+This looks familiar: it is the equation for the emitter follower!
+
+
+\subsection*{Conclusions}
+
+\begin{itemize}
+	\item No need for strong matching between the transistors
+	\item Role of $R_E$
+	\item What if $\Delta V^F \neq 0$?
+\end{itemize}
 
 
 \section*{Example 7: the Differential Pair}
 
-The Differential Pair (or Long Tailed Pair 😏) is the bread and butter of Operational Amplifiers.
+The Differential Pair (or Long Tailed Pair ¬‿¬) is at the core of Operational Amplifiers.
 
 \begin{circuitikz}
 	\node[npn, tr circle](N1) at (5.84, 10){} node[anchor=west] at ([xshift=0.08cm]N1.text){$Q_1$};
@@ -1252,6 +1304,60 @@ For a BJT:
 \subsubsection*{Large signal analysis}
 Unlike the Emitter Follower, there's no feedback here to rely on. Hence, we expect deviation from the model if the input is too wide.
 
-\subsubsection*{Mismatch}
+\subsubsection*{Transistor spec mismatch}
+This section is TODO.
+
+
+\section*{Example 11: the diode Ladder Filter}
+
+\subsubsection*{Description}
+As a follow-up of the Moog Ladder Filter, we now consider the case of the diode version. It looks very similar to the Moog one, except the BJTs have been replaced with diodes. 
+
+\section*{Example 12: the Moog Voltage Controlled High-Pass filter (module \textit{904B})}
+
+\subsubsection*{Description}
+Similarly, Moog came up with a design for a high-pass filter (also patented). The structure differs a bit from the low-pass, but it is equally as puzzling.
+
+Here below is one stage of the high-pass filter:
+
+\begin{circuitikz}
+\node[npn, tr circle](N1) at (6, 4.02){} node[anchor=west] at ([xshift=0.13cm]N1.text){$Q_1$};
+	\node[npn, tr circle](N2) at (9.5, 2.75){} node[anchor=west] at ([xshift=0.13cm]N2.text){$Q_3$};
+	\node[pnp, tr circle](N3) at (6, 1.48){} node[anchor=west] at ([xshift=0.13cm]N3.text){$Q_2$};
+	\draw (6, 2.25) -- (6, 3.25);
+	\node[circ] at (6, 2.75){};
+	\draw (4.5, 4.75) |- (5.16, 4.02);
+	\node[ocirc](N4) at (4.5, 4.75){} node[anchor=south] at ([yshift=0.13cm]N4.north){$E$};
+	\draw (4.5, 0.75) |- (5.16, 1.48);
+	\node[ocirc](N5) at (4.5, 0.75){} node[anchor=north] at ([yshift=-0.13cm]N5.text){$-E$};
+	\draw (6, 7.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_1$}, label distance=0.13cm] (6, 5.75);
+	\draw (6, 5.75) -| (6, 4.79);
+	\draw (6, -0.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_2$}, label distance=0.13cm] (6, -1.75);
+	\draw (6, -0.25) -| (6, 0.71);
+	\draw (3.75, 2.75) to[capacitor, /tikz/circuitikz/bipoles/length=0.700cm] (2.25, 2.75);
+	\node[ocirc](N6) at (6, 7.25){} node[anchor=south] at ([yshift=0.13cm]N6.north){$V_{CC}$};
+	\node[ocirc](N7) at (6, -1.75){} node[anchor=north] at ([yshift=-0.13cm]N7.text){$-V_{CC}$};
+	\draw (3.75, 2.75) -- (6, 2.75);
+	\node[pnp, tr circle](N8) at (10.75, 4.008){} node[anchor=west] at ([xshift=0.13cm]N8.text){$Q_4$};
+	\draw (9.5, 7.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l_={$R_3$}, label distance=0.13cm] (9.5, 5.75);
+	\node[ocirc](N9) at (9.5, 7.25){} node[anchor=south] at ([yshift=0.13cm]N9.north){$V_{CC}$};
+	\draw (6, 2.75) -| (8.66, 2.75);
+	\draw (9.5, 3.52) -| (9.5, 5.75);
+	\draw (10.75, 4.79) -| (10.75, 5.29);
+	\node[ocirc](N10) at (10.75, 5.29){} node[anchor=south] at ([yshift=0.13cm]N10.north){$V_{POL}$};
+	\draw (9.5, 2) |- (12, 1.5);
+	\draw (10.75, 3.25) -- (10.75, 1.5);
+	\draw (9.91, 4.008) -| (9.5, 3.988);
+	\draw (9.5, -0.25) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l_={$R_4$}, label distance=0.13cm] (9.5, -1.75);
+	\node[ocirc](N11) at (9.5, -1.75){} node[anchor=north] at ([yshift=-0.13cm]N11.text){$-V_{CC}$};
+	\draw (9.5, -0.25) -| (9.5, 1.5);
+	\node[circ] at (9.5, 1.5){};
+	\node[circ] at (10.75, 1.5){};
+	\node[circ] at (9.5, 4){};
+	\node[ocirc](N12) at (2.25, 2.75){} node[anchor=east] at ([xshift=-0.13cm]N12.text){$V_{IN}$};
+	\node[ocirc](N13) at (12, 1.5){} node[anchor=west] at ([xshift=0.13cm]N13.text){$V_{OUT}$};
+\end{circuitikz}
+
+
 
 \end{document}
