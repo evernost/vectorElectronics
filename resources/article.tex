@@ -80,16 +80,16 @@ Even though this is probably the simplest circuit involving a diode, the exponen
 Here are some common approaches.
 
 \subsubsection*{Method 1: the fixed diode voltage}
-Assume $V_D = 0.7V$ (or up to a few Volts for LEDs) and fixed. Determine $R$ for a target current, say $I_D = 5mA$:
+Assume the diode voltage is constant and $V_D = 0.7V$ (or up to a few Volts for LEDs). Set a target current, say $I_D = 5mA$, and determine $R$ accordingly:
 $$
-	I_D = \dfrac{V - V_D}{R}
+	R = \dfrac{V - V_D}{I_D}
 $$
 
-Done! It's precise enough for most applications.
+Done! This method yields results that are accurate enough for most applications.
 
 \subsubsection*{Method 2: the iterative solving}
 	\begin{enumerate}
-		\item Assume a \textit{guess} voltage $V_D = 0.7V$ accross the diode (no need to be accurate)
+		\item Propose a first \textit{guess} voltage accross the diode: $V_D = 0.7V$ (no need to be accurate)
 		\item Determine the current $I_D$ using the diode $I/V$ model: $I_D = I_S \left( \exp \left( \dfrac{V_D}{V_T}\right)-1\right)$
 		\item Calculate the new $V_D$: $V_D = V - R I_D$ 
 		\item Go back to 2. until $V_D$ and $I_D$ eventually settle. 
@@ -223,7 +223,7 @@ The specific feature of the Forward operating mode is that the transconductance 
 
 \centerline{\fbox{$V_D \simeq V_{TH}$}}
 
-Which is a very common result, and this whole calculation justifies the usual diode approximation: the output does not depend on the polarisation voltage $V$ anymore.
+We've found a very common result: the diode voltage does not depend on the polarisation voltage $V$ anymore.
 
 The analysis is not complete though, and only one direction of the implication was done:
 $$
@@ -953,6 +953,11 @@ The Differential Pair (or Long Tailed Pair ¬‿¬) is at the core of Operationa
 
 
 \section*{Example 8: the Ring Modulator}
+
+The Ring Modulator is a special arrangement of diodes that, in certain conditions, produces a voltage that is the mathematical product of 2 input voltages. The term \textit{modulator} comes from the fact that this was the way signal modulation was achieved back in the days. This diode structure appeared in patents dating back from 1934\footnote{US Patent 2,025,158 \textit{Modulating System}, F. A. Cowan, 24 Dec 1934} (!). 
+
+Notice how the structure slightly differs from the Full Bridge Rectifier (or \textit{Graetz Bridge}) 
+
 \begin{tikzpicture}
 	\draw (9.75, -0) to[american resistor, /tikz/circuitikz/bipoles/length=0.770cm, l={$R$}] (7.5, -0);
 	\draw (10, 6) to[empty diode, l={$D_2$}] (12, 4);
