@@ -79,13 +79,22 @@ Even though this is probably the simplest circuit involving a diode, the exponen
 
 Here are some common approaches.
 
-\subsubsection*{Method 1: the fixed diode voltage}
-Assume the diode voltage is constant and $V_D = 0.7V$ (or up to a few Volts for LEDs). Set a target current, say $I_D = 5mA$, and determine $R$ accordingly:
+\subsubsection*{Method 1: the constant diode voltage}
+This is the most common approach when you want to adjust $R$ so that a current $I_D$ flows into the diode. 
+
+Assume the diode voltage is constant ($V_D = 0.7V$ for silicon diodes or up to a few Volts for LEDs) \textit {i.e.} $V_D$ is independent of the current $I_D$. Then:
 $$
 	R = \dfrac{V - V_D}{I_D}
 $$
 
-Done! This method yields results that are accurate enough for most applications.
+Treating $V_D$ as a constant is a very common assumption and yields results that are precise enough for most applications. You find these in:
+\begin{itemize}
+	\item the 0.7V drop in the base-emitter junction in silicon BJTs
+	\item diode voltage dropper	
+	\item zener diode regulator
+\end{itemize} 
+
+It works pretty well as soon as enough current (even a few mA) starts flowing in the diode. In the \textbf{method 4} we will investigate some more the justification behind this.
 
 \subsubsection*{Method 2: the iterative solving}
 	\begin{enumerate}
@@ -201,7 +210,7 @@ The operating point of this circuit is going to set the diode in one of the regi
 	\end{tabular}
 \end{table}
 
-We don't know in what region the diode operates at yet, so $a$ and $b$ are unknown, but that is not an issue: the equation stays the same so we can carry on and solve for $V_D$ regardless:
+In the most general case we don't know in what region the diode operates at, so $a$ and $b$ are unknown, but that is not an issue: the equation stays the same so we can carry on and solve for $V_D$ regardless:
 $$
 	V_D = V - RI_D = V - R \left( aV_D + b \right)
 $$
@@ -273,7 +282,15 @@ We now have a varying voltage source as input of the system, the diode voltage i
 	\node[ocirc](N2) at (3, 2.5){} node[anchor=west] at (N2.east){$V_{OUT}$};
 \end{circuitikz}
 
-For $V_{IN} > 0.7V$ a first good approximation is $V_{OUT} \simeq 0.7V$ regardless of the input voltage $V_{IN}$.
+In Forward mode, recall that:
+$$
+	V_D = \dfrac{1}{1 + g_mR}V_{IN} + \dfrac{g_mR}{1 + g_mR}V_{TH} - \dfrac{RI_{TH}}{1 + g_mR}
+$$
+
+If $V_{IN}$ is a constant value on top of which we apply some small deviation $\Delta V$ then  $V_{IN} = V_0 + \Delta V$ and:
+$$
+	\Delta V_D = \dfrac{1}{1 + g_mR}\Delta V
+$$ 
 
 It makes sense: for an increasing $V_{IN}$, the diode voltage cannot follow the input and rise as much: the exponential law would kick in and cause a massive increase in current, thereby reducing the diode voltage (through the resistor), opposing the initial voltage increase. 
 
@@ -961,8 +978,6 @@ Notice how the structure slightly differs from the Full Bridge Rectifier (or \te
 \begin{tikzpicture}
 	\draw (9.75, -0) to[american resistor, /tikz/circuitikz/bipoles/length=0.770cm, l={$R$}] (7.5, -0);
 	\draw (10, 6) to[empty diode, l={$D_2$}] (12, 4);
-	\node[ocirc](N1) at (5, 7){} node[anchor=east] at ([xshift=-0.08cm]N1.text){$A_2$};
-	\node[ocirc](N2) at (16, 4){} node[anchor=west] at ([xshift=0.08cm]N2.text){$B_1$};
 	\node[circ] at (8, 4){};
 	\draw (12, 4) to[empty diode, l={$D_3$}] (10, 2);
 	\draw (10, 2) to[empty diode, l={$D_4$}] (8, 4);
@@ -979,20 +994,18 @@ Notice how the structure slightly differs from the Full Bridge Rectifier (or \te
 	\draw (14, 6.5) -- (14, 7) -- (10, 7) -- (10, 6);
 	\draw (9.75, -0) -- (10.25, -0);
 	\draw (14, 3.75) -| (14, 4.25);
-	\draw (14, 4) -| (16, 4);
+	\draw (14, 4) -- (16, 4);
 	\node[circ] at (14, 4){};
-	\node[ocirc](N3) at (5, 1){} node[anchor=east] at ([xshift=-0.08cm]N3.text){$B_2$};
-	\draw (10, 7) -| (5, 7);
+	\draw (10, 7) -- (5, 7);
 	\node[circ] at (10, 7){};
 	\node[circ] at (10, -0){};
 	\node[circ] at (10, 1){};
-	\draw (5, 1) -| (10, 1);
-	\node[ocirc](N4) at (16, -1){} node[anchor=west] at ([xshift=0.08cm]N4.text){$A_1$};
+	\draw (5, 1) -- (10, 1);
 	\draw (16, -1) -| (10, -0);
 	\draw (13, 4) |- (13, 9);
-	\draw (7, 4) |- (7, 9);
-	\node[ocirc](N5) at (13, 9){} node[anchor=west] at ([xshift=0.08cm]N5.text){$a$};
-	\node[ocirc](N6) at (7, 9){} node[anchor=west] at ([xshift=0.08cm]N6.text){$b$};
+	\draw (7, 4) -- (7, 9);
+	\node[ocirc](N1) at (13, 9){} node[anchor=west] at ([xshift=0.08cm]N1.text){$a$};
+	\node[ocirc](N2) at (7, 9){} node[anchor=west] at ([xshift=0.08cm]N2.text){$b$};
 	\node[circ] at (7, 4){};
 	\node[circ] at (13, 4){};
 	\draw[line width=2pt, -latex] (5, 2) -- (5, 6);
@@ -1001,7 +1014,13 @@ Notice how the structure slightly differs from the Full Bridge Rectifier (or \te
 	\node[shape=rectangle, minimum width=3.965cm, minimum height=0.965cm] at (10, 9.5){} node[anchor=center, align=center, text width=3.577cm, inner sep=6pt] at (10, 9.5){\Large $V_{OUT}$};
 	\node[shape=rectangle, minimum width=1.465cm, minimum height=3.965cm] at (4.25, 4){} node[anchor=center, align=center, text width=1.077cm, inner sep=6pt] at (4.25, 4){\Large $V_{IN 2}$};
 	\node[shape=rectangle, minimum width=1.715cm, minimum height=2.965cm] at (17.125, 1.5){} node[anchor=center, align=center, text width=1.327cm, inner sep=6pt] at (17.125, 1.5){\Large $V_{IN1}$};
+	\node[ocirc](N3) at (5, 7){} node[anchor=east] at ([xshift=-0.08cm]N3.text){$A_2$};
+	\node[ocirc](N4) at (5, 1){} node[anchor=east] at ([xshift=-0.08cm]N4.text){$B_2$};
+	\node[ocirc](N5) at (16, 4){} node[anchor=west] at ([xshift=0.08cm]N5.text){$B_1$};
+	\node[ocirc](N6) at (16, -1){} node[anchor=west] at ([xshift=0.08cm]N6.text){$A_1$};
 \end{tikzpicture}
+
+At first glance, the wizardry by which this achieves an algebric operation is not obvious.
 
 
 \section*{Example 9: the Gilbert Cell (analog multiplier)}
