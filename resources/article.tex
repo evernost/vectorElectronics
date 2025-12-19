@@ -59,7 +59,7 @@ It may therefore be conceivable to interpret the action of a circuit on a nonlin
 
 
 \section*{Example 1: diode and resistor I}
-One of the first case study for a diode in a semiconductor lecture is the resistor-diode circuit. It corresponds to most of the LED polarisation circuits.
+In most lectures about semiconductors, one of the first case study is the resistor-diode circuit. It corresponds to most of the LED polarisation circuits.
 
 \begin{circuitikz}
 	\node[eground2] at (2, 1){};
@@ -75,7 +75,7 @@ One of the first case study for a diode in a semiconductor lecture is the resist
 	\node[shape=rectangle, minimum width=0.715cm, minimum height=1.215cm] at (2.5, 4.375){} node[anchor=center, align=center, text width=0.327cm, inner sep=6pt] at (2.5, 4.375){$I_D$};
 \end{circuitikz}
 
-Even though this is probably the simplest circuit involving a diode, the exponential behaviour of the $I/V$ curve takes a bit of method to solve the circuit.
+Even though it is probably the simplest circuit involving a diode, the exponential behaviour of the $I/V$ curve takes a bit of method to solve the circuit.
 
 Here are some common approaches.
 
@@ -103,7 +103,7 @@ It works pretty well as soon as enough current (even a few mA) starts flowing in
 		\item Calculate the new $V_D$: $V_D = V - R I_D$ 
 		\item Go back to 2. until $V_D$ and $I_D$ eventually settle. 
 	\end{enumerate}
-	Convergence rate is insanely fast and the result gets accurate to a few digits after only 2 or 3 iteration. 
+	Convergence rate is \textit{crazy} fast and the result gets accurate to a few digits after only 2 or 3 iteration. 
 	However, this method is more of a theoretical fact. It might be useful in a simulator, but for practical situations it won't bring much more precision. The natural dispersion in $I/V$ curves within the same batch of diodes, the lack of detailed information about the model (\textit{e.g.} $I_S$), not even mentioning the limits of the model itself lowers the benefit of this method.
 
 \subsubsection*{Method 3: Analytical solving (Lambert's W function)}
@@ -303,7 +303,7 @@ This is where the Piecewise Linear model can become handy.
 
 
 \section*{Example 3: diode and resistor III}
-Another variation on a theme of a Diode and Resistor circuit. This time, we have 2 resistors, and we don't neglect the output current anymore.
+Another variation on a theme of a Diode and Resistor circuit. This time, we swap the roles for the diode and resistor, and the output current is not neglected anymore.
 
 \begin{circuitikz}
 	\node[eground2] at (7, 6.75){};
@@ -450,19 +450,61 @@ I & = I_R + I_C \\
 \end{split}
 \end{equation}
 
-So:
+Therefore:
 
 \centerline{\fbox{$V = \dfrac{R_1+R_2}{1+aR_2}\left(I-b\right)$}}
 
+Iterating over the different possible modes, we get:
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c||c|c|c|}
+		\hline
+		\textbf{BJT mode} & \textbf{Gain/Offset} & $V = f(I)$ \\ \hline
+
+		Reverse 
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = 0 \\
+			b = 0
+		\end{array}
+		\right.$
+		& 
+		$V = (R_1 + R_2)I$	\\ \hline
+
+		Weak Forward
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = \frac{I_{TH}}{V_{TH}} \\
+			b = 0
+		\end{array}
+		\right.$
+		& 
+		TODO 	\\ \hline
+
+		Forward
+		& 
+		$\left\{
+		\begin{array}{ll}
+			a = g_m \\
+			b = I_{TH}-g_m V_{TH}
+		\end{array}
+		\right.$ 
+		&
+		TODO 	\\ \hline
+	\end{tabular}
+\end{table}
+
+
 We can now have a closer look at the behaviour for the different operating regions of the transistor:
-
-
 
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|m{1.5cm}||m{5cm}|m{6cm}|}
 		\hline
-		\textbf{BJT Mode} & \textbf{BJT Operating point} & \textbf{Rubber Diode} \\ \hline
+		\textbf{BJT Mode} & \textbf{BJT Operating point} & \textbf{Rubber Diode} $V = f(I)$\\ \hline
 
 		Reverse & 
 		\begin{tikzpicture}
@@ -703,7 +745,7 @@ To explicit it, let's apply a voltage $\Delta V$ in the range $-2.0V ... 2.0V$, 
 	\centering
 	\begin{tabular}{|c||c|c|c|}
 		\hline
-		BJT mode & Gain/Offset & $I_S = \hat{f}_S (\Delta V)$ \\ \hline
+		\textbf{BJT mode} & \textbf{Gain/Offset} & $I_S = \hat{f}_S (\Delta V)$ \\ \hline
 
 		Reverse 
 		& 
@@ -971,7 +1013,7 @@ The Differential Pair (or Long Tailed Pair ¬‿¬) is at the core of Operationa
 
 \section*{Example 8: the Ring Modulator}
 
-The Ring Modulator is a special arrangement of diodes that, in certain conditions, produces a voltage that is the mathematical product of 2 input voltages. The term \textit{modulator} comes from the fact that this was the way signal modulation was achieved back in the days. This diode structure appeared in patents dating back from 1934\footnote{US Patent 2,025,158 \textit{Modulating System}, F. A. Cowan, 24 Dec 1934} (!). 
+The Ring Modulator is a special arrangement of diodes that, in certain conditions, produces a voltage that is the mathematical product of 2 input voltages. The term \textit{modulator} comes from the fact that this was the way modulation was achieved back in the days. This diode structure appeared in patents dating back from 1934\footnote{US Patent 2,025,158 \textit{Modulating System}, F. A. Cowan, 24 Dec 1934} (!). 
 
 Notice how the structure slightly differs from the Full Bridge Rectifier (or \textit{Graetz Bridge}) 
 
@@ -1020,7 +1062,7 @@ Notice how the structure slightly differs from the Full Bridge Rectifier (or \te
 	\node[ocirc](N6) at (16, -1){} node[anchor=west] at ([xshift=0.08cm]N6.text){$A_1$};
 \end{tikzpicture}
 
-At first glance, the wizardry by which this achieves an algebric operation is not obvious.
+At first glance, the wizardry by which this achieves multiplication is not obvious.
 
 
 \section*{Example 9: the Gilbert Cell (analog multiplier)}
