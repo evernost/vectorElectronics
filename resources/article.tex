@@ -58,7 +58,7 @@ In this sense, we speak in this paper of a \textit{Vector Analysis} of the circu
 It may therefore be conceivable to interpret the action of a circuit on a nonlinear component as analogous to a matrix acting on a vector. The idea that a circuit might have a kind of “matrix analogue” is perhaps worth exploring further.
 
 
-\section*{Example 1: diode and resistor I}
+\section*{Example 1: Diode and Resistor I}
 In most lectures about semiconductors, one of the first case study is the resistor-diode circuit. It corresponds to most of the LED polarisation circuits.
 
 \begin{circuitikz}
@@ -264,7 +264,7 @@ $$
 $$
 
 
-\section*{Example 2: diode and resistor II}
+\section*{Example 2: Diode and Resistor II}
 This is a slight variation of the previous diode circuit.\\
 
 We now have a varying voltage source as input of the system, the diode voltage is the output. We want to see how the output varies with the input (assuming no current is drawn from the output).
@@ -299,7 +299,8 @@ In a way, the diode voltage \textbf{does not} want to change. It is the basis pr
 Can we be more precise in the way the output gets regulated? Like before, if we just assume $V_D = 0.7V$, there's not much to say.
 This is where the Piecewise Linear model can become handy. 
 
-*** SECTION IS TODO*** .
+*** SECTION IS TODO *** .
+
 
 
 \section*{Example 3: diode and resistor III}
@@ -1064,12 +1065,25 @@ Notice how the structure slightly differs from the Full Bridge Rectifier (or \te
 
 At first glance, the wizardry by which this achieves multiplication is not obvious.
 
+*** SECTION IS TODO ***
 
-\section*{Example 9: the Gilbert Cell (analog multiplier)}
+
+
+\section*{Example 9: the Diode Bridge as variable resistor}
+
+This time, we will study how an actual diode bridge (the same as the one you would use to rectify AC) can be used as a variable resistor. There are patented references to that in 1971 (Patent 3,582,807)
+
+
+
+
+
+\section*{Example 10: the Gilbert Cell (analog multiplier)}
 That's a tough one, be patient...
 
 
-\section*{Example 10: the Moog Ladder Filter}
+
+
+\section*{Example 11: the Moog Ladder Filter}
 
 \subsubsection*{Description}
 The Moog Ladder Filter is a parametric low-pass filter used in analog synthesizers.\\
@@ -1374,12 +1388,15 @@ Unlike the Emitter Follower, there's no feedback here to rely on. Hence, we expe
 This section is TODO.
 
 
-\section*{Example 11: the diode Ladder Filter}
+
+\section*{Example 12: the diode Ladder Filter}
 
 \subsubsection*{Description}
 As a follow-up of the Moog Ladder Filter, we now consider the case of the diode version. It looks very similar to the Moog one, except the BJTs have been replaced with diodes. 
 
-\section*{Example 12: the Moog Voltage Controlled High-Pass filter (module \textit{904B})}
+
+
+\section*{Example 13: the Moog Voltage Controlled High-Pass filter (module \textit{904B})}
 
 \subsubsection*{Description}
 Similarly, Moog came up with a design for a high-pass filter (also patented). The structure differs a bit from the low-pass, but it is equally as puzzling.
