@@ -39,7 +39,7 @@ To fully analyse this, one could try to use a full model of the transistor (expo
 	\item it doesn't give much insight on \textit{how} the thing works.
 \end{itemize}
 
-\subsubsection*{The Piecewise Linear Model}
+\section*{The Piecewise Linear Model}
 A nonlinear continuous function can always be approximated by a piecewise affine (linear) function\footnote{In other words, the set of piecewise linear functions is dense in the space of continuous real-valued functions}, 
 provided the model is refined and enough control points are introduced.
 Thus, when analyzing a circuit, one can quite reasonably assume, as a first approximation, that the characteristic of a nonlinear component is in fact piecewise linear. \\
@@ -264,6 +264,7 @@ $$
 $$
 
 
+
 \section*{Example 2: Diode and Resistor II}
 This is a slight variation of the previous diode circuit.\\
 
@@ -394,10 +395,8 @@ Applying a very high gain to a voltage difference reminds us of op amps. Under t
 The high gain is rarely used as such because it is not very predictable, controlled and uniform in frequency. 
 We much prefer to use this 'unreliable' gain in a feedback loop. It reduces the amplification, but it is more robust to part to part fluctuation
 
-
-
 \subsubsection*{Input Impedance}
-*** SECTION IS TODO*** .
+*** SECTION IS TODO *** .
 
 
 
@@ -887,9 +886,6 @@ In practical applications, $V_B \simeq 2 V_{TH}$, therefore $\Delta V^F \simeq 0
 \end{table}
 
 
-
-
-
 \paragraph{Note:} if you want to try this device experimentally, do not do it by imposing $\Delta V$ directly and measuring $I_S$; the relationship is too sensitive and that would yield imprecise results. It is better to drain a controlled current instead, and measure the voltage $\Delta V$. 
 
 \subsection*{Class AB subsystem: the current drain}
@@ -985,9 +981,10 @@ This looks familiar: it is the equation for the emitter follower!
 \end{itemize}
 
 
+
 \section*{Example 7: the Differential Pair}
 
-The Differential Pair (or Long Tailed Pair ¬‿¬) is at the core of Operational Amplifiers.
+The Differential Pair (or Long Tailed Pair ¬‿¬) is the core element of Operational Amplifiers. This pattern was extremely common in schematics until the eighties when the price of op amps eventually decreased and their performance beat the discrete version.
 
 \begin{circuitikz}
 	\node[npn, tr circle](N1) at (5.84, 10){} node[anchor=west] at ([xshift=0.08cm]N1.text){$Q_1$};
@@ -996,18 +993,29 @@ The Differential Pair (or Long Tailed Pair ¬‿¬) is at the core of Operationa
 	\draw (8.16, 9.23) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_E$}] (8.16, 7.98);
 	\draw (5.84, 12.02) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_C$}] (5.84, 10.77);
 	\draw (8.16, 12.02) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_C$}] (8.16, 10.77);
-	\node[ocirc](N3) at (9.75, 10){} node[anchor=west] at (N3.text){$V_{M}$};
-	\draw (9, 10) -- (9.75, 10);
-	\node[ocirc](N4) at (4.25, 10){} node[anchor=east] at (N4.text){$V_{P}$};
-	\draw (4.25, 10) -- (5, 10);
+	\draw (9, 10) -| (9.25, 10);
+	\draw (4.75, 10) -| (5, 10);
 	\draw (5.84, 7.98) |- (6.25, 7.5) -| (8.16, 7.98);
 	\draw (5.84, 12.02) |- (6, 12.5) -| (8.16, 12.02);
 	\node[vcc] at (7, 13){};
 	\draw (7, 13) -| (7, 12.5);
 	\node[circ] at (7, 12.5){};
-	\draw (7, 7.5) to[oosourcetrans, l={$I$}] (7, 5.75);
-	\node[eground2] at (7, 5.75){};
+	\draw (7, 7) to[oosourcetrans] (7, 5.25);
+	\node[eground2] at (7, 5.25){};
 	\node[circ] at (7, 7.5){};
+	\draw (9.25, 10) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_B$}] (10.25, 10);
+	\draw (10.25, 10) -- (10.5, 10);
+	\node[ocirc](N3) at (10.5, 10){} node[anchor=west] at ([xshift=0.08cm]N3.text){$V_{M}$};
+	\draw (3.75, 10) to[american resistor, /tikz/circuitikz/bipoles/length=0.700cm, l={$R_B$}] (4.75, 10);
+	\draw (3.5, 10) -- (3.75, 10);
+	\node[ocirc](N4) at (3.5, 10){} node[anchor=east] at ([xshift=-0.08cm]N4.text){$V_{P}$};
+	\draw (7, 7) -| (7, 7.5);
+	\draw[line width=2pt, -latex] (7, 7) -- (7, 6.75);
+	\draw[line width=2pt, -latex] (5.84, 12.02) -- (5.84, 11.77);
+	\draw[line width=2pt, -latex] (8.16, 12.02) -- (8.16, 11.77);
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=0.715cm](N5) at (7.375, 6.875){} node[anchor=center] at (N5.text){$I$};
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=0.715cm](N6) at (5.375, 12){} node[anchor=center] at (N6.text){$I_P$};
+	\node[shape=rectangle, minimum width=0.715cm, minimum height=0.715cm](N7) at (8.625, 12){} node[anchor=center] at (N7.text){$I_M$};
 \end{circuitikz}
 
 
