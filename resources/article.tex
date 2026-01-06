@@ -22,15 +22,15 @@
 
 \maketitle
 
-The purpose of this article is to describe an attempt to solve electronic circuits made of non-linear devices like diodes, bipolar transistors, JFETs, MOSFETs, etc.\\
+The purpose of this article is to describe an attempt to solve electronic circuits made of non-linear devices like diodes, bipolar transistors, JFETs, MOSFETs, etc. using linearisation techniques.\\
 
 A common approach is to set the circuit at some operating point and wiggle it around with the input signal.
 For small variations, even the most non-linear device can be approximated by a linear model.
 The \textit{Small Signal Analysis}, as it is called, is a classical framework for that.\\
 
-However, some circuits are trickier and make one or more nonlinear devices operate way beyond the small signal hypothesis.
+However, some circuits are trickier and make one or more non-linear devices operate way beyond the small signal hypothesis.
 
-The class AB (push/pull) amplifier is one example: a transistor in the pair goes from cutoff to linear region as the input rises. 
+The class AB (push/pull) amplifier is one example: a transistor in the pair goes from cut-off to linear region as the input rises. 
 The other transistor does the opposite. Meanwhile, the output follows the input nicely (the circuit as a whole surprisingly acts as if everything were linear.)\\
 
 To fully analyse this, one could try to use a full model of the transistor (exponential curve) however:
@@ -40,9 +40,9 @@ To fully analyse this, one could try to use a full model of the transistor (expo
 \end{itemize}
 
 \section*{The Piecewise Linear Model}
-A nonlinear continuous function can always be approximated by a piecewise affine (linear) function\footnote{In other words, the set of piecewise linear functions is dense in the space of continuous real-valued functions}, 
+A non-linear continuous function can always be approximated by a piecewise affine (linear) function\footnote{In other words, the set of piecewise linear functions is dense in the space of continuous real-valued functions}, 
 provided the model is refined and enough control points are introduced.
-Thus, when analyzing a circuit, one can quite reasonably assume, as a first approximation, that the characteristic of a nonlinear component is in fact piecewise linear. \\
+Thus, when analyzing a circuit, one can quite reasonably assume, as a first approximation, that the characteristic of a non-linear component is in fact piecewise linear. \\
 The parameters of the linear relationship (slope and offset) may not yet be known for the present operating point, but they must necessarily correspond to one of the (slope, offset) pairs among those defined in the proposed piecewise affine model.\\
 
 The task then reduces to determining which pair applies at a given operating point.
@@ -51,7 +51,7 @@ It is reasonable to assume that this solution is unique.\footnote{Even though ce
 
 For most practical cases, the overall result is that every component can be treated as linear, thereby enabling the full use of linear analysis techniques (superposition principle, etc.) without any loss of generality.\\
 
-Notice that, since any linear transformation to a piecewise linear function is still a piecewise linear function, the very concrete consequence is that the piecewise-affine property of a nonlinear component \textbf{propagates} to all the properties of the electronic circuit in which it is embedded.
+Notice that, since any linear transformation to a piecewise linear function is still a piecewise linear function, the very concrete consequence is that the piecewise-affine property of a non-linear component \textbf{propagates} to all the properties of the electronic circuit in which it is embedded.
 
 In this sense, we speak in this paper of a \textit{Vector Analysis} of the circuit. If one views a piecewise-affine function as an element of a vector space (which it is) then the circuit's properties—whatever they may be: $V_{OUT}$ vs $V_{IN}$, $I/V$ characteristic, transmittance, input impedance, etc.—are likewise contained within that same vector space.\\
 
@@ -984,7 +984,7 @@ This looks familiar: it is the equation for the emitter follower!
 
 \section*{Example 7: the Differential Pair}
 
-The Differential Pair (or Long Tailed Pair ¬‿¬) is the core element of Operational Amplifiers. This pattern was extremely common in schematics until the eighties when the price of op amps eventually decreased and their performance beat the discrete version.
+The Differential Pair (or Long Tailed Pair ¬‿¬) is the core element of Operational Amplifiers. It is a voltage difference amplifier achieving very high gain and you'd meet this structure in schematics until the eighties, when the price of op amps eventually decreased and their performance beat the discrete version.
 
 \begin{circuitikz}
 	\node[npn, tr circle](N1) at (5.84, 10){} node[anchor=west] at ([xshift=0.08cm]N1.text){$Q_1$};
@@ -1018,13 +1018,19 @@ The Differential Pair (or Long Tailed Pair ¬‿¬) is the core element of Opera
 	\node[shape=rectangle, minimum width=0.715cm, minimum height=0.715cm](N7) at (8.625, 12){} node[anchor=center] at (N7.text){$I_M$};
 \end{circuitikz}
 
+We consider the most general case with emitter and base resistors. Adding the base resistors $R_B$ will help later on to study the offset compensation. The emitter degeneration resistors $R_E$ are the most interesting part as they are responsible for making the analysis particularly difficult in the general case (no closed-form solution).
+
+The voltage equation yields:
+$$
+	\left(R_E + \dfrac{R_B}{\beta} \right)I_P
+$$\\
 
 
-\section*{Example 8: the Ring Modulator}
+\section*{Example 8: the \textit{Ring Modulator}}
 
-The Ring Modulator is a special arrangement of diodes that, in certain conditions, produces a voltage that is the mathematical product of 2 input voltages. The term \textit{modulator} comes from the fact that this was the way modulation was achieved back in the days. This diode structure appeared in patents dating back from 1934\footnote{US Patent 2,025,158 \textit{Modulating System}, F. A. Cowan, 24 Dec 1934} (!). 
+The Ring Modulator is a special arrangement of diodes that, under certain conditions, produces a voltage that is the mathematical product of 2 input voltages. The term \textit{modulator} comes from the fact that this was the way radio-electric modulation was achieved back in the days. This diode structure appeared in patents dating back from 1934\footnote{US Patent 2,025,158 \textit{Modulating System}, F. A. Cowan, 24 Dec 1934} (!). 
 
-Notice how the structure slightly differs from the Full Bridge Rectifier (or \textit{Graetz Bridge}) 
+Notice how the structure slightly differs from the good old Full Bridge Rectifier (or \textit{Graetz Bridge}). Though the Bridge Rectifier has other aces up its sleeves, as we will see in the next section.
 
 \begin{tikzpicture}
 	\draw (9.75, -0) to[american resistor, /tikz/circuitikz/bipoles/length=0.770cm, l={$R$}] (7.5, -0);
@@ -1077,9 +1083,9 @@ At first glance, the wizardry by which this achieves multiplication is not obvio
 
 
 
-\section*{Example 9: the Diode Bridge as variable resistor}
+\section*{Example 9: the Bridge Rectifier as variable resistor}
 
-This time, we will study how an actual diode bridge (the same as the one you would use to rectify AC) can be used as a variable resistor. There are patented references to that in 1971 (Patent 3,582,807)
+This time, we will study how an actual diode bridge (the same as the one you'd use to rectify AC) can be used as a variable resistor. There are patented references to that in 1971\footnote{US Patent 3,582,807 \textit{Amplifier Gain Control Circuit Including Diode Bridge}, John L. Addis, 1st June 1971} and 1975\footnote{US Patent 4,039,980 \textit{Voltage Controlled Filter}, Yasuo Nagahama, 29 July 1975} with a direct application to Voltage-Controlled Filters.
 
 
 
