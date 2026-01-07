@@ -11,7 +11,8 @@
 \setmainfont{Times New Roman}
 
 %
-% NOTE: schematics generated using the online tool: 'https://www.circuit2tikz.tf.fau.de/designer'
+% NOTE: schematics generated using the online tool: 'https://www.circuit2tikz.tf.fau.de/designer'.
+% Special thank to them!
 %
 
 \title{Vector Electronics}
@@ -1020,10 +1021,25 @@ The Differential Pair (or Long Tailed Pair ¬‿¬) is the core element of Opera
 
 We consider the most general case with emitter and base resistors. Adding the base resistors $R_B$ will help later on to study the offset compensation. The emitter degeneration resistors $R_E$ are the most interesting part as they are responsible for making the analysis particularly difficult in the general case (no closed-form solution).
 
-The voltage equation yields:
+To get an idea of the way it works, imagine the differential pair at rest: 
 $$
-	\left(R_E + \dfrac{R_B}{\beta} \right)I_P
+	V_P = V_M = 0
+$$
+
+Now, the slightest variation in the base voltage of either $Q_1$ or $Q_2$ changes
+
+More generally, it is good to see this subset of the differential pair, that can be thought of a \textit{voltage-controlled current repartitor}. The sink current $I$ is split between $Q_1$ and $Q_2$ and the base voltage determines the fraction of $I$ that will either go to $Q_1$ or to $Q_2$.
+
+Going back to the full diff pair. The voltage equation yields:
+$$
+	\left(R_E + \dfrac{R_B}{\beta} \right)I_P + V_{BE}^{(P)} - \left(R_E + \dfrac{R_B}{\beta} \right)I_M = V_P - V_M
 $$\\
+
+And the current equation:
+$$
+	f_P \left( V_{BE}^{(P)} \right) + f_M \left( V_{BE}^{(M)} \right) = I
+$$\\
+
 
 
 \section*{Example 8: the \textit{Ring Modulator}}
@@ -1085,7 +1101,7 @@ At first glance, the wizardry by which this achieves multiplication is not obvio
 
 \section*{Example 9: the Bridge Rectifier as variable resistor}
 
-This time, we will study how an actual diode bridge (the same as the one you'd use to rectify AC) can be used as a variable resistor. There are patented references to that in 1971\footnote{US Patent 3,582,807 \textit{Amplifier Gain Control Circuit Including Diode Bridge}, John L. Addis, 1st June 1971} and 1975\footnote{US Patent 4,039,980 \textit{Voltage Controlled Filter}, Yasuo Nagahama, 29 July 1975} with a direct application to Voltage-Controlled Filters.
+This time, we will study how an actual diode bridge (the same as the one you'd use to rectify AC) can be used as a variable resistor. There are patented references to that in 1971\footnote{US Patent 3,582,807 \textit{Amplifier Gain Control Circuit Including Diode Bridge}, John L. Addis, 1st June 1971} and 1975\footnote{US Patent 4,039,980 \textit{Voltage Controlled Filter}, Yasuo Nagahama, 29 July 1975} with a direct application to Voltage-Controlled Filters. It wasn't unusual to encounter this very structure in magazines like Elektor at the time.
 
 
 
@@ -1454,6 +1470,48 @@ Here below is one stage of the high-pass filter:
 	\node[ocirc](N12) at (2.25, 2.75){} node[anchor=east] at ([xshift=-0.13cm]N12.text){$V_{IN}$};
 	\node[ocirc](N13) at (12, 1.5){} node[anchor=west] at ([xshift=0.13cm]N13.text){$V_{OUT}$};
 \end{circuitikz}
+
+
+
+\section*{Example 14: the ARP Quadra phasing module}
+
+The ARP Quadra synth exhibits a very interesting pattern that looks somewhat familiar to the Moog Ladder.
+
+Here below is one stage of the phase shift network:
+
+
+\begin{circuitikz}
+	\node[npn, tr circle, xscale=-1](N1) at (8, 7){} node[anchor=east] at ([xshift=-0.18cm]N1.text){$Q_1$};
+	\node[npn, tr circle](N2) at (12, 7){} node[anchor=west] at ([xshift=0.18cm]N2.text){$Q_2$};
+	\draw (8.84, 7) -- (9.25, 7) -- (10.75, 8) -- (12, 8);
+	\draw (11.16, 7) -- (10.75, 7) -- (9.25, 8) -- (8, 8) -- (8, 7.77);
+	\draw (12, 7.75) -- (12, 8);
+	\draw (8, 8) -- (8, 8.75);
+	\node[circ] at (8, 8){};
+	\draw (8, 6.25) -| (8, 5);
+	\draw (12, 8) -- (12, 8.75);
+	\node[circ] at (12, 8){};
+	\draw[line width=2pt, -latex] (8, 8.5) -- (8, 8.25);
+	\draw[line width=2pt, -latex] (12, 8.5) -- (12, 8.25);
+	\draw[line width=2pt, -latex] (8, 5.5) -- (8, 5.25);
+	\draw (12, 6.23) -- (12, 5);
+	\draw[line width=2pt, -latex] (12, 5.5) -- (12, 5.25);
+	\draw (6.5, 7.5) to[capacitor, /tikz/circuitikz/bipoles/length=0.700cm] (6.5, 6.25);
+	\draw (8, 8) -- (6.5, 8) -- (6.5, 7.5);
+	\draw (8, 6) -- (6.5, 6) -- (6.5, 6.25);
+	\draw (13.5, 7.5) to[capacitor, /tikz/circuitikz/bipoles/length=0.700cm] (13.5, 6.25);
+	\draw (12, 8) -- (13.5, 8) -- (13.5, 7.5);
+	\draw (13.5, 6.25) -| (13.5, 6) -- (12, 6);
+	\node[circ] at (12, 6){};
+	\node[circ] at (8, 6){};
+\end{circuitikz}
+
+
+
+
+
+
+
 
 
 
