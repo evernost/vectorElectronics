@@ -105,7 +105,8 @@ function drawAxes(ctx, canvas, xMin, xMax, yMin, yMax, title)
 }
 
 // Get piecewise linear segments (offset, slope, domain)
-function getPiecewiseSegments() {
+function getPiecewiseSegments()
+{
   const segments = [];
   const sorted = [...controlPoints].sort((a, b) => a.x - b.x);
   
@@ -138,11 +139,11 @@ function evaluatePiecewiseLinear(x)
       return seg.offset + seg.slope * x;
     }
   }
-  return null;
+  return 0.0;
 }
 
 // Draw the piecewise linear function
-function drawLeftGraph()
+function drawDeviceCurve()
 {
   const xMin = -0.5, xMax = 1.0, yMin = -0.2, yMax = 1.2;
   drawAxes(leftCtx, leftCanvas, xMin, xMax, yMin, yMax, "I = f(delta V)");
@@ -155,9 +156,12 @@ function drawLeftGraph()
   const sorted = [...controlPoints].sort((a, b) => a.x - b.x);
   sorted.forEach((p, i) => {
     const pos = dataToCanvas(leftCanvas, p.x, p.y, xMin, xMax, yMin, yMax);
-    if (i === 0) {
+    if (i === 0)
+    {
       leftCtx.moveTo(pos.x, pos.y);
-    } else {
+    }
+    else
+    {
       leftCtx.lineTo(pos.x, pos.y);
     }
   });
@@ -205,7 +209,7 @@ function computeDerivedFunction(x)
 // ============================================================================
 
 // Draw the derived function
-function drawRightGraph()
+function drawTransferCurve()
 {
   const xMin = -0.5, xMax = 1.0, yMin = -0.2, yMax = 1.2;
   drawAxes(rightCtx, rightCanvas, xMin, xMax, yMin, yMax, 'Derived Function');
@@ -215,16 +219,21 @@ function drawRightGraph()
   rightCtx.beginPath();
   
   let started = false;
-  for (let i = 0; i <= 500; i++) {
+  for (let i = 0; i <= 500; i++)
+  {
     const x = xMin + (xMax - xMin) * i / 500;
     const y = computeDerivedFunction(x);
     
-    if (y !== null) {
+    if (y !== null)
+    {
       const pos = dataToCanvas(rightCanvas, x, y, xMin, xMax, yMin, yMax);
-      if (!started) {
+      if (!started)
+      {
         rightCtx.moveTo(pos.x, pos.y);
         started = true;
-      } else {
+      }
+      else
+      {
         rightCtx.lineTo(pos.x, pos.y);
       }
     }
@@ -234,8 +243,8 @@ function drawRightGraph()
 
 function redraw()
 {
-  drawLeftGraph();
-  drawRightGraph();
+  drawDeviceCurve();
+  drawTransferCurve();
 }
 
 // Mouse event handlers
