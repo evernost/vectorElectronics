@@ -9,7 +9,9 @@ let controlPoints =
   { x: -0.5, y: 0.0 },
   { x: -0.1, y: 0.6 },
   { x: 0.3, y: 0.4 },
-  { x: 1.0, y: 0.8 }
+  { x: 0.5, y: 0.5 },
+  { x: 0.6, y: 0.7 },
+  { x: 1.0, y: 0.9 }
 ];
 
 let draggingPoint = null;
@@ -112,16 +114,16 @@ function getPiecewiseSegments()
   
   for (let i = 0; i < sorted.length - 1; i++)
   {
-    const p1 = sorted[i];
-    const p2 = sorted[i + 1];
-    const slope = (p2.y - p1.y) / (p2.x - p1.x);
-    const offset = p1.y - slope * p1.x;
+    const p1      = sorted[i];
+    const p2      = sorted[i + 1];
+    const slope   = (p2.y - p1.y) / (p2.x - p1.x);
+    const offset  = p1.y - slope * p1.x;
     
     segments.push({
-      offset: offset,
-      slope: slope,
-      xMin: p1.x,
-      xMax: p2.x
+      offset  : offset,
+      slope   : slope,
+      xMin    : p1.x,
+      xMax    : p2.x
     });
   }
   
@@ -183,27 +185,34 @@ function drawDeviceCurve()
 // ============================================================================
 // CUSTOM DERIVED FUNCTION - MODIFY THIS SECTION
 // ============================================================================
-function computeDerivedFunction(x)
+function computeDerivedFunctions(x)
 {
   // You have access to:
   // 1. getPiecewiseSegments() - returns array of {offset, slope, xMin, xMax}
   // 2. evaluatePiecewiseLinear(x) - evaluates the piecewise function at x
   
   const segments = getPiecewiseSegments();
-  
-  // Example: Just return the original function (replace with your logic)
-  const y = evaluatePiecewiseLinear(x);
-  
-  // Example: Return squared value
-  // return y !== null ? y * y : null;
-  
-  // Example: Return derivative (slope at that point)
-  // for (let seg of segments) {
-  //   if (x >= seg.xMin && x <= seg.xMax) {
-  //     return seg.slope;
-  //   }
-  // }
-  
+  const y = [];
+
+  for (const seg_P of segments)
+  {
+    for (const seg_M of segments)
+    {
+      x_P = (currentSlider.value - (seg_M.offset + seg_P.offset) + (seg_M.slope*x)) / (seg_M.slope + seg_P.slope);
+      x_M = (currentSlider.value - (seg_M.offset + seg_P.offset) - (seg_P.slope*x)) / (seg_M.slope + seg_P.slope);
+
+      if ((x_P >= seg_P.xMin) && (x_P <= seg_P.xMax) && (x_M >= seg_M.xMin) && (x_M <= seg_M.xMax))
+      {
+        I_P = seg_P.slope*x_P + seg_P.offset;
+      }
+      else
+      {
+        I_P = null;
+      }
+      y.push(I_P);
+    }
+  }
+    
   return y;
 }
 // ============================================================================
@@ -211,34 +220,71 @@ function computeDerivedFunction(x)
 // Draw the derived function
 function drawTransferCurve()
 {
-  const xMin = -0.5, xMax = 1.0, yMin = -0.2, yMax = 1.2;
-  drawAxes(rightCtx, rightCanvas, xMin, xMax, yMin, yMax, 'Derived Function');
+  const xMin = -1.0, xMax = 1.0, yMin = -0.2, yMax = 1.2;
+  drawAxes(rightCtx, rightCanvas, xMin, xMax, yMin, yMax, "I_P = f(Delta V)");
 
-  rightCtx.strokeStyle = '#4CAF50';
-  rightCtx.lineWidth = 2;
-  rightCtx.beginPath();
-  
-  let started = false;
-  for (let i = 0; i <= 500; i++)
+  const colors = ['#4CAF50', '#FF9800', '#9C27B0'];
+  const steps = 200;
+
+  // Plot each derived function
+  for (let funcIdx = 0; funcIdx < 25; funcIdx++)
   {
-    const x = xMin + (xMax - xMin) * i / 500;
-    const y = computeDerivedFunction(x);
+    rightCtx.strokeStyle = colors[funcIdx % 3];
+    rightCtx.lineWidth = 2;
+    rightCtx.beginPath();
+    let started = false;
     
-    if (y !== null)
+    for (let i = 0; i <= steps; i++)
     {
-      const pos = dataToCanvas(rightCanvas, x, y, xMin, xMax, yMin, yMax);
-      if (!started)
+      const x = xMin + (i / steps) * (xMax-xMin);
+      const yValues = computeDerivedFunctions(x);
+      const y = yValues[funcIdx];
+      
+      if (y !== null)
       {
-        rightCtx.moveTo(pos.x, pos.y);
-        started = true;
+        const pos = dataToCanvas(rightCanvas, x, y, xMin, xMax, yMin, yMax);
+        if (!started)
+        {
+          rightCtx.moveTo(pos.x, pos.y);
+          started = true;
+        }
+        else
+        {
+          rightCtx.lineTo(pos.x, pos.y);
+        }
       }
-      else
-      {
-        rightCtx.lineTo(pos.x, pos.y);
-      }
+        
     }
+    rightCtx.stroke();
   }
-  rightCtx.stroke();
+
+
+
+  // rightCtx.strokeStyle = '#4CAF50';
+  // rightCtx.lineWidth = 2;
+  // rightCtx.beginPath();
+  // let started = false;
+  // for (let i = 0; i <= 500; i++)
+  // {
+  //   const x = xMin + (xMax - xMin) * i / 500;
+  //   const y = computeDerivedFunctions(x)[0];
+  //   //const y = 0.2;
+    
+  //   if (y !== null)
+  //   {
+  //     const pos = dataToCanvas(rightCanvas, x, y, xMin, xMax, yMin, yMax);
+  //     if (!started)
+  //     {
+  //       rightCtx.moveTo(pos.x, pos.y);
+  //       started = true;
+  //     }
+  //     else
+  //     {
+  //       rightCtx.lineTo(pos.x, pos.y);
+  //     }
+  //   }
+  // }
+  // rightCtx.stroke();
 }
 
 function redraw()
@@ -247,7 +293,20 @@ function redraw()
   drawTransferCurve();
 }
 
+
+
+// ============================================================================
 // Mouse event handlers
+// ============================================================================
+
+currentSlider.addEventListener("input", (e) => {
+  parameter = e.target.value;
+  //currentValue.textContent = parameter.toFixed(2);
+  currentValue.textContent = parameter;
+  redraw();
+});
+
+
 leftCanvas.addEventListener('mousedown', (e) => {
   const rect = leftCanvas.getBoundingClientRect();
   const cx = e.clientX - rect.left;
@@ -271,7 +330,8 @@ leftCanvas.addEventListener('mousedown', (e) => {
 });
 
 leftCanvas.addEventListener('mousemove', (e) => {
-  if (draggingPoint) {
+  if (draggingPoint)
+  {
     const rect = leftCanvas.getBoundingClientRect();
     const cx = e.clientX - rect.left;
     const cy = e.clientY - rect.top;
