@@ -1,18 +1,18 @@
-const leftCanvas = document.getElementById('leftCanvas');
-const rightCanvas = document.getElementById('rightCanvas');
-const leftCtx = leftCanvas.getContext('2d');
-const rightCtx = rightCanvas.getContext('2d');
+const leftCanvas = document.getElementById("leftCanvas");
+const rightCanvas = document.getElementById("rightCanvas");
+const leftCtx = leftCanvas.getContext("2d");
+const rightCtx = rightCanvas.getContext("2d");
 
 // Define the list of control points
 let controlPoints = 
 [
-  { x: -0.5, y: 0.0 },
-  { x: -0.1, y: 0.6 },
-  { x: 0.3, y: 0.4 },
-  { x: 0.5, y: 0.5 },
-  { x: 0.6, y: 0.7 },
-  { x: 1.0, y: 0.9 }
+  {x: 0.0,  y: 0.0},
+  {x: 0.46, y: 0.05},
+  {x: 0.73, y: 0.28},
+  {x: 0.88, y: 0.6},
+  {x: 1.0,  y: 1.08}
 ];
+nControlPoints = controlPoints.length;
 
 let draggingPoint = null;
 
@@ -148,7 +148,7 @@ function evaluatePiecewiseLinear(x)
 function drawDeviceCurve()
 {
   const xMin = -0.5, xMax = 1.0, yMin = -0.2, yMax = 1.2;
-  drawAxes(leftCtx, leftCanvas, xMin, xMax, yMin, yMax, "I = f(delta V)");
+  drawAxes(leftCtx, leftCanvas, xMin, xMax, yMin, yMax, "I = f(V)");
 
   // Draw the piecewise linear function
   leftCtx.strokeStyle = '#2196F3';
@@ -187,10 +187,6 @@ function drawDeviceCurve()
 // ============================================================================
 function computeDerivedFunctions(x)
 {
-  // You have access to:
-  // 1. getPiecewiseSegments() - returns array of {offset, slope, xMin, xMax}
-  // 2. evaluatePiecewiseLinear(x) - evaluates the piecewise function at x
-  
   const segments = getPiecewiseSegments();
   const y = [];
 
@@ -221,13 +217,13 @@ function computeDerivedFunctions(x)
 function drawTransferCurve()
 {
   const xMin = -1.0, xMax = 1.0, yMin = -0.2, yMax = 1.2;
-  drawAxes(rightCtx, rightCanvas, xMin, xMax, yMin, yMax, "I_P = f(Delta V)");
+  drawAxes(rightCtx, rightCanvas, xMin, xMax, yMin, yMax, "I_P = f(Delta_V)");
 
   const colors = ['#4CAF50', '#FF9800', '#9C27B0'];
   const steps = 200;
 
   // Plot each derived function
-  for (let funcIdx = 0; funcIdx < 25; funcIdx++)
+  for (let funcIdx = 0; funcIdx < (nControlPoints*nControlPoints); funcIdx++)
   {
     rightCtx.strokeStyle = colors[funcIdx % 3];
     rightCtx.lineWidth = 2;
@@ -257,34 +253,6 @@ function drawTransferCurve()
     }
     rightCtx.stroke();
   }
-
-
-
-  // rightCtx.strokeStyle = '#4CAF50';
-  // rightCtx.lineWidth = 2;
-  // rightCtx.beginPath();
-  // let started = false;
-  // for (let i = 0; i <= 500; i++)
-  // {
-  //   const x = xMin + (xMax - xMin) * i / 500;
-  //   const y = computeDerivedFunctions(x)[0];
-  //   //const y = 0.2;
-    
-  //   if (y !== null)
-  //   {
-  //     const pos = dataToCanvas(rightCanvas, x, y, xMin, xMax, yMin, yMax);
-  //     if (!started)
-  //     {
-  //       rightCtx.moveTo(pos.x, pos.y);
-  //       started = true;
-  //     }
-  //     else
-  //     {
-  //       rightCtx.lineTo(pos.x, pos.y);
-  //     }
-  //   }
-  // }
-  // rightCtx.stroke();
 }
 
 function redraw()
